@@ -1,0 +1,55 @@
+% Standalone TikZ figure: Schottky heat capacity of a two-level system.
+% C(T) rises from zero, peaks near k_B T ~ 0.42 dE, then decays as 1/T^2.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=11cm, height=7.5cm,
+      xlabel={$k_B T / \Delta E$},
+      ylabel={$C\,/\,N k_B$},
+      xmin=0, xmax=3.0,
+      ymin=0, ymax=0.48,
+      xtick={0,0.42,1,2,3},
+      xticklabels={$0$,$0.42$,$1$,$2$,$3$},
+      ytick={0,0.1,0.2,0.3,0.4},
+      axis lines=left,
+      tick align=outside,
+      enlarge x limits=false,
+      domain=0.05:3.0, samples=300,
+      every axis plot/.append style={very thick},
+    ]
+    % Schottky heat capacity of a 2-level system with gap dE:
+    %   C/(N kB) = x^2 e^x / (1+e^x)^2 , with x = dE/(kB T) = 1/u, u = kB T/dE
+    \addplot[blue!70!black] {(1/x)^2 * exp(1/x) / (1 + exp(1/x))^2};
+    % peak marker (numerical peak at kB T ~ 0.4168 dE, C/NkB ~ 0.4392)
+    \addplot[only marks, mark=*, mark size=1.6pt, red!80!black]
+      coordinates {(0.4168,0.4392)};
+    \node[red!70!black, anchor=west, align=left] at (axis cs:0.55,0.43)
+      {قلهٔ شاتکی\\ $k_B T \approx 0.42\,\Delta E$};
+    % low-T frozen-out annotation
+    \draw[->, gray] (axis cs:0.20,0.20) -- (axis cs:0.10,0.04);
+    \node[gray, anchor=south west, align=left] at (axis cs:0.18,0.20)
+      {$C\to 0$\\ (شکاف منجمد)};
+    % high-T tail annotation
+    \draw[->, gray] (axis cs:2.0,0.18) -- (axis cs:2.6,0.07);
+    \node[gray, anchor=south, align=left] at (axis cs:1.95,0.18)
+      {$C\to 0$\\ \RL{($\propto 1/T^2$)}};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

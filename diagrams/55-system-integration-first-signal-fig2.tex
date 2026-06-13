@@ -1,0 +1,82 @@
+% Signal-chain bisection for debugging: forward TX path and reverse RX path,
+% with the five known-signal injection / monitoring points circled 1-5.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    blk/.style={draw, rounded corners=2pt, align=center, minimum height=9mm, minimum width=15mm, inner sep=3pt, fill=blue!5},
+    rxblk/.style={blk, fill=green!6},
+    pt/.style={circle, draw, fill=yellow!85!orange, inner sep=0pt, minimum size=4.4mm, font=\footnotesize\bfseries},
+  ]
+
+  % --- Forward (TX) chain ---
+  \node[blk] (nco) {NCO /\\کنسول};
+  \node[blk, right=7mm of nco] (dac) {DAC};
+  \node[blk, right=7mm of dac] (rfpa) {RFPA};
+  \node[blk, right=7mm of rfpa] (tr1) {T/R};
+  \node[blk, right=7mm of tr1] (coil1) {سیم‌پیچ};
+  \node[right=9mm of coil1] (samp1) {\textbf{نمونه}};
+
+  \draw[->] (nco) -- (dac);
+  \draw[->] (dac) -- (rfpa);
+  \draw[->] (rfpa) -- (tr1);
+  \draw[->] (tr1) -- (coil1);
+  \draw[->] (coil1) -- (samp1);
+
+  % --- Reverse (RX) chain ---
+  \node[rxblk, below=18mm of nco] (fft) {FFT /\\بازسازی};
+  \node[rxblk, right=7mm of fft] (adc) {ADC};
+  \node[rxblk, right=7mm of adc] (ddc) {DDC};
+  \node[rxblk, right=7mm of ddc] (lna) {LNA};
+  \node[rxblk, right=7mm of lna] (tr2) {T/R};
+  \node[rxblk, right=7mm of tr2] (coil2) {سیم‌پیچ};
+
+  \draw[<-] (fft) -- (adc);
+  \draw[<-] (adc) -- (ddc);
+  \draw[<-] (ddc) -- (lna);
+  \draw[<-] (lna) -- (tr2);
+  \draw[<-] (tr2) -- (coil2);
+
+  % MR signal coupling from sample down into the RX coil
+  \draw[->, thick] (samp1.south) -- ++(0,-9mm) -| (coil2.north)
+        node[pos=0.25, right, font=\scriptsize\itshape, text=black!70]{سیگنال MR};
+
+  % --- Injection / monitoring points ---
+  \node[pt] (p1) at ($(dac.south)+(0,-5mm)$) {1};
+  \draw[densely dotted] (dac.south) -- (p1);
+  \node[pt] (p2) at ($(rfpa.north)+(0,5mm)$) {2};
+  \draw[densely dotted] (rfpa.north) -- (p2);
+  \node[pt] (p3) at ($(lna.south)+(0,-5mm)$) {3};
+  \draw[densely dotted] (lna.south) -- (p3);
+  \node[pt] (p4) at ($(adc.south)+(0,-5mm)$) {4};
+  \draw[densely dotted] (adc.south) -- (p4);
+  \node[pt] (p5) at ($(coil2.south)+(0,-5mm)$) {5};
+  \draw[densely dotted] (coil2.south) -- (p5);
+
+  % --- Legend of known-signal points ---
+  \node[anchor=north west, align=left, draw, rounded corners=2pt, fill=black!2,
+        inner sep=5pt, font=\footnotesize] (leg) at ($(fft.south west)+(0,-12mm)$)
+    {\textbf{نقاط تزریق / پایش سیگنالِ شناخته}\\[2pt]
+     \tikz\node[pt]{1}; \, خروجی DAC (اسکوپ) --- سلامت دیجیتالِ TX\\
+     \tikz\node[pt]{2}; \, خروجی RFPA به بار ساختگی --- توان و blanking\\
+     \tikz\node[pt]{3}; \, سیگنال کوچک به ورودی LNA --- سلامت کاملِ RX\\
+     \tikz\node[pt]{4}; \, پویش نوفه (بدون برانگیزش) --- کفِ نوفه / نشتی\\
+     \tikz\node[pt]{5}; \, پروب کوچکِ NMR یا فانتومِ مرجع --- آهنربا / $f_0$};
+
+\end{tikzpicture}}
+\end{document}

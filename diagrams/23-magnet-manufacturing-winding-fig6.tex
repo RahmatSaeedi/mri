@@ -1,0 +1,44 @@
+% Magnet training procedure: stepwise ramp with quench logging until plateau.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    tstep/.style={rectangle, rounded corners=3pt, draw=violet!55!black, very thick,
+      fill=violet!8, text width=7.4cm, minimum height=1.0cm, align=left, inner sep=5pt}]
+
+  \node[font=\bfseries] at (0,1.2) {رویهٔ تربیت};
+
+  \def\dy{1.55}
+  \node[tstep] (s1) at (0,0)       {۱) سردسازی کامل تا $4.2\,$K؛ پایش $T$ / فشار / جریان};
+  \node[tstep] (s2) at (0,-1*\dy)  {۲) افزایش پله‌ای: بالا بردن جریان در گام‌های کوچک};
+  \node[tstep] (s3) at (0,-2*\dy)  {۳) در هر کوئنچ: ثبت جریان و محل کوئنچ (شیرهای ولتاژ)؛ بازیافت He؛ سردسازی مجدد};
+  \node[tstep] (s4) at (0,-3*\dy)  {۴) ادامهٔ افزایش فراتر از $I_{\mathrm{op}}$ (مثلاً ۱۰۵--۱۱۰\%) برای حاشیهٔ اطمینان};
+  \node[tstep] (s5) at (0,-4*\dy)  {۵) پذیرش: رسیدن به فلات --- چند افزایش متوالی تا هدف $+$ حاشیه بدون کوئنچ};
+
+  \foreach \i/\j in {1/2,2/3,3/4,4/5}{
+    \draw[->, very thick, violet!55!black] (s\i.south) -- (s\j.north);
+  }
+
+  % feedback loop: after a quench, return to the stepwise ramp
+  \draw[->, thick, orange!70!black, dashed] (s3.east) to[out=0,in=0]
+     node[right, font=\footnotesize, text=orange!60!black, align=left]
+     {کوئنچ\\$\to$ افزایش مجدد} (s2.east);
+
+\end{tikzpicture}}
+\end{document}

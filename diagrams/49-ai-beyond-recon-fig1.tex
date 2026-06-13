@@ -1,0 +1,63 @@
+% Standalone TikZ figure: MRI image-processing chain and where this chapter sits.
+% Acquisition (raw k-space) -> Reconstruction -> Post-processing (this chapter:
+% denoising / super-resolution / segmentation) -> Quantitative analysis.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    stage/.style={draw, rounded corners=2pt, align=center, minimum height=12mm,
+                  minimum width=24mm, thick},
+    sub/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+                fill=blue!8},
+    chainarrow/.style={-{Stealth[length=3mm]}, very thick}]
+
+  % ---------- main pipeline stages ----------
+  \node[stage, fill=gray!12] (acq) {اکتساب\\ دادهٔ خام $k$-space};
+  \node[stage, fill=gray!12, right=18mm of acq] (recon)
+        {بازسازی\\ \footnotesize FFT / SENSE\\ \footnotesize DL-recon};
+
+  % post-processing group (this chapter)
+  \node[sub, right=22mm of recon, yshift=6mm] (den) {حذف نوفه};
+  \node[sub, right=4mm of den] (sr) {فراتفکیک};
+  \node[sub, below=4mm of den, minimum width=44mm, xshift=10mm] (seg) {قطعه‌بندی};
+
+  \begin{scope}[on background layer]
+    \node[draw, thick, rounded corners=3pt, fill=blue!4,
+          fit=(den)(sr)(seg), inner sep=6mm] (post) {};
+  \end{scope}
+  \node[above] at (post.north) {\textbf{پس‌پردازش (این فصل)}};
+
+  % ---------- final stage ----------
+  \node[stage, fill=green!10, below=20mm of seg] (quant)
+        {تحلیل کمّی /\\ تشخیص بالینی};
+
+  % ---------- chain arrows ----------
+  \draw[chainarrow] (acq) -- (recon);
+  \draw[chainarrow] (recon) -- (post.west |- recon);
+  \draw[chainarrow] (post.south) -- (quant.north);
+
+  % ---------- physics feedback ----------
+  \node[align=center, below=9mm of acq, font=\footnotesize] (phys)
+        {فیزیک سامانه\\ (مدل پیشرو)};
+  \draw[->, thick, dashed] (phys) -- (acq);
+
+  % volume tags
+  \node[font=\scriptsize\itshape, above=1mm of recon] {فصل‌های ۴۴ تا ۴۸};
+
+\end{tikzpicture}}
+\end{document}

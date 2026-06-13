@@ -1,0 +1,66 @@
+% "Valley of death": cumulative cash flow over time, dipping deeply negative
+% during development, with staged financing (seed, Series A/B) and a cash
+% break-even point where the curve crosses zero again.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=13cm, height=8cm,
+      axis lines=middle,
+      xlabel={زمان}, ylabel={جریان نقدی تجمعی},
+      every axis x label/.style={at={(ticklabel* cs:1.0)}, anchor=west},
+      every axis y label/.style={at={(ticklabel* cs:1.0)}, anchor=south east},
+      xmin=0, xmax=10.6, ymin=-6.5, ymax=4.2,
+      xtick=\empty, ytick={0}, yticklabels={$0$},
+      clip=false,
+    ]
+    % cumulative cash curve: dip into the valley of death, then recover.
+    % Piecewise smooth-ish curve through chosen control points.
+    \addplot[very thick, blue!65!black, smooth] coordinates {
+      (0.2,-0.2) (1.2,-1.6) (2.4,-3.4) (3.6,-5.4) (4.6,-6.0)
+      (5.6,-5.2) (6.6,-3.6) (7.6,-1.6) (8.4,0.0) (9.4,2.2) (10.2,3.8)
+    };
+
+    % shade the "valley" region under the curve where it is most negative
+    \addplot[draw=none, fill=red!8] coordinates {
+      (3.0,0) (3.0,-4.6) (3.6,-5.4) (4.6,-6.0) (5.6,-5.2) (6.2,-4.3) (6.2,0)
+    } -- cycle;
+
+    % zero crossing = cash break-even
+    \coordinate (be) at (axis cs:8.4,0);
+    \fill (be) circle (2.3pt);
+    \node[anchor=west, align=left] at (axis cs:8.55,0.55)
+      {نقطهٔ سربه‌سری\\نقدی};
+
+    % deepest point = max cash need
+    \coordinate (low) at (axis cs:4.6,-6.0);
+    \fill[red!70!black] (low) circle (2.3pt);
+    \node[red!70!black, anchor=north, align=center] at (axis cs:4.6,-6.2)
+      {درّهٔ مرگ\\(بیشینه نیاز نقدی)};
+
+    % financing rounds as injection markers (upward steps / arrows)
+    \draw[->, teal!60!black, very thick] (axis cs:1.0,-1.5) -- (axis cs:1.0,-0.6)
+      node[above, black] {\scriptsize سرمایهٔ اولیه};
+    \draw[->, teal!60!black, very thick] (axis cs:3.0,-4.6) -- (axis cs:3.0,-3.5)
+      node[above, black] {\scriptsize دور A};
+    \draw[->, teal!60!black, very thick] (axis cs:6.0,-4.6) -- (axis cs:6.0,-3.4)
+      node[above, black] {\scriptsize دور B};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,77 @@
+% Multi-layer MRI Quality Assurance program pyramid: daily -> weekly -> monthly -> annual,
+% on top of an automatic daily prescan calibration base.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % --- trapezoid layers of the pyramid, drawn bottom-up ---
+  % half-widths at each horizontal level (in cm)
+  % level y: 0,1.2,2.4,3.6,4.8  ; half-widths shrink toward the top
+  \def\ha{6.0} % base of daily layer
+  \def\hb{4.7} % top of daily / base of weekly
+  \def\hc{3.4} % top of weekly / base of monthly
+  \def\hd{2.1} % top of monthly / base of annual
+  \def\he{0.0} % apex
+
+  % Daily layer (widest)
+  \fill[blue!12]   (-\ha,0) -- (\ha,0) -- (\hb,1.4) -- (-\hb,1.4) -- cycle;
+  \draw[thick]     (-\ha,0) -- (\ha,0) -- (\hb,1.4) -- (-\hb,1.4) -- cycle;
+  % Weekly layer
+  \fill[teal!14]   (-\hb,1.4) -- (\hb,1.4) -- (\hc,2.8) -- (-\hc,2.8) -- cycle;
+  \draw[thick]     (-\hb,1.4) -- (\hb,1.4) -- (\hc,2.8) -- (-\hc,2.8) -- cycle;
+  % Monthly/quarterly layer
+  \fill[orange!16] (-\hc,2.8) -- (\hc,2.8) -- (\hd,4.2) -- (-\hd,4.2) -- cycle;
+  \draw[thick]     (-\hc,2.8) -- (\hc,2.8) -- (\hd,4.2) -- (-\hd,4.2) -- cycle;
+  % Annual layer (apex)
+  \fill[red!16]    (-\hd,4.2) -- (\hd,4.2) -- (0,5.7) -- cycle;
+  \draw[thick]     (-\hd,4.2) -- (\hd,4.2) -- (0,5.7) -- cycle;
+
+  % --- layer labels ---
+  \node[align=center] at (0,0.7)  {\textbf{روزانه} \RL{(تکنولوژیست، $<$ $15$\,min)}\\[1pt]
+        بسامد مرکزی، بهرهٔ فرستنده، SNR،\\ یکنواختی، شبح، پایداری، ایمنی};
+  \node[align=center] at (0,2.1)  {\textbf{هفتگی} (تکنولوژیست)\\[1pt]
+        آزمون‌های روزانه روی چند سیم‌پیچ + بازرسی چشمی};
+  \node[align=center] at (0,3.5)  {\textbf{ماهانه / فصلی}\\[1pt]
+        زیرمجموعهٔ ACR + همهٔ سیم‌پیچ‌های بالینی};
+  \node[align=center] at (0,4.75) {\textbf{سالانه}\\[1pt]\scriptsize(فیزیک‌دان)};
+
+  % --- frequency / scope axes (arrows on the sides) ---
+  \draw[->, thick, gray!70!black] (7.0,0) -- (7.0,5.7)
+        node[midway, right, align=center, rotate=-90, yshift=10pt] {\,};
+  \node[gray!60!black, rotate=90, anchor=south] at (7.35,2.85)
+        {عمق و تخصص بیشتر $\longrightarrow$};
+  \node[gray!60!black, rotate=90, anchor=north] at (7.0,2.85)
+        {$\longleftarrow$ بسامد بالاتر};
+
+  % --- annual layer details to the right (callout) ---
+  \node[draw, rounded corners, fill=red!6, align=left, anchor=west,
+        text width=4.6cm, font=\scriptsize] (ann) at (8.0,4.4)
+        {\textbf{محتوای سالانه:}\\ مجموعهٔ کامل ACR، خطی‌بودن گرادیان،
+         ضخامت برش، یکنواختی همهٔ سیم‌پیچ‌ها، ایمنی \RL{(SAR، $dB/dt$، صوتی)}};
+  \draw[->] (2.0,5.0) to[bend left=10] (ann.north west);
+
+  % --- base: automatic daily prescan calibration ---
+  \node[draw, fill=gray!12, rounded corners, minimum width=12.4cm,
+        align=center, font=\small] (base) at (0,-1.0)
+        {\textbf{پایه:} خودکالیبراسیون خودکار روزانهٔ دستگاه (پیش‌اسکن)};
+
+  % title
+  \node[font=\bfseries] at (0,6.3) {هرم برنامهٔ تضمین کیفیت MRI};
+\end{tikzpicture}}
+\end{document}

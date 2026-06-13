@@ -1,0 +1,84 @@
+% Lab frame vs. rotating frame. In the lab frame the magnetization traces a
+% complicated 3D spiral (precession about z plus nutation about B1). In the
+% on-resonance rotating frame the axial term vanishes and M simply rotates
+% about x' at the nutation frequency omega_1 = gamma B1.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  %================= LEFT: LAB FRAME =================
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\bfseries] at (0.6,4.2) {چارچوب آزمایشگاهی};
+    \node[font=\itshape\footnotesize] at (0.6,3.8) {\RL{(چارچوب چرخان با $\omega_0$)}};
+
+    % 3D-ish axes
+    \draw[->, thick] (0,0) -- (0,3.2) node[above] {$z$};
+    \draw[->, thick] (0,0) -- (2.4,1.1) node[right] {$y$};
+    \draw[->, thick] (0,0) -- (-1.2,-1.0) node[below left] {$x$};
+
+    % complicated spiral path traced by M tip
+    \draw[blue!65!black, thick, samples=120, domain=0:720, variable=\t]
+      plot ({0.9*exp(-0.0009*\t)*cos(\t)+0.55*exp(-0.0009*\t)*sin(\t)*0.4},
+            {1.6*(1-\t/900)+0.55*exp(-0.0009*\t)*sin(\t)});
+
+    % magnetization vector (one instant)
+    \draw[->, very thick, red!75!black] (0,0) -- (0.75,1.55) node[above right] {$\vec M(t)$};
+
+    \node[align=center, font=\footnotesize] at (0.6,-1.7)
+      {مارپیچ سه‌بعدی سریع:\\تقدیم حول $z$\\$+$ نوتاسیون حول $B_1$};
+    \node[align=center, font=\footnotesize, red!60!black] at (0.6,-2.6)
+      {تحلیل مستقیمِ آن دشوار است};
+  \end{scope}
+
+  %================= ARROW =================
+  \draw[-{Stealth[length=4mm]}, very thick, gray]
+    (3.5,1.2) -- node[above, font=\footnotesize, black]{تبدیل}
+              node[below, font=\footnotesize, black]{$e^{i\Omega t}$} (4.9,1.2);
+
+  %================= RIGHT: ROTATING FRAME =================
+  \begin{scope}[shift={(6.6,0)}]
+    \node[font=\bfseries] at (0.6,4.2) {چارچوب چرخان};
+    \node[font=\itshape\footnotesize] at (0.6,3.8) {(روی تشدید)};
+
+    % 3D-ish axes (primed)
+    \draw[->, thick] (0,0) -- (0,3.2) node[above] {$z'$};
+    \draw[->, thick] (0,0) -- (2.4,1.1) node[right] {$y'$};
+    \draw[->, thick] (0,0) -- (-1.2,-1.0) node[left] {$x'$};
+
+    % axial term ~ 0 note
+    \node[font=\footnotesize, gray, right] at (0.15,2.7) {\RL{(جملهٔ محوری $\approx$ $0$)}};
+
+    % B_eff along x' (effective field = B1 x')
+    \draw[->, very thick, blue!70!black] (0,0) -- (-1.05,-0.87);
+    \node[font=\footnotesize, blue!70!black, align=center] at (-1.05,-1.35)
+      {$\vec B_{\mathrm{eff}} = B_1\,\hat x'$};
+
+    % magnetization tipping from z' toward transverse plane (simple rotation)
+    \draw[->, very thick, red!75!black] (0,0) -- (0.0,1.85) node[above right] {$\vec M$};
+    % rotation sense about x' (tipping toward transverse plane)
+    \draw[->, thick, red!60!black] (0.0,1.55) arc (90:18:1.55 and 0.6);
+    \node[font=\footnotesize, red!60!black, align=center] at (2.05,1.75)
+      {چرخش حول $x'$\\با $\omega_1 = \gamma B_1$};
+
+    \node[align=center, font=\footnotesize] at (0.6,-2.3)
+      {یک چرخش تنها حول $x'$\\(ساده)};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

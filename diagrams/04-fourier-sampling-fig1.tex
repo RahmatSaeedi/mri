@@ -1,0 +1,65 @@
+% Standalone TikZ figure: ideal sampling in the frequency domain.
+% Left: original band-limited spectrum X(nu) of half-width B.
+% Right: sampled spectrum X_s(nu) = periodic replicas of X spaced by f_s.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ---------- LEFT: original spectrum X(nu) ----------
+  \begin{scope}
+    % axes
+    \draw[->] (-2.4,0) -- (2.6,0) node[below right] {$\nu$};
+    \draw[->] (0,-0.2) -- (0,2.4) node[left] {$X(\nu)$};
+    % triangular spectrum, half-width B
+    \draw[very thick, blue!70!black] (-1.6,0) -- (0,2.0) -- (1.6,0);
+    % band edges
+    \draw[dashed] (-1.6,0) -- (-1.6,0.0);
+    \node[below] at (-1.6,0) {$-B$};
+    \node[below] at ( 1.6,0) {$+B$};
+    \node[below right] at (0,0) {$0$};
+    \node[align=center] at (0,-1.0) {طیف اصلی\\ \RL{(پهنای‌باند $B$)}};
+  \end{scope}
+
+  % ---------- ARROW between panels ----------
+  \draw[-{Stealth[length=4mm]}, very thick]
+        (3.0,1.0) -- node[above, align=center] {نمونه‌برداری\\ $\times\ \mathrm{III}_{T_s}$} (4.6,1.0);
+
+  % ---------- RIGHT: sampled spectrum X_s(nu) ----------
+  \begin{scope}[xshift=8.2cm]
+    \draw[->] (-3.6,0) -- (3.9,0) node[below right] {$\nu$};
+    \draw[->] (0,-0.2) -- (0,2.4) node[left] {$X_s(\nu)$};
+    % replicas spaced by f_s; baseline half-width B = 0.8 here, f_s = 2.4
+    \def\B{0.8}
+    \foreach \c in {-2,-1,0,1,2}{
+      \draw[very thick, blue!70!black]
+        ({\c*2.4 - \B},0) -- ({\c*2.4},1.3) -- ({\c*2.4 + \B},0);
+    }
+    % spacing bracket f_s between centers 0 and +1
+    \draw[<->] (0,1.55) -- (2.4,1.55);
+    \node[above] at (1.2,1.55) {$f_s$};
+    % ticks
+    \foreach \c/\lab in {-1/$-f_s$, 0/$0$, 1/$+f_s$, 2/$+2f_s$}{
+      \draw (\c*2.4,0.06) -- (\c*2.4,-0.06);
+      \node[below] at (\c*2.4,-0.04) {\lab};
+    }
+    \node[align=center] at (0,-1.0) {نسخه‌های تکراری با فاصلهٔ $f_s$};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

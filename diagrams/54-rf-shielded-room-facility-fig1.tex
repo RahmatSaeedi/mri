@@ -1,0 +1,78 @@
+% Standalone TikZ figure: RF shielding mechanisms in a conducting sheet.
+% Incident plane wave E0 hits a metal sheet: reflection loss (R), exponential
+% absorption (A) over thickness t >> skin depth, multiple reflections (B),
+% leaving a tiny transmitted field E_t. SE = R + A + B [dB].
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ---------- metal sheet (hatched slab) ----------
+  \def\xL{0}     % left face
+  \def\xR{2.0}   % right face
+  \def\yB{-2.0}
+  \def\yT{2.0}
+  \fill[pattern=north east lines, pattern color=orange!70!black]
+       (\xL,\yB) rectangle (\xR,\yT);
+  \draw[very thick] (\xL,\yB) rectangle (\xR,\yT);
+
+  % thickness brace
+  \draw[<->] (\xL,\yB-0.35) -- (\xR,\yB-0.35);
+  \node[below] at ({(\xL+\xR)/2},\yB-0.35) {$t \gg \delta$ (ضخامت)};
+
+  % region labels
+  \node[align=center] at (-2.7,\yT+0.45) {فضای آزاد\\ $\eta_0 = 377\,\Omega$};
+  \node[align=center] at ({(\xL+\xR)/2},\yT+0.45) {فلز};
+  \node[align=center] at (5.0,\yT+0.45) {درون\\ (حفاظت‌شده)};
+  \node at ({(\xL+\xR)/2},\yB+0.5) {$\eta_m\!\approx\!\mathrm{m}\Omega$};
+
+  % ---------- incident wave E0 ----------
+  \draw[->, very thick, blue!70!black] (-3.6,1.3) -- (\xL,1.3)
+        node[midway, above] {$E_0$ (فرودی)};
+
+  % ---------- reflection loss R ----------
+  \draw[->, very thick, red!70!black] (\xL,0.95) -- (-2.4,1.9)
+        node[midway, above, sloped] {بازتاب $R$};
+
+  % ---------- absorption A: exponential decay inside ----------
+  \begin{scope}
+    \clip (\xL,\yB) rectangle (\xR,\yT);
+    \draw[thick, teal!70!black, domain=0:2.0, samples=60, variable=\x]
+          plot ({\x},{ 1.0*exp(-1.7*\x) - 0.0 });
+    \draw[thick, teal!70!black, domain=0:2.0, samples=60, variable=\x]
+          plot ({\x},{-1.0*exp(-1.7*\x) - 0.0 });
+  \end{scope}
+  \node[teal!70!black, align=center] at ({(\xL+\xR)/2+0.15},-0.95)
+        {جذب $A$\\ $e^{-t/\delta}$};
+
+  % ---------- multiple reflections B (zigzag) ----------
+  \draw[<->, thick, purple!80!black, decorate,
+        decoration={zigzag, segment length=4pt, amplitude=2pt}]
+        (\xL+0.2,1.55) -- (\xR-0.2,1.55);
+  \node[purple!80!black, above] at ({(\xL+\xR)/2},1.6) {بازتاب‌های چندگانه $B$};
+
+  % ---------- transmitted wave E_t ----------
+  \draw[->, thick, blue!40!black] (\xR,0) -- (4.3,0)
+        node[midway, above] {$E_t$ (ناچیز)};
+
+  % ---------- summary equation ----------
+  \node[draw, rounded corners, fill=gray!8] at (1.0,-3.0)
+        {$\mathrm{SE} = R + A + B \ \ [\mathrm{dB}]$};
+
+\end{tikzpicture}}
+\end{document}

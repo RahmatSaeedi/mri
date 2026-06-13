@@ -1,0 +1,67 @@
+% Hierarchy of V&V documentation, feeding the DHF and Risk Management File.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    root/.style={draw, rounded corners=2pt, fill=blue!18, align=center, minimum height=9mm, text width=52mm},
+    lvl1/.style={draw, rounded corners=2pt, fill=blue!8, align=left, minimum height=8mm, text width=64mm},
+    leaf/.style={draw, rounded corners=1pt, fill=green!9, align=left, minimum height=7mm, text width=80mm, font=\footnotesize},
+    edge/.style={->, thick, blue!55!black}]
+
+  \node[root] (master) {\textbf{طرح اصلی V\&V}\\\footnotesize دامنه، نقش‌ها، چرخهٔ عمر، معیارهای سطح بالا};
+
+  % four children, stacked
+  \node[lvl1, below=12mm of master.south west, anchor=north west, xshift=10mm] (vplan)
+        {\textbf{طرح راستی‌آزمایی}};
+  \node[leaf, below=3mm of vplan.south east, anchor=north east, xshift=0mm] (tp1)
+        {پروتکل TP-001 $\rightarrow$ گزارش TR-001 $\rightarrow$ دادهٔ خام};
+  \node[leaf, below=2mm of tp1] (tp2)
+        {پروتکل TP-002 $\rightarrow$ گزارش TR-002 $\rightarrow$ دادهٔ خام};
+  \node[leaf, below=2mm of tp2] (tp3)
+        {گزارش تحلیل (نیازمندی‌های روش تحلیل) $\rightarrow$ محاسبات};
+
+  \node[lvl1, below=4mm of tp3.south west, anchor=north west, xshift=-10mm] (valplan)
+        {\textbf{طرح صحه‌گذاری}};
+  \node[leaf, below=3mm of valplan.south east, anchor=north east] (vc1)
+        {پروتکل صحه‌گذاری بالینی $\rightarrow$ گزارش $\rightarrow$ دادهٔ داوطلب};
+  \node[leaf, below=2mm of vc1] (vc2)
+        {گزارش عوامل انسانی (IEC 62366-1)};
+
+  \node[lvl1, below=4mm of vc2.south west, anchor=north west, xshift=-10mm] (rtm)
+        {\textbf{RTM} --- پیوند همهٔ موارد بالا به نیازمندی‌ها};
+
+  \node[lvl1, below=3mm of rtm, fill=orange!12] (summary)
+        {\textbf{گزارش جمع‌بندی V\&V} --- همهٔ نیازمندی‌ها برآورده شد، ریسک باقی‌مانده پذیرفتنی};
+
+  % tree edges from master
+  \draw[edge] (master.south) |- (vplan.west);
+  \draw[edge] (master.south) |- (valplan.west);
+  \draw[edge] (master.south) |- (rtm.west);
+  \draw[edge] (master.south) |- (summary.west);
+
+  % verification plan branches
+  \draw[edge] (vplan.south) |- (tp1.west);
+  \draw[edge] (vplan.south) |- (tp2.west);
+  \draw[edge] (vplan.south) |- (tp3.west);
+  % validation plan branches
+  \draw[edge] (valplan.south) |- (vc1.west);
+  \draw[edge] (valplan.south) |- (vc2.west);
+
+\end{tikzpicture}}
+\end{document}

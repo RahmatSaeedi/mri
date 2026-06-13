@@ -1,0 +1,41 @@
+% The six standard LOTO steps as a sequential flow, ending in the critical
+% verify-zero-energy step (test-before-touch).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    lstep/.style={draw, rounded corners=3pt, align=left, text width=78mm, inner sep=5pt, minimum height=11mm, fill=blue!7},
+    num/.style={draw, circle, fill=blue!20, font=\small\bfseries, inner sep=1pt, minimum size=6mm}]
+
+  \node[lstep] (s1) {\textbf{آماده‌سازی:} شناسایی همهٔ منابع انرژی، رویهٔ مکتوب.};
+  \node[lstep, below=6mm of s1] (s2) {\textbf{خاموش‌سازی:} توقف منظم از نرم‌افزار/کنسول (بدون قطع ناگهانی).};
+  \node[lstep, below=6mm of s2] (s3) {\textbf{ایزوله‌سازی:} باز کردن قطع‌کنندهٔ مکانیکیِ قفل‌شوندهٔ هر منبع.};
+  \node[lstep, below=6mm of s3] (s4) {\textbf{قفل و برچسب:} قفل شخصی + برچسب (نام/تاریخ)؛ قفل گروهی با هَسپ.};
+  \node[lstep, below=6mm of s4] (s5) {\textbf{تخلیهٔ انرژی:} فعال‌سازی بلیدر/کروبار؛ انتظار یا تخلیهٔ کنترل‌شده.};
+  \node[lstep, below=6mm of s5, fill=red!12, very thick] (s6) {\textbf{تأیید صفر بودن:} اندازه‌گیری هر باس با تستر کالیبره؛ ``تلاش'' برای راه‌اندازی (باید بی‌برق باشد). \emph{آزمون پیش از تماس: زنده--مرده--زنده.}};
+
+  \foreach \i/\n in {1/s1,2/s2,3/s3,4/s4,5/s5,6/s6} {
+    \node[num, left=3mm of \n.west] {\i};
+  }
+  \foreach \a/\b in {s1/s2,s2/s3,s3/s4,s4/s5,s5/s6} {
+    \draw[->, very thick] (\a) -- (\b);
+  }
+
+\end{tikzpicture}}
+\end{document}

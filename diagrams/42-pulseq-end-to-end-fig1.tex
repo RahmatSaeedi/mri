@@ -1,0 +1,68 @@
+% End-to-end Pulseq pipeline: host-side design phase, the open-format (.seq)
+% boundary, and the console-side real-time execution phase. The feedback arrow
+% (compare / debug) closes the loop between acquired data and the simulator.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+                inner sep=3pt, fill=blue!4},
+    grp/.style={draw, dashed, rounded corners=4pt, inner sep=8pt},
+    flow/.style={-{Stealth[length=2.4mm]}, thick}]
+
+  %================= LEFT: DESIGN PHASE (host, offline) =================
+  \node[box] (idea)  at (0,7)   {ایدهٔ فیزیکی\\(مثلاً GRE)};
+  \node[box] (script) at (0,5.4) {اسکریپت PyPulseq\\(\texttt{Opts}، ساخت بلوک‌ها)};
+  \node[box] (check) at (0,3.8)  {\texttt{seq.check\_timing()}\\\texttt{seq.write('gre.seq')}};
+  \node[box] (sim)   at (0,2.2)  {شبیه‌ساز بلاخ (فصل~۱۹)\\پیش‌بینی $k$-space و تصویر};
+
+  \draw[flow] (idea) -- (script);
+  \draw[flow] (script) -- (check);
+  \draw[flow] (check) -- node[right,font=\footnotesize]{(اختیاری)} (sim);
+
+  \node[grp, fit=(idea)(script)(check)(sim)] (designgrp) {};
+  \node[font=\bfseries, align=center] at (0,8) {فاز طراحی\\\footnotesize\mdseries (میزبان، برون‌خط)};
+
+  %================= RIGHT: EXECUTION PHASE (console, real-time) =================
+  \node[box] (interp) at (9,7)   {مفسّر Pulseq روی کنسول\\(Python/C++ --- فصل~۴۱)};
+  \node[box] (evtab)  at (9,5.4) {جدول رویدادهای زمان‌بندی‌شده};
+  \node[box] (fpga)   at (9,3.8) {بارگذاری در میان‌افزار FPGA\\(RF LUT، grad DAC، ADC)\\فصل~۳۸/۳۹};
+  \node[box] (raw)    at (9,2.2) {دادهٔ خام ADC (I/Q)\\TX $\to$ sample $\to$ RX};
+  \node[box] (recon)  at (9,0.6) {بازشبکه‌بندی به $k$-space و بازسازی\\ذخیره در ISMRMRD/HDF5 (فصل~۴۳)};
+
+  \draw[flow] (interp) -- (evtab);
+  \draw[flow] (evtab) -- (fpga);
+  \draw[flow] (fpga) -- (raw);
+  \draw[flow] (raw) -- (recon);
+
+  \node[grp, fit=(interp)(evtab)(fpga)(raw)(recon)] (execgrp) {};
+  \node[font=\bfseries, align=center] at (9,8) {فاز اجرا\\\footnotesize\mdseries (کنسول، بی‌درنگ)};
+
+  %================= OPEN-FORMAT BOUNDARY =================
+  \draw[flow, line width=1pt] (designgrp.east) -- node[above, font=\footnotesize, align=center]{فایل \texttt{.seq}}
+       node[below, font=\footnotesize, align=center]{(متن ASCII + CRC)} (execgrp.west);
+  \node[font=\itshape\footnotesize, align=center] at (4.5,8) {مرز\\قالب‌باز};
+
+  %================= FEEDBACK LOOP (compare / debug) =================
+  \draw[flow, dashed, red!70!black]
+    (recon.south) |- ($(designgrp.south)+(0,-1.1)$)
+    node[pos=0.75, below, font=\footnotesize, black]{مقایسه / اشکال‌زدایی}
+    -| (designgrp.south);
+
+\end{tikzpicture}}
+\end{document}

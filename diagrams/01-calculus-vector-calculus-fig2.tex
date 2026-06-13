@@ -1,0 +1,43 @@
+% Level curves of a scalar field phi = const, with the gradient vector
+% always perpendicular to them and pointing toward larger phi.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % three level curves phi = 1, 2, 3 (gently curved, increasing upward)
+  \draw[thick, blue!60!black] (0,0)   .. controls (3,0.4) and (5,0.0) .. (8,0.5);
+  \node[blue!60!black, left] at (0,0) {$\phi=1$};
+
+  \draw[thick, blue!60!black] (0,1.6) .. controls (3,2.0) and (5,1.6) .. (8,2.1);
+  \node[blue!60!black, left] at (0,1.6) {$\phi=2$};
+
+  \draw[thick, blue!60!black] (0,3.2) .. controls (3,3.6) and (5,3.2) .. (8,3.7);
+  \node[blue!60!black, left] at (0,3.2) {$\phi=3$};
+
+  % gradient arrows: perpendicular to level curves, pointing toward larger phi
+  \foreach \x in {1.5,4,6.5} {
+    \draw[->, very thick, red] (\x,0.25) -- (\x,1.45);
+    \draw[->, very thick, red] (\x,1.85) -- (\x,3.05);
+  }
+  \node[red, right] at (6.6,2.5) {$\nabla\phi$};
+
+  % annotation
+  \node[align=center, font=\footnotesize] at (4,4.55)
+    {گرادیان $\nabla\phi$ بر منحنی‌های تراز عمود است\\و به‌سوی افزایش $\phi$ اشاره می‌کند};
+\end{tikzpicture}}
+\end{document}

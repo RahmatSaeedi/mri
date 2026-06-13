@@ -1,0 +1,56 @@
+% MRI site star-ground architecture: single-point reference bar with bonded
+% subsystems; Faraday cage bonded at one point through the penetration panel.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    leaf/.style={draw, rounded corners=2pt, align=center, minimum height=11mm, text width=20mm, inner sep=3pt, fill=blue!7}]
+
+  % Single-point ground bar
+  \node[draw, very thick, fill=orange!18, minimum width=130mm, minimum height=9mm, align=center] (bar)
+    {\textbf{شینهٔ زمین تک‌نقطه‌ای} (مس عایق‌دار با امپدانس پایین)};
+
+  % Bus line below the bar
+  \coordinate (busL) at ($(bar.south)+(-62mm,-7mm)$);
+  \coordinate (busR) at ($(bar.south)+(62mm,-7mm)$);
+  \draw[very thick] (bar.south) -- ($(bar.south)+(0,-7mm)$);
+  \draw[very thick] (busL) -- (busR);
+
+  % Leaves
+  \node[leaf, below=16mm of bar, xshift=-58mm] (pe) {PE ساختمان\\(الکترود زمین)};
+  \node[leaf, below=16mm of bar, xshift=-34mm] (cab) {کابینت\\کنسول};
+  \node[leaf, below=16mm of bar, xshift=-9mm] (amp) {تقویت‌کننده‌های توان\\(گرادیان / RF)};
+  \node[leaf, below=16mm of bar, xshift=16mm, fill=green!12] (panel) {پنل عبور\\= اتصال قفس\\فارادی};
+  \node[leaf, below=16mm of bar, xshift=40mm] (cryo) {کرایوستات\\و آهنربا};
+  \node[leaf, below=16mm of bar, xshift=60mm] (table) {تخت /\\سازه / بور};
+
+  % drops from bus to each leaf
+  \foreach \n/\x in {pe/-58, cab/-34, amp/-9, panel/16, cryo/40, table/60} {
+    \draw[thick] ($(bar.south)+(\x mm,-7mm)$) -- (\n.north);
+  }
+
+  % Feedthrough filters under the penetration panel
+  \node[draw, rounded corners=2pt, fill=green!6, align=center, below=10mm of panel, text width=34mm] (filt)
+    {فیلترهای EMI عبوری\\هر هادی ورودی\\(برق/سیگنال/روشنایی/HVAC) فیلتر می‌شود};
+  \draw[->, thick] (panel) -- (filt);
+  \node[align=center, font=\footnotesize\itshape, below=2mm of filt, text width=40mm]
+    {پوستهٔ قفس تنها در همین یک نقطه به زمین متصل می‌شود};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,85 @@
+% Basic dump circuit of a superconducting magnet:
+% the magnet inductance L in a persistent loop closed by the PCS (with its
+% heater), in parallel with the external dump resistor R_d and protection diodes.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, thick, minimum width=1.5cm, minimum height=0.9cm}]
+
+  % ---- nodes (corners of the loop) ----
+  \coordinate (TL) at (0,3);     % top-left
+  \coordinate (TR) at (6,3);     % top-right
+  \coordinate (BL) at (0,0);     % bottom-left
+  \coordinate (BR) at (6,0);     % bottom-right
+
+  % ---- top branch: PCS (persistent current switch) with heater ----
+  \draw[thick] (TL) -- (1.6,3);
+  \node[box, fill=gray!8] (PCS) at (3,3) {PCS};
+  \draw[thick] (PCS.east) -- (TR);
+  % heater coil drawn on top of the PCS
+  \draw[thick, decorate, decoration={zigzag, segment length=4pt, amplitude=2pt}]
+      (2.4,3.55) -- (3.6,3.55);
+  \node[anchor=south, font=\footnotesize] at (3,3.7) {گرم‌کن};
+  \node[anchor=south, font=\footnotesize] at (3,3.95) {(کلید جریان پایدار)};
+
+  % ---- left branch: magnet inductance L ----
+  % inductor as a coil along the left vertical wire
+  \draw[thick] (TL) -- (0,2.4);
+  \draw[thick, decorate, decoration={coil, aspect=0.6, segment length=5pt, amplitude=5pt}]
+      (0,2.4) -- (0,0.9);
+  \draw[thick] (0,0.9) -- (BL);
+  \node[anchor=east] at (-0.35,1.65) {$L$ (آهنربا)};
+  % current arrow
+  \draw[->, blue!70!black, thick] (-0.0,1.95) ++(0,0) -- ++(0,-0.5);
+  \node[anchor=west, blue!70!black, font=\footnotesize] at (0.15,1.7) {$I_0$};
+
+  % ---- bottom branch wire ----
+  \draw[thick] (BL) -- (BR);
+
+  % ---- right side: two parallel branches between TR and BR ----
+  % branch A: dump resistor R_d
+  \coordinate (Ra) at (5,3);
+  \coordinate (Rb) at (5,0);
+  \draw[thick] (TR) -- (5,3);
+  \draw[thick] (Ra) -- (5,2.2);
+  \node[box, minimum width=0.55cm, minimum height=1.0cm, fill=orange!12] (RD) at (5,1.5) {};
+  \draw[thick] (5,0.8) -- (Rb);
+  \node[anchor=west] at (5.35,1.5) {$R_d$ (تخلیه)};
+
+  % branch B: protection diodes (slightly to the right)
+  \coordinate (Da) at (6,3);
+  \coordinate (Db) at (6,0);
+  \draw[thick] (Da) -- (6,2.1);
+  % diode symbol (triangle + bar), pointing down
+  \draw[thick] (5.7,2.1) -- (6.3,2.1) -- (6,1.55) -- cycle;
+  \draw[thick] (5.7,1.55) -- (6.3,1.55);
+  \draw[thick] (6,1.55) -- (6,0.9);
+  % second anti-parallel diode hint
+  \draw[thick] (6,0.9) -- (Db);
+  \node[anchor=west] at (6.35,1.8) {دیودها};
+
+  % node dots
+  \fill (TR) circle (1.6pt);
+  \fill (BR) circle (1.6pt);
+
+  % ---- caption-style labels ----
+  \node[font=\footnotesize, anchor=north] at (3,-0.5)
+    {حلقهٔ پایدار \RL{($L$ + PCS)} به‌موازاتِ مقاومتِ تخلیهٔ $R_d$ و دیودها};
+\end{tikzpicture}}
+\end{document}

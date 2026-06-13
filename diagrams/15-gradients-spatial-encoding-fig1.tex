@@ -1,0 +1,114 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % ----- layout parameters -----
+  \def\xL{0}      % left margin of waveforms
+  \def\xR{12}     % right margin
+  \def\lab{-0.6}  % x of channel labels
+  % vertical baselines for each channel (top to bottom)
+  \def\yRF{8.5}
+  \def\ySL{6.8}
+  \def\yPE{5.1}
+  \def\yRO{3.0}
+  \def\yADC{1.1}
+
+  % time axis reference dashed line for echo center
+  \def\xecho{8.0}
+  \draw[gray!55, dashed] (\xecho,0.2) -- (\xecho,9.3);
+  \node[gray!70, font=\scriptsize] at (\xecho,9.55) {مرکز اکو / $k=0$};
+
+  % ===== RF channel =====
+  \node[anchor=east] at (\lab,\yRF) {RF};
+  \draw[thick] (\xL,\yRF) -- (1.0,\yRF);
+  % 90 deg sinc-ish pulse (simple triangle)
+  \draw[thick, blue!70!black] (1.0,\yRF) -- (1.4,\yRF+1.1) -- (1.8,\yRF) -- (\xR,\yRF);
+  \node[blue!70!black, font=\scriptsize, anchor=south] at (1.4,\yRF+1.1) {$90^\circ$};
+
+  % ===== Slice-select gradient =====
+  \node[anchor=east] at (\lab,\ySL) {$G_{\mathrm{slice}}$};
+  \draw[thick] (\xL,\ySL) -- (0.85,\ySL);
+  % positive lobe (during RF) then negative rephasing lobe
+  \fill[green!55!black, opacity=0.30]
+     (0.85,\ySL) -- (0.95,\ySL+0.9) -- (1.85,\ySL+0.9) -- (1.95,\ySL) -- cycle;
+  \fill[green!55!black, opacity=0.18]
+     (1.95,\ySL) -- (2.05,\ySL-0.55) -- (2.45,\ySL-0.55) -- (2.55,\ySL) -- cycle;
+  \draw[thick, green!45!black]
+     (0.85,\ySL) -- (0.95,\ySL+0.9) -- (1.85,\ySL+0.9) -- (1.95,\ySL)
+     -- (2.05,\ySL-0.55) -- (2.45,\ySL-0.55) -- (2.55,\ySL) -- (\xR,\ySL);
+  \node[font=\scriptsize, anchor=west] at (2.7,\ySL+0.45) {انتخاب برش (فصل~۱۴)};
+
+  % ===== Phase-encode gradient =====
+  \node[anchor=east] at (\lab,\yPE) {$G_{\mathrm{phase}}$};
+  \draw[thick] (\xL,\yPE) -- (2.6,\yPE);
+  % a single blip, with multiple amplitudes shown (one step per TR)
+  \foreach \h in {0.85,0.55,0.25,-0.25,-0.55,-0.85} {
+     \draw[thick, orange!80!black, opacity=0.55]
+        (2.6,\yPE) -- (2.75,\yPE+\h) -- (3.35,\yPE+\h) -- (3.5,\yPE);
+  }
+  \fill[orange!80!black, opacity=0.30]
+     (2.6,\yPE) -- (2.75,\yPE+0.85) -- (3.35,\yPE+0.85) -- (3.5,\yPE) -- cycle;
+  \draw[thick, orange!75!black] (3.5,\yPE) -- (\xR,\yPE);
+  % up/down arrows to show stepping
+  \draw[->, orange!70!black] (3.05,\yPE+0.95) -- (3.05,\yPE+0.45);
+  \draw[->, orange!70!black] (3.05,\yPE-0.95) -- (3.05,\yPE-0.45);
+  \node[font=\scriptsize, anchor=west] at (3.65,\yPE+0.7) {یک پله در هر TR \RL{($\Delta k_y$)}};
+
+  % ===== Readout gradient =====
+  \node[anchor=east] at (\lab,\yRO) {$G_{\mathrm{read}}$};
+  \draw[thick] (\xL,\yRO) -- (3.7,\yRO);
+  % negative prephaser lobe
+  \fill[red!70!black, opacity=0.22]
+     (3.7,\yRO) -- (3.85,\yRO-0.85) -- (4.85,\yRO-0.85) -- (5.0,\yRO) -- cycle;
+  \draw[thick, red!60!black]
+     (3.7,\yRO) -- (3.85,\yRO-0.85) -- (4.85,\yRO-0.85) -- (5.0,\yRO);
+  % positive readout lobe (flat top, trapezoid), centered on echo
+  \fill[red!70!black, opacity=0.30]
+     (5.0,\yRO) -- (5.4,\yRO+1.05) -- (10.6,\yRO+1.05) -- (11.0,\yRO) -- cycle;
+  \draw[thick, red!60!black]
+     (5.0,\yRO) -- (5.4,\yRO+1.05) -- (10.6,\yRO+1.05) -- (11.0,\yRO) -- (\xR,\yRO);
+  \node[red!55!black, font=\scriptsize, anchor=north] at (4.35,\yRO-0.9) {پیش‌فازساز \RL{($-$)}};
+  \node[red!55!black, font=\scriptsize, anchor=south] at (8.0,\yRO+1.05) {خوانش \RL{($+$)}};
+  % area-balance note
+  \draw[<->, red!50!black, dashed] (3.85,\yRO-1.05) -- (4.85,\yRO-1.05);
+  \node[red!55!black, font=\scriptsize] at (4.35,\yRO-1.32) {سطح $=$ نصف خوانش};
+
+  % ===== ADC sampling =====
+  \node[anchor=east] at (\lab,\yADC) {ADC};
+  \draw[thick] (\xL,\yADC) -- (5.6,\yADC);
+  \fill[purple!18] (5.6,\yADC-0.05) rectangle (10.4,\yADC+0.95);
+  \draw[purple!70!black, thick] (5.6,\yADC) rectangle (10.4,\yADC+0.95);
+  \foreach \x in {5.85,6.2,...,10.2} {
+     \draw[purple!75!black, very thin] (\x,\yADC+0.05) -- (\x,\yADC+0.9);
+  }
+  \draw[thick, purple!70!black] (10.4,\yADC) -- (\xR,\yADC);
+  \node[purple!60!black, font=\scriptsize, anchor=south] at (8.0,\yADC+0.95) {پنجرهٔ نمونه‌برداری $N_x \Delta t$};
+
+  % ===== k_x(t) annotation bar at bottom =====
+  \draw[->, thick] (\xL,-0.4) -- (\xR,-0.4) node[right] {$t$};
+  \node[anchor=east] at (\lab,-0.4) {$k_x(t)$};
+  \node[font=\scriptsize] at (3.7,-0.75) {$0$};
+  \node[font=\scriptsize] at (5.6,-0.75) {$-k_{\max}$};
+  \node[font=\scriptsize] at (\xecho,-0.75) {$0$};
+  \node[font=\scriptsize] at (10.4,-0.75) {$+k_{\max}$};
+  \draw[->, gray!70] (3.9,-0.4) -- (5.4,-0.4);
+  \node[gray!70, font=\scriptsize, anchor=north] at (4.65,-1.0) {پیش‌فاز};
+  \draw[->, gray!70] (5.8,-0.4) -- (10.2,-0.4);
+  \node[gray!70, font=\scriptsize, anchor=north] at (8.0,-1.0) {جاروب خوانش};
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,82 @@
+% Standalone TikZ figure: FID timing in the MaRCoS event model.
+% Four lanes (tx_gate, tx0 RF, rx_gate, rx0_en) drawn against an absolute
+% time axis in microseconds, showing the dead time T_dead and acquisition.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    lane/.style={font=\footnotesize\ttfamily}]
+
+  % ---- time axis parameters (x in cm = us/20, schematic) ----
+  % t0=0, t_unblank=100, t_pulse_end=105, t_acq_start ~ 145, t_acq_end=265
+  \def\xa{0}      % t=0
+  \def\xunb{5.0}  % t=100 us
+  \def\xpe{5.25}  % t=105 us (pulse end)
+  \def\xrx{7.25}  % t=145 us (acq start, after T_dead)
+  \def\xend{12.0} % t ~ 145 + T_acq
+
+  % lane y positions
+  \def\yA{4.5}  % tx_gate
+  \def\yB{3.0}  % tx0
+  \def\yC{1.5}  % rx_gate
+  \def\yD{0.0}  % rx0_en
+
+  % ---- baseline + label for each lane ----
+  \foreach \y/\lab in {\yA/tx\_gate, \yB/tx0 (RF), \yC/rx\_gate, \yD/rx0\_en}{
+    \draw[gray!50] (-2.2,\y) -- (\xend,\y);
+    \node[lane, anchor=east] at (-0.5,\y) {\lab};
+  }
+
+  % ---- tx_gate: unblank window (high during pulse + small margins) ----
+  \draw[very thick, blue!60!black]
+    (\xa,\yA) -- (\xunb,\yA) -- (\xunb,\yA+0.7)
+    -- (\xpe+0.1,\yA+0.7) -- (\xpe+0.1,\yA) -- (\xend,\yA);
+  \node[font=\scriptsize, above] at ($(\xunb,\yA+0.7)!0.5!(\xpe+0.1,\yA+0.7)$) {رفع انسداد};
+
+  % ---- tx0: 90deg RF pulse ----
+  \draw[very thick, red!70!black]
+    (\xa,\yB) -- (\xunb,\yB) -- (\xunb,\yB+0.7)
+    -- (\xpe,\yB+0.7) -- (\xpe,\yB) -- (\xend,\yB);
+  \node[font=\scriptsize, above] at ($(\xunb,\yB+0.7)!0.5!(\xpe,\yB+0.7)$) {$90^\circ$};
+
+  % ---- rx_gate: switches to receive after pulse ----
+  \draw[very thick, teal!70!black]
+    (\xa,\yC) -- (\xpe+0.2,\yC) -- (\xpe+0.2,\yC+0.7)
+    -- (\xend,\yC+0.7);
+  \node[font=\scriptsize, above, anchor=south west] at (\xpe+0.3,\yC+0.7) {T/R $\rightarrow$ دریافت};
+
+  % ---- rx0_en: sampling window for the FID ----
+  \draw[very thick, violet]
+    (\xa,\yD) -- (\xrx,\yD) -- (\xrx,\yD+0.7)
+    -- (\xend,\yD+0.7) -- (\xend,\yD);
+  \node[font=\scriptsize] at ($(\xrx,\yD+0.35)!0.5!(\xend,\yD+0.35)$) {نمونه‌برداری FID \RL{($T_\mathrm{acq}$)}};
+
+  % ---- dead time bracket between pulse end and acq start ----
+  \draw[<->, thick] (\xpe,\yC-0.55) -- (\xrx,\yC-0.55);
+  \node[font=\scriptsize, below] at ($(\xpe,\yC-0.55)!0.5!(\xrx,\yC-0.55)$)
+    {$T_\mathrm{dead}\ (\sim 10\,\mathrm{-}\,50\,\mu s)$};
+
+  % ---- time axis with tick marks ----
+  \draw[->, thick] (-2.2,-1.4) -- (\xend+0.3,-1.4) node[right] {زمان \RL{($\mu s$)}};
+  \foreach \x/\t in {\xa/0, \xunb/100, \xpe/105, \xrx/145, \xend/{$105{+}T_\mathrm{acq}$}}{
+    \draw (\x,-1.3) -- (\x,-1.5);
+    \node[font=\scriptsize, below] at (\x,-1.5) {\t};
+  }
+
+\end{tikzpicture}}
+\end{document}

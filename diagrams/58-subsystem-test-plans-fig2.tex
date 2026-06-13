@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=11cm, height=7.2cm,
+      xlabel={$t$},
+      ylabel={$G$ (میدانِ گرادیان)},
+      xmin=0, xmax=10, ymin=-8, ymax=118,
+      xtick=\empty,
+      ytick={0,10,90,100},
+      yticklabels={$0$,$10\%$,$90\%$,$100\%$},
+      axis lines=left,
+      enlargelimits=false,
+      clip=false,
+    ]
+    % settling band +-(2% shown exaggerated) around 100%
+    \addplot[draw=none, name path=top]   coordinates {(2.4,103)(10,103)};
+    \addplot[draw=none, name path=bot]   coordinates {(2.4,97)(10,97)};
+    \addplot[gray!18] fill between[of=top and bot];
+
+    % command/response curve: rise with small overshoot then settle
+    \addplot[very thick, blue!70!black, smooth] coordinates {
+      (0,0) (0.9,0) (1.1,4) (1.4,10) (1.9,55) (2.25,90) (2.45,105)
+      (2.7,108) (3.0,102) (3.4,99.4) (3.9,100.2) (4.5,99.9) (10,100)
+    };
+
+    % nominal final level
+    \draw[dashed, gray!60] (axis cs:2.4,100) -- (axis cs:10,100);
+
+    % 10%-90% rise-time markers
+    \draw[dashed, gray!50] (axis cs:1.4,0) -- (axis cs:1.4,10);
+    \draw[dashed, gray!50] (axis cs:2.25,0) -- (axis cs:2.25,90);
+    \draw[<->, thick] (axis cs:1.4,-4) -- (axis cs:2.25,-4)
+      node[midway, below, font=\scriptsize] {زمانِ خیز (10--90\%)};
+
+    % slew annotation along the ramp
+    \node[anchor=west, font=\scriptsize, rotate=58] at (axis cs:1.75,42)
+      {نرخِ تغییر $=\Delta G/\Delta t$};
+
+    % overshoot annotation
+    \draw[->, thick] (axis cs:4.3,110) -- (axis cs:2.78,108.5);
+    \node[anchor=west, font=\scriptsize] at (axis cs:4.3,110)
+      {فراجهش $\le 2\%$};
+
+    % settling band annotation
+    \draw[->, thick] (axis cs:7.5,108) -- (axis cs:7.5,103.4);
+    \node[anchor=south, font=\scriptsize] at (axis cs:7.5,108)
+      {باندِ نشست $\pm 0.1\%$};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

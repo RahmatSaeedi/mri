@@ -1,0 +1,84 @@
+% Schematic load map of a two-stage pulse-tube (PT) cryocooler.
+% Each stage temperature rises with the applied heat load; the design
+% operating point must sit below the target temperature for both stages.
+% Top panel: second stage (4 K). Bottom panel: first stage (shield).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ================= TOP PANEL: SECOND STAGE =================
+  \begin{axis}[
+      name=second,
+      width=10cm, height=5.2cm,
+      xlabel={$\dot Q_2$ (W)}, ylabel={$T_2$ (K)},
+      xmin=0, xmax=2.6, ymin=3, ymax=6.2,
+      xtick={0,0.5,1.0,1.5,2.0,2.5},
+      ytick={3,4,5,6},
+      title={نقشهٔ بار کرایوکولر PT دومرحله‌ای -- مرحلهٔ دوم (4 K)},
+      title style={font=\bfseries\footnotesize},
+      grid=both, grid style={gray!18},
+      axis lines=left,
+      every axis plot/.append style={thick},
+    ]
+    % T2 rises with load Q2  (illustrative fit T2 = 3.6 + 0.55 Q2, curved up)
+    \addplot[blue!70!black, very thick, domain=0:2.5, samples=60]
+      {3.6 + 0.42*x + 0.18*x*x};
+    \addlegendentry{مرحلهٔ دوم}
+    % target line at 4.2 K
+    \addplot[red!60!black, dashed, domain=0:2.6] {4.2};
+    \addlegendentry{هدف $\le 4.2$ K}
+    % operating point ~1.2 W
+    \addplot[only marks, mark=*, mark size=2.4pt, black]
+      coordinates {(1.2,4.36)};
+    \node[anchor=west, font=\footnotesize] at (axis cs:1.32,4.7)
+      {نقطهٔ کاری ($\sim$1.2 W, 4.2 K)};
+  \end{axis}
+
+  % ================= BOTTOM PANEL: FIRST STAGE =================
+  \begin{axis}[
+      name=first,
+      at={(second.below south west)}, anchor=above north west,
+      yshift=-1.0cm,
+      width=10cm, height=5.2cm,
+      xlabel={$\dot Q_1$ (W)}, ylabel={$T_1$ (K)},
+      xmin=0, xmax=52, ymin=28, ymax=74,
+      xtick={0,10,20,30,40,50},
+      ytick={30,45,55,70},
+      title={مرحلهٔ اول (سپر)},
+      title style={font=\bfseries\footnotesize},
+      grid=both, grid style={gray!18},
+      axis lines=left,
+      every axis plot/.append style={thick},
+    ]
+    % T1 rises with load Q1 (illustrative fit, curving up)
+    \addplot[teal!70!black, very thick, domain=0:50, samples=60]
+      {33 + 0.22*x + 0.0055*x*x};
+    \addlegendentry{مرحلهٔ اول}
+    % target line at 60 K
+    \addplot[red!60!black, dashed, domain=0:52] {60};
+    \addlegendentry{هدف $< 60$ K}
+    % operating point ~20 W, ~48 K
+    \addplot[only marks, mark=*, mark size=2.4pt, black]
+      coordinates {(20,39.6)};
+    \node[anchor=west, font=\footnotesize] at (axis cs:21,44)
+      {نقطهٔ کاری ($\sim$20 W, 48 K)};
+  \end{axis}
+
+\end{tikzpicture}}
+\end{document}

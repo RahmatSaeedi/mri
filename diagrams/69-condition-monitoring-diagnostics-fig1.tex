@@ -1,0 +1,61 @@
+% Condition-monitoring time domains: from safety-critical interlocks (ms) up to
+% fleet cloud telemetry (hours/days). Four stacked layers with downward data flow.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    layer/.style={rectangle, rounded corners=3pt, draw=black!70, very thick,
+      text width=9.2cm, align=center, inner sep=7pt, minimum height=1.7cm},
+    tag/.style={font=\footnotesize\itshape, align=center, fill=white, inner sep=2pt},
+    flow/.style={->, very thick, black!55}]
+
+  % Layer 1: safety-critical interlocks
+  \node[layer, fill=red!12] (l1)
+    {\textbf{حوزهٔ ایمنی‌بحرانی}\;(ms؛ بی‌درنگ سخت؛ PLC/FPGA)\\[2pt]
+     اینترلاک‌ها: کوئنچ، توقف اضطراری، O$_2$ اتاق\\
+     $\rightarrow$ کنش آنی، مستقل از میزبان (ایمن در خرابی)};
+
+  % Layer 2: local monitoring
+  \node[layer, fill=orange!12, below=1.25cm of l1] (l2)
+    {\textbf{پایش محلی}\;(s؛ بی‌درنگ نرم؛ کنترلر دستگاه)\\[2pt]
+     حسگرها $\rightarrow$ برداشت $\rightarrow$ آستانه/هشدار $\rightarrow$ گزارش محلی (بافر حلقوی)\\
+     He، دماها، فشار، توان بازتابی، خطای گرادیان};
+
+  % Layer 3: logging / time series
+  \node[layer, fill=yellow!18, below=1.25cm of l2] (l3)
+    {\textbf{ثبت گزارش و سری‌زمانی}\;(min؛ سرور سایت)\\[2pt]
+     پایگاه‌دادهٔ سری‌زمانی (TSDB) + رویدادها + گزارش‌های ساخت‌یافته\\
+     داشبورد محلی، روندها، SPC، خودآزمون روزانه};
+
+  % Layer 4: fleet telemetry
+  \node[layer, fill=blue!12, below=1.25cm of l3] (l4)
+    {\textbf{تله‌متری ناوگان}\;(ساعت/روز؛ ابر سازنده)\\[2pt]
+     دریاچهٔ داده + مدل‌های PdM + RUL + هشدار به مرکز خدمات\\
+     مقایسهٔ میان‌دستگاهی، یادگیری ناوگانی، زمان‌بندی قطعات یدکی};
+
+  % downward data-flow arrows with annotations
+  \draw[flow] (l1) -- node[tag,right=1pt]{رویدادها} (l2);
+  \draw[flow] (l2) -- node[tag,right=1pt]{هر چند s/min} (l3);
+  \draw[flow] (l3) -- node[tag,right=1pt]{هر چند min/h (رمزگذاری‌شده)} (l4);
+
+  % increasing latency / decreasing rate axis on the left
+  \draw[->, thick, black!50] ($(l1.north west)+(-0.7,0.1)$) -- ($(l4.south west)+(-0.7,-0.1)$)
+     node[midway, rotate=90, anchor=south, font=\footnotesize] {نهفتگی $\uparrow$\quad نرخ $\downarrow$};
+\end{tikzpicture}}
+\end{document}

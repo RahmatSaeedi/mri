@@ -1,0 +1,62 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \def\R{3.4}  % spoke half-length
+
+  % ---- coverage disk (sampled support) ----
+  \fill[blue!6] (0,0) circle (\R);
+  \draw[blue!30, dashed] (0,0) circle (\R);
+
+  % ---- axes ----
+  \draw[->, thick] (-\R-0.6,0) -- (\R+0.7,0) node[right] {$k_x$};
+  \draw[->, thick] (0,-\R-0.6) -- (0,\R+0.7) node[above] {$k_y$};
+
+  % ---- radial spokes, stepped by the golden angle ----
+  % draw each spoke as a full diameter through the center
+  \foreach \a in {0,22,49,71,98,120,142,164} {
+     \draw[red!70!black, thick] (\a:\R) -- (\a+180:\R);
+  }
+  % highlight one spoke with an arrow + angle
+  \draw[->, red!80!black, very thick] (0,0) -- (22:\R);
+  \draw[red!80!black] (0.9,0) arc (0:22:0.9);
+  \node[red!80!black, font=\scriptsize] at (11:1.3) {$\theta$};
+
+  % ---- oversampled center: dense dots near origin ----
+  \foreach \a in {0,22,49,71,98,120,142,164} {
+     \foreach \r in {0.18,0.42,0.7} {
+        \fill[red!75!black] (\a:\r) circle (1.1pt);
+        \fill[red!75!black] (\a+180:\r) circle (1.1pt);
+     }
+  }
+  \fill[red!85!black] (0,0) circle (2.0pt);
+
+  % center oversampling callout
+  \draw[<-, thick] (0.55,0.55) -- (1.7,1.9)
+     node[anchor=south west, align=left, font=\scriptsize]
+     {بیش‌نمونه‌برداری مرکز\\\RL{(همهٔ پره‌ها از $k=0$ می‌گذرند)}};
+
+  % golden-angle label
+  \node[align=center, font=\scriptsize, anchor=north]
+     at (0,-\R-0.85) {فضای‑کیِ شعاعی \RL{(زاویهٔ طلایی، $\Delta\theta \approx 111.25^\circ$)}};
+
+  % component gradients note
+  \node[red!70!black, font=\scriptsize, anchor=west]
+     at (164:\R) {$G_x=G\cos\theta,\ G_y=G\sin\theta$};
+\end{tikzpicture}}
+\end{document}

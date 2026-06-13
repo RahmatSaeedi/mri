@@ -1,0 +1,66 @@
+% Typical lead-free (SAC305) reflow temperature profile: preheat ramp,
+% soak, ramp-to-peak, reflow above liquidus (217 C), cooling.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=13cm, height=8cm,
+      axis lines=left,
+      xlabel={زمان (s)}, ylabel={دما $({}^{\circ}\mathrm{C})$},
+      xmin=0, xmax=330, ymin=0, ymax=275,
+      ytick={25,150,180,217,250},
+      yticklabels={25,150,180,217,250},
+      xtick={0,60,150,210,270,310},
+      clip=false,
+      every axis x label/.style={at={(ticklabel* cs:1.0)}, anchor=west},
+      every axis y label/.style={at={(ticklabel* cs:1.0)}, anchor=south},
+    ]
+    % liquidus line at 217 C
+    \addplot[densely dashed, red!70!black, thick, domain=0:330, samples=2] {217};
+    \node[red!70!black, anchor=west, font=\scriptsize] at (axis cs:250,228) {لیکوئیدوس 217\,$^\circ$C};
+
+    % reflow profile (piecewise, smoothed)
+    \addplot[very thick, blue!65!black, smooth] coordinates {
+      (0,25) (30,90) (60,150)
+      (110,165) (150,180)
+      (190,217) (215,248) (240,250) (260,235) (270,217)
+      (300,120) (325,40)
+    };
+
+    % phase labels along x-axis
+    \node[font=\scriptsize, align=center] at (axis cs:30,12) {شیب\\ پیش‌گرم};
+    \node[font=\scriptsize, align=center] at (axis cs:105,12) {خیساندن\\ (60--120\,s)};
+    \node[font=\scriptsize, align=center] at (axis cs:180,12) {شیب\\ تا اوج};
+    \node[font=\scriptsize, align=center] at (axis cs:240,12) {ریفلو};
+    \node[font=\scriptsize, align=center] at (axis cs:308,12) {سرمایش};
+
+    % peak annotation
+    \draw[->, thin] (axis cs:250,266) -- (axis cs:235,252);
+    \node[font=\scriptsize, anchor=south, align=center] at (axis cs:255,266)
+      {اوج 240--250\,$^\circ$C، 30--60\,s};
+
+    % soak bracket
+    \draw[<->, thin] (axis cs:60,158) -- (axis cs:150,172);
+
+    % ramp-rate note
+    \node[font=\scriptsize, anchor=west, gray!40!black] at (axis cs:8,250)
+      {شیب/سرمایش $<3\,^\circ$C/s};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,44 @@
+% Soft real-time recon architecture: receiver FPGA -> lock-free ring buffer ->
+% producer thread -> recon thread (SCHED_FIFO, GPU streams) -> display/network thread.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=8mm,
+    blk/.style={rounded corners=3pt, draw=black, thick, align=center, inner sep=6pt, minimum width=5.6cm}]
+
+  \node[blk, fill=blue!12] (fpga) {FPGA گیرنده};
+  \node[blk, fill=cyan!12, below=of fpga] (ring)
+    {بافر حلقویِ بدون‌قفل\\\footnotesize (10/25 GbE یا PCIe)};
+  \node[blk, fill=yellow!18, below=of ring] (prod)
+    {نخ تولیدکننده\\\footnotesize مقیدشده به هستهٔ CPU جداسازی‌شده};
+
+  \node[blk, fill=green!16, below=10mm of prod, minimum width=7.2cm, align=left] (recon)
+    {\textbf{نخ بازسازی} (SCHED\_FIFO، GPU streams)\\[1pt]
+     \footnotesize $\bullet$ بافرهای ازپیش‌تخصیص‌یافته\\
+     \footnotesize $\bullet$ رویدادهای CUDA برای هم‌پوشانی};
+
+  \node[blk, fill=gray!14, below=of recon] (disp)
+    {نخ نمایش / شبکه\\\footnotesize (با اولویت پایین‌تر)};
+
+  \draw[->, very thick] (fpga) -- (ring);
+  \draw[->, very thick] (ring) -- (prod);
+  \draw[->, very thick] (prod) -- (recon);
+  \draw[->, very thick] (recon) -- (disp);
+
+\end{tikzpicture}}
+\end{document}

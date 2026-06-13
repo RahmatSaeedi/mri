@@ -1,0 +1,65 @@
+% Fault tree: TOP event "Reconstruction-origin artifact", decomposed via OR into
+% parallel-imaging calibration, recon parameter/kernel, compute resources.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={rectangle, draw=black!75, very thick, fill=red!14,
+      text width=5.0cm, align=center, inner sep=5pt, minimum height=1.0cm},
+    inter/.style={rectangle, draw=black!70, thick, fill=blue!10,
+      text width=2.8cm, align=center, inner sep=4pt, minimum height=1.1cm},
+    basic/.style={circle, draw=black!70, thick, fill=yellow!22,
+      align=center, inner sep=1pt, minimum size=1.4cm, font=\scriptsize},
+    gate/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt},
+    line/.style={-, thick, black!60}]
+
+  \node[top] (top) {رویداد بالا (TOP):\\ \emph{آرتیفکت با منشأ بازسازی}};
+  \node[gate, below=0.30cm of top] (g0) {OR};
+
+  \node[inter] (cal) at (-5.2,-2.4) {کالیبراسیون موازی نادرست};
+  \node[inter] (par) at ( 0.0,-2.4) {پارامتر / هستهٔ بازسازی نادرست};
+  \node[inter] (cmp) at ( 5.2,-2.4) {منابع محاسباتی (GPU / حافظه)};
+
+  \draw[line] (top) -- (g0);
+  \draw[line] (g0) -- (cal);
+  \draw[line] (g0) -- (par);
+  \draw[line] (g0) -- (cmp);
+
+  \node[gate, below=0.25cm of cal] (g1) {OR};
+  \node[basic] (acs) at (-6.3,-4.9) {ACS ناقص};
+  \node[basic] (sens) at (-4.1,-4.9) {حساسیت کانال};
+  \draw[line] (cal) -- (g1);
+  \draw[line] (g1) -- (acs);
+  \draw[line] (g1) -- (sens);
+
+  \node[gate, below=0.25cm of par] (g2) {OR};
+  \node[basic] (grid) at (-1.1,-4.9) {شبکه‌بندی نادرست};
+  \node[basic] (coef) at (1.1,-4.9) {ضریب DL / بهنجارش};
+  \draw[line] (par) -- (g2);
+  \draw[line] (g2) -- (grid);
+  \draw[line] (g2) -- (coef);
+
+  \node[gate, below=0.25cm of cmp] (g3) {OR};
+  \node[basic] (gpu) at (4.1,-4.9) {کمبود حافظهٔ GPU};
+  \node[basic] (nan) at (6.3,-4.9) {رانش عددی / NaN};
+  \draw[line] (cmp) -- (g3);
+  \draw[line] (g3) -- (gpu);
+  \draw[line] (g3) -- (nan);
+\end{tikzpicture}}
+\end{document}

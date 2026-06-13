@@ -1,0 +1,69 @@
+% Fault tree: safety-critical TOP event "RF thermal burn to patient" built from an
+% AND gate (defense in depth): all three conditions must coexist. Sub-branches use OR.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={rectangle, draw=black!75, very thick, fill=red!18,
+      text width=5.2cm, align=center, inner sep=5pt, minimum height=1.0cm},
+    inter/.style={rectangle, draw=black!70, thick, fill=orange!16,
+      text width=3.0cm, align=center, inner sep=4pt, minimum height=1.2cm},
+    basic/.style={circle, draw=black!70, thick, fill=yellow!22,
+      align=center, inner sep=1pt, minimum size=1.35cm, font=\scriptsize},
+    gateAND/.style={font=\footnotesize\bfseries, fill=red!12, draw=red!50, rounded corners=2pt, inner sep=2pt},
+    gate/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt},
+    line/.style={-, thick, black!60}]
+
+  \node[top] (top) {رویداد بالا (TOP) (ایمنی):\\ \emph{سوختگی گرمایی RF در بیمار}};
+  \node[gateAND, below=0.30cm of top] (g0) {AND (هر سه لازم)};
+
+  \node[inter] (efield) at (-5.0,-2.6) {تمرکز میدان E (حلقهٔ کابل، تشدید)};
+  \node[inter] (skin)   at ( 0.0,-2.6) {تماس مستقیم پوست با هادی / حلقهٔ بسته};
+  \node[inter] (sar)    at ( 5.0,-2.6) {خرابی پایش / SAR یا حدِ SAR نادرست};
+
+  \draw[line] (top) -- (g0);
+  \draw[line] (g0) -- (efield);
+  \draw[line] (g0) -- (skin);
+  \draw[line] (g0) -- (sar);
+
+  % branch 1 OR
+  \node[gate, below=0.25cm of efield] (g1) {OR};
+  \node[basic] (loop) at (-6.1,-5.1) {حلقهٔ کابل};
+  \node[basic] (res)  at (-3.9,-5.1) {تشدید ناخواسته};
+  \draw[line] (efield) -- (g1);
+  \draw[line] (g1) -- (loop);
+  \draw[line] (g1) -- (res);
+
+  % branch 2 OR
+  \node[gate, below=0.25cm of skin] (g2) {OR};
+  \node[basic] (pad) at (-1.1,-5.1) {نبود لایی};
+  \node[basic] (ecg) at ( 1.1,-5.1) {کابل / ECG لخت};
+  \draw[line] (skin) -- (g2);
+  \draw[line] (g2) -- (pad);
+  \draw[line] (g2) -- (ecg);
+
+  % branch 3 OR
+  \node[gate, below=0.25cm of sar] (g3) {OR};
+  \node[basic] (temp) at (3.9,-5.1) {از کارافتادن پایشگر دما};
+  \node[basic] (model) at (6.1,-5.1) {مدل SAR نادرست};
+  \draw[line] (sar) -- (g3);
+  \draw[line] (g3) -- (temp);
+  \draw[line] (g3) -- (model);
+\end{tikzpicture}}
+\end{document}

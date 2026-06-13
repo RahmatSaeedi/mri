@@ -1,0 +1,73 @@
+% Standalone TikZ figure: U-Net architecture schematic.
+% Symmetric encoder-decoder with skip connections; resolution decreases and
+% feature depth increases down the contracting path, then the expanding path
+% restores resolution while skip connections preserve spatial detail.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    blk/.style={draw, thick, rounded corners=2pt, align=center, minimum height=8mm},
+    enc/.style={blk, fill=blue!12},
+    dec/.style={blk, fill=orange!15},
+    bott/.style={blk, fill=red!12},
+    arr/.style={-{Stealth[length=2.6mm]}, thick},
+    skip/.style={-{Stealth[length=2.6mm]}, thick, dashed, green!45!black}]
+
+  % vertical levels (y) and horizontal sides (x): encoder left, decoder right
+  \def\xe{0}     % encoder x
+  \def\xd{6.4}   % decoder x
+  % --- encoder (contracting path) ---
+  \node[enc, minimum width=30mm] (e1) at (\xe, 0)    {Conv\,$\times$2\quad $c_1$};
+  \node[enc, minimum width=24mm] (e2) at (\xe,-1.6)  {Conv\,$\times$2\quad $c_2$};
+  \node[enc, minimum width=18mm] (e3) at (\xe,-3.2)  {Conv\,$\times$2\quad $c_3$};
+  % --- bottleneck ---
+  \node[bott, minimum width=22mm] (bn) at (3.2,-4.7) {گلوگاه};
+  % --- decoder (expanding path) ---
+  \node[dec, minimum width=18mm] (d3) at (\xd,-3.2)  {Conv\,$\times$2};
+  \node[dec, minimum width=24mm] (d2) at (\xd,-1.6)  {Conv\,$\times$2};
+  \node[dec, minimum width=30mm] (d1) at (\xd, 0)    {Conv\,$\times$2};
+
+  % --- input / output ---
+  \node[blk, fill=gray!12, left=10mm of e1, minimum width=16mm] (in) {ورودی\\ $1{\times}H{\times}W$};
+  \node[blk, fill=gray!12, right=10mm of d1, minimum width=16mm] (out) {خروجی\\ نقشهٔ برچسب};
+
+  % input/output arrows
+  \draw[arr] (in) -- (e1);
+  \draw[arr] (d1) -- (out);
+
+  % --- downsampling (pooling) arrows ---
+  \draw[arr] (e1) -- node[left, font=\scriptsize]{ادغام $\downarrow$} (e2);
+  \draw[arr] (e2) -- node[left, font=\scriptsize]{ادغام $\downarrow$} (e3);
+  \draw[arr] (e3.south) |- (bn.west);
+
+  % --- upsampling arrows ---
+  \draw[arr] (bn.east) -| (d3.south);
+  \draw[arr] (d3) -- node[right, font=\scriptsize]{بالابرداری $\uparrow$} (d2);
+  \draw[arr] (d2) -- node[right, font=\scriptsize]{بالابرداری $\uparrow$} (d1);
+
+  % --- skip connections (concat) ---
+  \draw[skip] (e1.east) -- node[above, font=\scriptsize, black]{اتصال پرشی / الحاق} (d1.west);
+  \draw[skip] (e2.east) -- node[above, font=\scriptsize, black]{اتصال پرشی} (d2.west);
+  \draw[skip] (e3.east) -- node[above, font=\scriptsize, black]{اتصال پرشی} (d3.west);
+
+  % side labels
+  \node[font=\footnotesize\itshape, rotate=90] at (-2.9,-1.6) {رمزگذار (بافتار)};
+  \node[font=\footnotesize\itshape, rotate=90] at (9.3,-1.6) {رمزگشا (مکان‌یابی)};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,55 @@
+% ROI layout for ghost ratio measurement (phase-encode vertical).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % field of view (air) outer box
+  \draw[thick, fill=gray!5] (0,0) rectangle (7,7.6);
+
+  % ghost ROI bands (air), top and bottom along phase-encode (vertical)
+  \fill[orange!25] (0.6,6.1) rectangle (6.4,7.1);
+  \node[font=\footnotesize] at (3.5,6.6) {ROI شبح (هوا)};
+  \node[right, font=\scriptsize, text=orange!60!black] at (6.55,6.6) {$S_{\mathrm{ghost}}$};
+
+  \fill[orange!25] (0.6,1.0) rectangle (6.4,2.0);
+  \node[font=\footnotesize] at (3.5,1.5) {ghost ROI (air)};
+  \node[right, font=\scriptsize, text=orange!60!black] at (6.55,1.5) {$S_{\mathrm{ghost}}$};
+
+  % main phantom in the centre
+  \fill[blue!18] (1.7,2.5) rectangle (5.3,5.6);
+  \draw[thick, blue!50!black] (1.7,2.5) rectangle (5.3,5.6);
+  \node[font=\footnotesize, align=center] at (3.5,4.05) {فانتوم اصلی\\ (ROI مرکزی)};
+  \node[right, font=\scriptsize, text=blue!50!black] at (5.45,4.05) {$S_{\mathrm{signal}}$};
+
+  % pure-noise corner ROI
+  \fill[green!25] (0.35,0.35) rectangle (1.55,1.0);
+  \node[right, font=\scriptsize, align=left] at (1.6,0.67)
+    {گوشه: نوفهٔ خالص\\ (برای تفریق نوفه)};
+
+  % phase-encode axis arrow
+  \draw[<->, thick] (7.55,1.0) -- (7.55,7.1)
+        node[midway, right, rotate=-90, anchor=south, font=\footnotesize]
+        {کدگذاری فاز};
+
+  % title
+  \node[font=\small\bfseries] at (3.5,8.0)
+    {چیدمان ROI نسبت شبح (کدگذاری فاز عمودی)};
+
+\end{tikzpicture}}
+\end{document}

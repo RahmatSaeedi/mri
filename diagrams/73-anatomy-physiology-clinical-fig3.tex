@@ -1,0 +1,65 @@
+% Simplified brain schematic: cortex (GM), white matter, ventricles (CSF), basal ganglia, brainstem/cerebellum, spinal cord.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    lbl/.style={align=left, font=\footnotesize},
+    call/.style={->, gray!60!black, shorten >=1pt}]
+
+  % --- nested anatomy (concentric rounded regions) ---
+  % cortex / gray matter (outer shell)
+  \fill[gray!35, rounded corners=22pt] (0,0) rectangle (7.2,4.2);
+  % white matter
+  \fill[yellow!25, rounded corners=16pt] (0.55,0.55) rectangle (6.65,3.65);
+  % ventricles (CSF)
+  \fill[cyan!45, rounded corners=6pt] (2.0,1.9) rectangle (3.3,3.0);
+  \fill[cyan!45, rounded corners=6pt] (3.9,1.9) rectangle (5.2,3.0);
+  % basal ganglia (iron-rich)
+  \fill[orange!55, ellipse] (2.55,1.25) ellipse (0.55 and 0.32);
+  \fill[orange!55, ellipse] (4.65,1.25) ellipse (0.55 and 0.32);
+
+  % brainstem / cerebellum band
+  \fill[gray!20, rounded corners=6pt] (0.4,-1.4) rectangle (6.8,-0.2);
+  \node[font=\footnotesize] at (3.6,-0.8) {ساقهٔ مغز / مخچه};
+
+  % spinal cord
+  \fill[gray!30, rounded corners=4pt] (3.25,-3.0) rectangle (3.95,-1.5);
+  % CSF sheath around cord
+  \draw[cyan!55, line width=2pt, rounded corners=4pt] (3.1,-3.0) rectangle (4.1,-1.45);
+
+  % in-figure region tags
+  \node[font=\footnotesize, gray!30!black] at (3.6,3.95) {قشر (GM)};
+  \node[font=\footnotesize] at (1.5,3.2) {WM};
+  \node[font=\footnotesize, cyan!25!black] at (2.65,2.45) {بطن};
+  \node[font=\footnotesize, cyan!25!black] at (4.55,2.45) {بطن};
+
+  % --- callout labels on the right ---
+  \node[lbl] (cgm) at (10.0,3.9) {قشر (GM): نورون‌ها؛\\ $T_1/T_2$ متوسط};
+  \node[lbl] (cwm) at (10.0,2.4) {مادهٔ سفید (میلین):\\ $T_1/T_2$ کوتاه‌تر};
+  \node[lbl] (ccsf) at (10.0,0.9) {CSF: $T_1/T_2$ بسیار بلند};
+  \node[lbl] (cbg) at (10.0,-0.7) {عقده‌های قاعده‌ای: آهن\\ $\Rightarrow$ $T_2^{*}$ کوتاه‌تر};
+  \node[lbl] (ccord) at (10.0,-2.4) {نخاع درون کانال،\\ غوطه‌ور در CSF};
+
+  \draw[call] (cgm.west) -- (5.9,3.9);
+  \draw[call] (cwm.west) -- (6.4,2.4);
+  \draw[call] (ccsf.west) -- (5.2,2.4);
+  \draw[call] (cbg.west) -- (5.2,1.25);
+  \draw[call] (ccord.west) -- (4.1,-2.3);
+
+\end{tikzpicture}}
+\end{document}

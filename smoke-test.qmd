@@ -1,0 +1,78 @@
+---
+title: "آزمونِ پیکربندیِ نگارش"
+subtitle: "فارسیِ راست‌به‌چپ + ریاضی + کد + نمودار برداری"
+format:
+  html:
+    lang: fa
+    dir: rtl
+    theme: [cosmo, theme/custom.scss]
+    toc: true
+    toc-title: "فهرست"
+  pdf:
+    pdf-engine: lualatex
+    keep-tex: true
+    include-in-header: theme/preamble.tex
+filters:
+  - theme/ltr.lua
+---
+
+## هدف این سند {#sec-purpose}
+
+این سندِ آزمایشی پرخطرترین بخشِ زنجیرهٔ ابزار را می‌سنجد: آیا متنِ فارسیِ
+**راست‌به‌چپ** در کنارِ جزایرِ **چپ‌به‌راستِ** ریاضی، کد و واژگانِ انگلیسی،
+هم در خروجیِ وب و هم در خروجیِ چاپیِ PDF درست نمایش داده می‌شود یا نه. اگر این
+صفحه در هر دو قالب درست دیده شود، می‌توانیم با اطمینان نگارشِ کتاب را آغاز کنیم.
+
+تصویربرداری تشدید مغناطیسی (به انگلیسی [Magnetic Resonance Imaging]{.ltr}) بر
+هم‌ترازیِ اسپینِ هسته‌ها در میدانِ مغناطیسیِ ایستا تکیه دارد. نمادِ میدانِ ایستا
+را با [$B_0$]{.ltr} و ثابتِ ژیرومغناطیسی را با [$\gamma$]{.ltr} نشان می‌دهیم.
+
+## ریاضیات (باید چپ‌به‌راست بماند) {#sec-math}
+
+بسامدِ لارمور به‌صورتِ درون‌خطی: $\omega_0 = \gamma B_0$ و عددِ نمونه مانند
+$1.5\,\text{T}$ نباید آینه‌ای شود.
+
+معادلهٔ سیگنالِ MR (نمایشِ مستقل):
+
+$$
+s(t) = \int_{\mathbb{R}^3} \rho(\mathbf{r})\,
+        e^{-\,i\,2\pi\,\mathbf{k}(t)\cdot\mathbf{r}}\; d\mathbf{r}
+$$ {#eq-signal}
+
+که در آن $\mathbf{k}(t) = \dfrac{\gamma}{2\pi}\displaystyle\int_0^t \mathbf{G}(\tau)\,d\tau$.
+
+## کدِ نمونه (باید چپ‌به‌راست بماند) {#sec-code}
+
+```python
+import numpy as np
+
+def larmor_frequency(B0, gamma=42.577e6):
+    """Larmor frequency in Hz for a field B0 (tesla)."""
+    return gamma * B0
+
+print(larmor_frequency(1.5))   # ~63.9 MHz at 1.5 T
+```
+
+## نمودارِ برداری {#sec-figure}
+
+نمودارِ زیر پیش‌نشستِ بردارِ مغناطش $\mathbf{M}$ حولِ میدانِ $B_0$ را نشان می‌دهد.
+این تصویر از یکی منبعِ [TikZ]{.ltr} ساخته شده و برای وب به [SVG]{.ltr} و برای
+چاپ به [PDF]{.ltr} تبدیل می‌شود.
+
+::: {.content-visible when-format="html"}
+![پیش‌نشستِ لارمور (خروجیِ SVG)](diagrams/sample-precession.svg){width=45%}
+:::
+
+::: {.content-visible when-format="pdf"}
+![پیش‌نشستِ لارمور (خروجیِ PDF)](diagrams/sample-precession.pdf){width=45%}
+:::
+
+## جدول {#sec-table}
+
+| کمیت | نماد | مقدارِ نمونه |
+|------|:----:|:------------:|
+| شدتِ میدان | [$B_0$]{.ltr} | [1.5 T]{.ltr} |
+| بسامدِ لارمور | [$f_0$]{.ltr} | [63.9 MHz]{.ltr} |
+| ثابتِ ژیرومغناطیسی | [$\gamma/2\pi$]{.ltr} | [42.58 MHz/T]{.ltr} |
+
+: مقادیرِ نمونه برای پروتونِ هیدروژن {#tbl-values}

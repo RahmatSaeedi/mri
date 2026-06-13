@@ -1,0 +1,80 @@
+% Chapter 20 - Fig 2: Fringe field, unshielded vs active-shielded (axial view).
+% Left: bare magnet, dominant dipole term ~1/r^3, 5 G line reaches ~+-8 m.
+% Right: active shield (opposing outer coils) cancels the net dipole; field
+%        now falls as the quadrupole term ~1/r^5 and the 5 G line collapses to
+%        ~+-2.5 m (axial). Drawn as nested iso-field contours around the bore.
+% Built to cropped PDF (print) and SVG (web/epub) by the Makefile in this directory.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    magnet/.style={draw=black, very thick, fill=gray!20, rounded corners=2pt},
+  ]
+
+  % =====================================================================
+  % Panel (a): unshielded magnet -- sprawling dipole fringe field
+  % =====================================================================
+  \begin{scope}
+    \node[font=\bfseries] at (0,3.6) {(الف) بدون پوشش $\;\sim 1/r^3$};
+
+    % nested iso-field contours (dashed), 5 G outermost and largest
+    \draw[densely dashed, blue!40] (0,0) ellipse (3.7 and 2.6);
+    \draw[densely dashed, blue!55] (0,0) ellipse (2.6 and 1.85);
+    \draw[densely dashed, blue!70!black] (0,0) ellipse (1.7 and 1.25);
+
+    % magnet bore (cross-section), B0 along horizontal axis
+    \node[magnet, minimum width=1.4cm, minimum height=0.8cm] (m) at (0,0) {آهنربا};
+    \draw[->, thick] (-0.9,0) -- (0.9,0) node[above, pos=0.05] {};
+    \node[font=\footnotesize] at (0,-0.55) {$B_0$};
+
+    % 5 G label + extent arrow
+    \node[blue!40!black, font=\footnotesize] at (0,2.95) {خط 5 G};
+    \draw[<->, blue!40!black] (-3.7,-3.0) -- (3.7,-3.0)
+      node[midway, fill=white, font=\footnotesize] {$\approx\pm 8$ m (محوری)};
+  \end{scope}
+
+  % =====================================================================
+  % Panel (b): actively shielded magnet -- collapsed fringe field
+  % =====================================================================
+  \begin{scope}[xshift=9.2cm]
+    \node[font=\bfseries] at (0,3.6) {(ب) پوشش فعال $\;\sim 1/r^5$};
+
+    % compact nested iso-field contours
+    \draw[densely dashed, blue!40] (0,0) ellipse (1.55 and 1.15);
+    \draw[densely dashed, blue!55] (0,0) ellipse (1.1 and 0.82);
+    \draw[densely dashed, blue!70!black] (0,0) ellipse (0.78 and 0.6);
+
+    % main magnet + opposing outer shield coils (counter-current)
+    \node[magnet, minimum width=1.4cm, minimum height=0.8cm] (m2) at (0,0) {آهنربا};
+    \draw[<->, thick] (-0.9,0) -- (0.9,0);
+    \node[font=\footnotesize] at (0,-0.5) {$B_0$};
+    % shield coil markers (opposite moment -m)
+    \node[draw, circle, fill=red!15, inner sep=1pt, font=\scriptsize] at (-1.15,0.0) {$-m$};
+    \node[draw, circle, fill=red!15, inner sep=1pt, font=\scriptsize] at (1.15,0.0) {$-m$};
+
+    \node[blue!40!black, font=\footnotesize] at (0,1.55) {خط 5 G};
+    \draw[<->, blue!40!black] (-2.5,-3.0) -- (2.5,-3.0)
+      node[midway, fill=white, font=\footnotesize] {$\approx\pm 2.5$ m};
+
+    % cancellation note
+    \node[align=center, font=\footnotesize, text=red!60!black] at (0,2.55)
+      {دوقطبی خالص $m_1-m_2\to 0$\\ (دوقطبی حذف‌شده)};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

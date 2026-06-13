@@ -1,0 +1,60 @@
+% Secant-to-tangent: the derivative as the limit of the secant slope as h -> 0.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=11cm, height=8cm,
+      axis lines=left,
+      xlabel={$x$}, ylabel={$y=f(x)$},
+      xtick={2,3.4}, xticklabels={$a$,$a+h$},
+      ytick=\empty,
+      xmin=0.4, xmax=5.2, ymin=0, ymax=5.2,
+      clip=false,
+      every axis x label/.style={at={(ticklabel* cs:1.0)}, anchor=west},
+      every axis y label/.style={at={(ticklabel* cs:1.0)}, anchor=south},
+    ]
+    % the curve f(x) = 0.28 x^2 + 0.4
+    \addplot[domain=0.6:5.0, samples=80, very thick, blue!65!black] {0.28*x^2 + 0.4};
+    \node[blue!65!black] at (axis cs:4.7,4.6) {$f(x)$};
+
+    % points on the curve
+    \coordinate (A) at (axis cs:2, {0.28*2^2+0.4});      % (a, f(a))
+    \coordinate (B) at (axis cs:3.4, {0.28*3.4^2+0.4});  % (a+h, f(a+h))
+
+    % secant line through A and B, extended
+    \addplot[domain=1.0:4.4, samples=2, thick, red] {0.952*(x-2) + 1.52};
+    \node[red] at (axis cs:1.45,0.55) {قاطع \RL{(شیب $=$ $\frac{f(a+h)-f(a)}{h}$)}};
+
+    % tangent line at A: f'(a) = 0.56*a = 1.12
+    \addplot[domain=0.8:3.6, samples=2, thick, green!45!black, densely dashed] {1.12*(x-2) + 1.52};
+    \node[green!45!black, align=center] at (axis cs:3.95,2.0) {مماس\\\RL{(شیب $=$ $f'(a)$)}};
+
+    % marker dots
+    \fill (A) circle (2pt);
+    \fill (B) circle (2pt);
+
+    % drop lines for a and a+h
+    \draw[gray, densely dotted] (A) -- (axis cs:2,0);
+    \draw[gray, densely dotted] (B) -- (axis cs:3.4,0);
+
+    % h bracket on the x-axis
+    \draw[<->] (axis cs:2,-0.45) -- (axis cs:3.4,-0.45) node[midway,below] {$h \to 0$};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

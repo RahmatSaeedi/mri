@@ -1,0 +1,55 @@
+% Structured diagnostic flowchart: from reported symptom, always handle safety first,
+% then scope, recon-vs-acquisition test, differential test, swap-test confirm, log repair entry.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=0.9cm,
+    start/.style={rectangle, rounded corners=8pt, draw=black!70, thick, fill=black!8,
+      text width=4.6cm, align=center, inner sep=4pt, minimum height=0.8cm},
+    proc/.style={rectangle, draw=black!70, thick, fill=blue!9,
+      text width=6.6cm, align=center, inner sep=4pt, minimum height=0.9cm},
+    dec/.style={diamond, aspect=2.6, draw=black!70, thick, fill=orange!14,
+      text width=4.8cm, align=center, inner sep=0pt, font=\footnotesize},
+    safety/.style={rectangle, rounded corners=3pt, draw=red!60, very thick, fill=red!12,
+      text width=4.6cm, align=center, inner sep=4pt, font=\footnotesize},
+    flow/.style={->, very thick, black!60},
+    lbl/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt}]
+
+  \node[start] (s0) {شروع: علامتِ گزارش‌شده};
+  \node[dec, below=of s0] (d1) {(۱) آیا \textbf{خطر ایمنی} است؟ (فشار/دمای He، بوی سوختگی، گرمای بیمار، صدای غیرعادی آهنربا)};
+  \node[safety, right=2.0cm of d1] (safe) {اقدام ایمنی فوری (فصل ۶۵/۶۶)؛ توقف؛ هشدار};
+  \node[dec, below=1.5cm of d1] (d2) {(۲) تعیین \textbf{دامنهٔ} علامت: یک پروتکل یا همه؟ یک سیم‌پیچ/کانال یا کل سامانه؟ متناوب یا دائمی؟};
+  \node[dec, below=1.5cm of d2] (d3) {(۳) آزمونِ \textbf{بازسازی در برابر اکتساب}: آیا آرتیفکت با بازسازیِ دوبارهٔ دادهٔ خام تغییر می‌کند؟};
+  \node[proc, right=2.0cm of d3] (recon) {زنجیرهٔ بازسازی (sec-70-recon)};
+  \node[proc, below=1.5cm of d3] (p4) {(۴) جدولِ علامت$\rightarrow$تصمیمِ زیرسامانهٔ مشکوک را باز کنید؛ علت‌ها را به ترتیبِ احتمال آزمایش کنید (آزمون افتراقی)};
+  \node[dec, below=1.3cm of p4] (d5) {(۵) تأیید با \textbf{آزمون تعویض}: قطعهٔ مشکوک را با قطعهٔ سالم جایگزین کنید --- علامت رفع شد؟};
+  \node[proc, below=1.5cm of d5] (p6) {(۶) ثبتِ سابقهٔ تعمیر \RL{(علامت$\rightarrow$علت$\rightarrow$آزمون$\rightarrow$رفع)} $\rightarrow$ پایگاه دانشِ فصل ۷۱};
+
+  \draw[flow] (s0) -- (d1);
+  \draw[flow] (d1) -- node[lbl]{بله} (safe);
+  \draw[flow] (d1) -- node[lbl,left]{خیر} (d2);
+  \draw[flow] (d2) -- (d3);
+  \draw[flow] (d3) -- node[lbl]{بله} (recon);
+  \draw[flow] (d3) -- node[lbl,left]{خیر} (p4);
+  \draw[flow] (p4) -- (d5);
+  \draw[flow] (d5) -- node[lbl,left]{بله: علت تأیید شد} (p6);
+  % no-loop back to step 4
+  \draw[flow] (d5.east) -- ++(3.0,0) node[lbl,above,pos=0.5]{خیر: مشکوک بعدی} |- (p4.east);
+\end{tikzpicture}}
+\end{document}

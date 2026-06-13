@@ -1,0 +1,46 @@
+% Decision tree (GHTF/IMDRF): when must a process be validated rather than
+% verified? If output cannot be fully/economically verified -> special process
+% requiring IQ/OQ/PQ validation.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  dec/.style={draw, diamond, aspect=2.2, fill=blue!10, align=center,
+              inner sep=1pt, text width=40mm, font=\footnotesize},
+  term/.style={draw, rounded corners=2pt, align=center, text width=40mm,
+               minimum height=12mm, font=\footnotesize},
+  lbl/.style={font=\footnotesize\sffamily, fill=white, inner sep=1pt}]
+
+  \node[dec] (q1) {آیا خروجی فرایند را می‌توان به‌طور کامل و مقرون‌به‌صرفه
+                   با بازرسیِ بعدی راستی‌آزمایی کرد؟};
+
+  \node[dec, below left=22mm and 8mm of q1] (q2)
+        {آیا بازرسی به‌تنهایی کافی است، یا راستی‌آزمایی مقرون‌به‌صرفه است؟};
+  \node[term, fill=red!12, below right=22mm and 8mm of q1] (special)
+        {\textbf{فرایند ویژه:}\\ باید \emph{صحه‌گذاری} شود\\ \LR{(IQ $\to$ OQ $\to$ PQ)}};
+
+  \node[term, fill=green!12, below=22mm of q2] (verify)
+        {\emph{راستی‌آزماییِ} فرایند کافی است\\ (با پایش و کنترلِ مستمر)};
+
+  % edges
+  \draw[->, thick] (q1) -| node[lbl, pos=0.25]{بله} (q2);
+  \draw[->, thick] (q1) -| node[lbl, pos=0.25]{خیر} (special);
+  \draw[->, thick] (q2) -- node[lbl]{راستی‌آزمایی / بازرسی} (verify);
+\end{tikzpicture}}
+\end{document}

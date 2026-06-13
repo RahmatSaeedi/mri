@@ -1,0 +1,49 @@
+% 5 Whys for a gradient over-temperature stop, ending at the (process) root cause.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    whystep/.style={rectangle, rounded corners=3pt, draw=black!70, very thick,
+      fill=yellow!14, text width=9.4cm, align=left, inner sep=6pt, minimum height=1cm},
+    sym/.style={rectangle, rounded corners=3pt, draw=black!70, very thick,
+      fill=orange!18, text width=9.4cm, align=left, inner sep=6pt, minimum height=1cm},
+    root/.style={rectangle, rounded corners=3pt, draw=red!60!black, very thick,
+      fill=red!12, text width=9.4cm, align=left, inner sep=6pt, minimum height=1cm},
+    why/.style={->, very thick, black!55}]
+
+  \node[sym] (s) {\textbf{نشانه:} اسکن EPI با هشدار دمای بیش‌ازحدِ گرادیان متوقف شد};
+  \node[whystep, below=0.85cm of s] (w1) {چرا؟ $\rightarrow$ دمای سیم‌پیچ گرادیان از آستانه گذشت};
+  \node[whystep, below=0.7cm of w1] (w2) {چرا؟ $\rightarrow$ خنک‌کاری ناکافی (دبیِ پایینِ آب)};
+  \node[whystep, below=0.7cm of w2] (w3) {چرا؟ $\rightarrow$ فشار خروجی پمپ افت کرده بود};
+  \node[whystep, below=0.7cm of w3] (w4) {چرا؟ $\rightarrow$ فیلتر آب گرفته بود};
+  \node[root, below=0.7cm of w4] (w5)
+    {چرا؟ $\rightarrow$ فیلتر در برنامهٔ تعویض دوره‌ای نبود\\
+     \textbf{$\Leftarrow$ علت ریشه‌ای (فرایندی)}};
+
+  \draw[why] (s)  -- (w1);
+  \draw[why] (w1) -- (w2);
+  \draw[why] (w2) -- (w3);
+  \draw[why] (w3) -- (w4);
+  \draw[why] (w4) -- (w5);
+
+  % corrective action note
+  \node[below=0.7cm of w5, text width=9.4cm, align=left, font=\footnotesize\itshape, black!70]
+    {اقدام اصلاحی: افزودن فیلتر به PM + هشدار روند دبی (CUSUM).};
+\end{tikzpicture}}
+\end{document}

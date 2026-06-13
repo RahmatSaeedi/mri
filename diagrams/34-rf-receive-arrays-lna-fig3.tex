@@ -1,0 +1,67 @@
+% Preamplifier decoupling: an L-match network transforms the LNA's near-short
+% input into a large series impedance in the loop, choking the loop current.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % --- Resonant loop block ---
+  \node[draw, rounded corners=2pt, minimum width=24mm, minimum height=16mm, fill=blue!5] (loop) at (0,0)
+       {\shortstack{$L$\quad $R$\\[2pt]$C_t$}};
+  \node[above=1mm of loop, font=\footnotesize] {حلقهٔ تشدید};
+
+  % --- Series inductor L_m (match network) ---
+  \node[draw, rounded corners=2pt, minimum width=16mm, minimum height=16mm, fill=orange!8] (lm) at (5.0,0) {$L_m$};
+  \node[above=1mm of lm, font=\footnotesize, align=center] {شبکهٔ\\تطبیقِ L};
+
+  % --- LNA ---
+  \node[draw, rounded corners=2pt, minimum width=18mm, minimum height=16mm, fill=green!7] (lna) at (8.6,0) {LNA};
+  \node[above=1mm of lna, font=\footnotesize] {};
+
+  % --- Series connection with shunt capacitor C_m ---
+  % top wire loop -> Cm node -> Lm
+  \coordinate (a) at ($(loop.east)+(0,0.4)$);
+  \coordinate (cm) at (3.0,0.4);
+  \draw[thick] (a) -- (cm);
+  % shunt capacitor C_m to ground rail
+  \draw[thick] (cm) -- (3.0,0.0);
+  \draw[thick] (2.78,0.0) -- (3.22,0.0);
+  \draw[thick] (2.78,-0.18) -- (3.22,-0.18);
+  \node[right, font=\footnotesize] at (3.25,-0.05) {$C_m$};
+  \draw[thick] (cm) -- ($(lm.west)+(0,0.4)$);
+  % bottom return wire
+  \draw[thick] ($(loop.east)+(0,-0.4)$) -- (3.0,-0.4) -- (3.0,-0.18);
+  \draw[thick] ($(lm.west)+(0,-0.4)$) -- (3.0,-0.4);
+
+  % Lm -> LNA
+  \draw[thick] ($(lm.east)+(0,0.4)$) -- ($(lna.west)+(0,0.4)$);
+  \draw[thick] ($(lm.east)+(0,-0.4)$) -- ($(lna.west)+(0,-0.4)$);
+  \fill (lna.west |- 0,0.4) circle (1.2pt);
+  \node[right=0.5mm of lna, font=\footnotesize, align=left] {ورودی\\$Z_{\text{pa}}\approx 0$};
+
+  % --- Result annotations ---
+  \node[draw, rounded corners=2pt, align=left, fill=black!3, font=\footnotesize, text width=86mm]
+       at (4.3,-2.4)
+       {از منظرِ حلقه: $Z_{\text{block}}=(\omega L_m)^2/Z_{\text{pa}} \to \infty
+        \;\Rightarrow\; I_{\text{loop}}\approx 0$ (واهم‌بندی)\\[3pt]
+        از منظرِ LNA: امپدانسِ منبع $=Z_{\text{opt}} \;\Rightarrow\;$ کمینهٔ NF};
+
+\end{tikzpicture}}
+\end{document}

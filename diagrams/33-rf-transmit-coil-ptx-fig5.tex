@@ -1,0 +1,78 @@
+% Active detuning circuit: a parallel LC trap (detuning inductor L_d in series
+% with a PIN diode, placed across the coil capacitor C). With the diode ON the
+% trap resonates at f0, presents high Z, and detunes the coil. DC bias reaches
+% the diode through an RF choke (passes DC, blocks RF).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ----- coil loop frame -----
+  \draw[thick] (0,2.6) -- (0,3.3) -- (6.6,3.3) -- (6.6,2.6);   % top
+  \draw[thick] (0,0.4) -- (6.6,0.4);                            % bottom rail
+  \draw[thick] (6.6,2.6) -- (6.6,0.4);                          % right return
+  \node[font=\footnotesize] at (3.3,3.55) {حلقهٔ سیم‌پیچ (میله)};
+  \node[font=\footnotesize,anchor=east] at (-0.1,2.6) {به سیم‌پیچ};
+  \node[font=\footnotesize,anchor=west] at (6.7,2.6) {به سیم‌پیچ};
+
+  % ----- coil capacitor C : left vertical branch -----
+  \draw[thick] (0,2.6) -- (0,1.66);
+  \draw[thick] (-0.22,1.66) -- (0.22,1.66);
+  \draw[thick] (-0.22,1.50) -- (0.22,1.50);
+  \draw[thick] (0,1.50) -- (0,0.4);
+  \node[font=\footnotesize,anchor=east] at (-0.25,1.58) {$C$ (خازن سیم‌پیچ)};
+
+  % ----- detuning branch (L_d + PIN diode) in parallel with C, at x=2.2 -----
+  \def\bx{2.2}
+  \draw[thick] (0,2.6) -- (\bx,2.6);
+  \draw[thick] (0,0.4) -- (\bx,0.4);
+  % inductor L_d (vertical coil) y: 2.6 -> 1.85
+  \draw[thick] (\bx,2.6) -- (\bx,2.50);
+  \draw[thick,decorate,decoration={coil,aspect=0.5,segment length=4.5pt,amplitude=4.5pt}]
+     (\bx,2.50) -- (\bx,1.95);
+  \draw[thick] (\bx,1.95) -- (\bx,1.85);
+  \node[font=\footnotesize,anchor=east] at (\bx-0.22,2.22) {$L_d$};
+  % bias-tap node between L_d and diode
+  \coordinate (bias) at (\bx,1.85);
+  \fill (bias) circle (1.2pt);
+  % PIN diode (triangle down + bar)
+  \draw[thick] (\bx,1.85) -- (\bx,1.65);
+  \draw[thick, fill=black!8] (\bx-0.2,1.65) -- (\bx+0.2,1.65) -- (\bx,1.30) -- cycle;
+  \draw[thick] (\bx-0.2,1.30) -- (\bx+0.2,1.30);
+  \draw[thick] (\bx,1.30) -- (\bx,0.4);
+  \node[font=\footnotesize,anchor=east] at (\bx-0.28,1.48) {دیود PIN};
+
+  % ----- trap annotation: high, clearly above the choke line -----
+  \node[font=\footnotesize, blue!60!black, align=center] at (4.7,2.95)
+    {تلهٔ LC موازی:\ \ $L_d=\frac{1}{(2\pi f_0)^2\,C}$};
+  \draw[blue!60!black, ->] (3.55,2.78) -- (\bx+0.05,2.45);
+
+  % ----- DC bias path through RF choke (horizontal from bias node) -----
+  \def\chy{1.85}
+  \draw[thick] (bias) -- (\bx+0.85,\chy);
+  \coordinate (rfL) at (\bx+0.85,\chy);
+  \draw[thick,decorate,decoration={coil,aspect=0.5,segment length=4.5pt,amplitude=4.5pt}]
+     (rfL) -- (\bx+1.75,\chy);
+  \coordinate (rfR) at (\bx+1.75,\chy);
+  \draw[thick] (rfR) -- (\bx+2.5,\chy);
+  \node[font=\footnotesize,below] at (\bx+1.30,\chy-0.16) {چوک RF};
+  \node[font=\footnotesize,anchor=west] at (\bx+2.55,\chy) {بایاس DC};
+  \node[font=\footnotesize,anchor=west,gray] at (\bx+2.55,\chy-0.34) {\RL{(ON $\to$ ناهماهنگی)}};
+
+\end{tikzpicture}}
+\end{document}

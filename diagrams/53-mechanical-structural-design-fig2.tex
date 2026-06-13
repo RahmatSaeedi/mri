@@ -1,0 +1,83 @@
+% Side view of the cantilever patient table fully inside the bore.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % --- bore outline (light) ---
+  \fill[blue!4] (-0.6,-0.2) rectangle (9.2,2.2);
+  \draw[gray!40, thick] (0.0,2.2) -- (9.2,2.2);
+  \node[gray!55, anchor=east, font=\scriptsize] at (9.2,2.05) {دیوارهٔ محفظه};
+
+  % --- support column / rail at the left ---
+  \fill[gray!25] (0.0,-0.1) rectangle (1.2,2.0);
+  \draw[thick] (0.0,-0.1) rectangle (1.2,2.0);
+  \node[align=center, font=\scriptsize] at (0.6,1.0) {ستون\\(ریل)};
+
+  % --- table top: a cantilever beam, drawn slightly deflected at the free end ---
+  \def\y0{1.55}    % root height
+  % straight part anchored at column top, free tip droops by delta
+  \draw[very thick, fill=orange!18]
+        (1.2,\y0) -- (8.6,{\y0-0.18})
+        -- (8.6,{\y0-0.18-0.22}) -- (1.2,{\y0-0.22}) -- cycle;
+  \node[font=\scriptsize] at (5.0,\y0+0.18) {رویهٔ تخت};
+
+  % undeflected reference (dashed)
+  \draw[densely dashed, gray] (1.2,\y0) -- (8.8,\y0);
+
+  % --- support / fixed end hatching at the root ---
+  \foreach \i in {0,...,7}{
+     \draw[gray] (1.2,{ -0.1 + 0.27*\i }) -- (1.0,{ -0.1 + 0.27*\i + 0.13});
+  }
+
+  % --- cantilever length dimension ---
+  \draw[<->, thick] (1.2,0.6) -- (8.6,0.6) node[midway, fill=blue!4, inner sep=1pt]{$L_{\mathrm{cant}}$};
+
+  % --- support label ---
+  \node[anchor=south, font=\scriptsize] at (1.2,2.05) {تکیه‌گاه / ریل};
+  \node[anchor=south, font=\scriptsize] at (8.5,2.05) {نوک آزاد (نزدیک ایزوسنتر)};
+  \draw[->] (1.2,2.0) -- (1.2,\y0+0.02);
+  \draw[->] (8.5,2.0) -- (8.6,{\y0-0.18+0.02});
+
+  % --- patient load (distributed) arrows pointing down onto table ---
+  \foreach \x in {2.0,3.0,4.0,5.0,6.0,7.0,8.0}{
+     \draw[->, blue!60!black] (\x,\y0+0.62) -- (\x,{\y0+0.05-0.024*(\x-1.2)});
+  }
+  \node[blue!60!black, font=\scriptsize] at (5.0,\y0+0.78) {بار بیمار $w(x)$};
+
+  % --- tip deflection delta_tip ---
+  \draw[<->, red!70!black] (8.65,\y0) -- (8.65,{\y0-0.18});
+  \node[red!70!black, anchor=west, font=\scriptsize] at (8.7,{\y0-0.09}) {$\delta_{\mathrm{tip}}$};
+
+  % --- sliding rail under the table near the column ---
+  \draw[thick, gray!70] (1.2,{\y0-0.30}) -- (3.0,{\y0-0.30});
+  \node[gray!60!black, font=\scriptsize, anchor=north] at (2.1,{\y0-0.32}) {ریل کشویی};
+
+  % --- floor ---
+  \draw[thick] (-0.6,-0.5) -- (9.2,-0.5);
+  \foreach \x in {-0.4,0.0,...,9.0}{
+     \draw[gray] (\x,-0.5) -- (\x-0.22,-0.72);
+  }
+  \node[anchor=south west, font=\scriptsize] at (5.2,-0.5) {کف اتاق};
+
+  % column foot down to floor
+  \draw[thick] (0.3,-0.1) -- (0.3,-0.5);
+  \draw[thick] (0.9,-0.1) -- (0.9,-0.5);
+
+\end{tikzpicture}}
+\end{document}

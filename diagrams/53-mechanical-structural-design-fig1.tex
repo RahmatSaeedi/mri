@@ -1,0 +1,93 @@
+% Radial cross-section of a clinical 3T MRI as a coaxial stack of cylindrical shells.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % vertical scale: 1 mm radius -> 0.01 cm  (so 1000 mm -> 10 cm)
+  \def\sx{6}      % half-width of the box (x extent)
+  \pgfmathsetmacro{\sc}{0.01}  % cm per mm radius
+
+  % helper: draw a horizontal layer between r1 and r2 (mm), with fill + label
+  % we draw symmetric about y=0 so the figure reads like a radial slice.
+
+  % radii (mm) and their y positions
+  \pgfmathsetmacro{\ra}{1000*\sc}  % cosmetic outer
+  \pgfmathsetmacro{\rb}{900*\sc}   % cryostat outer
+  \pgfmathsetmacro{\rc}{450*\sc}   % gradient outer
+  \pgfmathsetmacro{\rd}{340*\sc}   % RF body outer
+  \pgfmathsetmacro{\re}{320*\sc}   % bore liner outer
+  \pgfmathsetmacro{\rf}{300*\sc}   % bore wall (patient)
+
+  % background patient bore
+  \fill[blue!4] (-\sx,-\rf) rectangle (\sx,\rf);
+
+  % layers as nested bands (upper half mirrored to lower half by drawing full bands)
+  % cosmetic cover band: between rb..ra
+  \fill[gray!18] (-\sx,\rb) rectangle (\sx,\ra);
+  \fill[gray!18] (-\sx,-\ra) rectangle (\sx,-\rb);
+  % cryostat band: rc..rb
+  \fill[cyan!12] (-\sx,\rc) rectangle (\sx,\rb);
+  \fill[cyan!12] (-\sx,-\rb) rectangle (\sx,-\rc);
+  % gradient band: rd..rc
+  \fill[orange!22] (-\sx,\rd) rectangle (\sx,\rc);
+  \fill[orange!22] (-\sx,-\rc) rectangle (\sx,-\rd);
+  % RF body band: re..rd
+  \fill[green!18] (-\sx,\re) rectangle (\sx,\rd);
+  \fill[green!18] (-\sx,-\rd) rectangle (\sx,-\re);
+  % bore liner band: rf..re
+  \fill[red!16] (-\sx,\rf) rectangle (\sx,\re);
+  \fill[red!16] (-\sx,-\re) rectangle (\sx,-\rf);
+
+  % horizontal boundary lines
+  \foreach \y in {\ra,\rb,\rc,\rd,\re} {
+    \draw[gray!60] (-\sx,\y) -- (\sx,\y);
+    \draw[gray!60] (-\sx,-\y) -- (\sx,-\y);
+  }
+  % bore wall: heavy double line at rf
+  \draw[very thick] (-\sx,\rf) -- (\sx,\rf);
+  \draw[very thick] (-\sx,-\rf) -- (\sx,-\rf);
+
+  % outer frame
+  \draw[thick] (-\sx,-\ra) rectangle (\sx,\ra);
+
+  % center line
+  \draw[densely dashed, gray] (-\sx,0) -- (\sx,0) node[right]{محور};
+
+  % layer labels (upper half)
+  \node at (0,{(\ra+\rb)/2}) {پوشش ظاهری (پلاستیک / کامپوزیت)};
+  \node[align=center] at (0,{(\rb+\rc)/2}) {کرایوستات: مخزن، سپرها، خلأ\\(سیم‌پیچ ابررسانا در درون) -- فصل‌ ۲۵};
+  \node at (0,{(\rc+\rd)/2}) {سیم‌پیچ گرادیانِ خودپوشش‌دار (Cu + رزین) -- فصل‌ ۳۰};
+  \node[font=\scriptsize] at (0,{(\rd+\re)/2}) {سیم‌پیچ بدنهٔ RF (بردکیج) -- فصل‌ ۳۳};
+  \node[font=\scriptsize] at (0,{(\re+\rf)/2-0.04}) {آستر محفظه (GFRP / پلی‌کربنات)};
+  \node[align=center] at (0,0) {محفظهٔ بیمار\\\RL{(قطر $60$ cm)}};
+
+  % radius annotations on the right
+  \def\xr{\sx+0.25}
+  \node[anchor=west, font=\scriptsize] at (\xr,\ra) {$r\approx1000$ mm};
+  \node[anchor=west, font=\scriptsize] at (\xr,\rb) {$r\approx900$ mm};
+  \node[anchor=west, font=\scriptsize] at (\xr,\rc) {$r\approx450$ mm};
+  \node[anchor=west, font=\scriptsize] at (\xr,\rd) {$r\approx340$ mm};
+  \node[anchor=west, font=\scriptsize] at (\xr,\re) {$r\approx320$ mm};
+  \node[anchor=west, font=\scriptsize] at (\xr,\rf) {$r\approx300$ mm (دیوارهٔ محفظه)};
+  \node[anchor=west, font=\scriptsize] at (\xr,0) {$r=0$};
+
+  % "outside -> inside" arrow on the left
+  \draw[->, thick] (-\xr,\ra) -- (-\xr,0) node[midway, left, align=center, font=\scriptsize]{بیرون\\$\downarrow$\\درون};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,66 @@
+% Standalone TikZ figure: Cartesian undersampling fold-over (aliasing) for R=2.
+% Full-FOV column (A,B,C,D) maps to a reduced FOV where pixels FOV/2 apart
+% superimpose: A+C and B+D.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ===== LEFT: full FOV (R=1), four stacked pixels A,B,C,D =====
+  \def\w{1.8}      % cell width
+  \def\h{0.95}     % cell height
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\bfseries] at (\w/2, 4*\h+0.5) {FOV کامل \RL{($R=1$)}};
+    \foreach \lbl/\i [count=\n from 0] in {A/3, B/2, C/1, D/0} {
+      \draw[fill=blue!8] (0,\i*\h) rectangle (\w,\i*\h+\h);
+      \node at (\w/2, \i*\h+\h/2) {$\lbl$};
+    }
+    % FOV bracket
+    \draw[<->] (\w+0.25,0) -- (\w+0.25,4*\h)
+      node[midway, right, font=\scriptsize, align=left] {$\mathrm{FOV}_y$};
+    % mark the FOV/2 separation between A and C
+    \draw[densely dashed, gray] (0,3.5*\h) -- (-0.35,3.5*\h);
+    \draw[densely dashed, gray] (0,1.5*\h) -- (-0.35,1.5*\h);
+    \draw[<->, red!70!black] (-0.35,3.5*\h) -- (-0.35,1.5*\h)
+      node[midway, left, font=\scriptsize, align=center, text=red!70!black]
+      {$\frac{\mathrm{FOV}_y}{2}$};
+  \end{scope}
+
+  % ===== fold-over arrow =====
+  \draw[->, very thick, blue!60!black] (3.0, 2*\h) -- (4.4, 2*\h)
+    node[midway, above, font=\scriptsize, align=center]
+    {زیرنمونه‌برداری\\$\Delta k_y \to 2\Delta k_y$};
+
+  % ===== RIGHT: reduced FOV (R=2), two superimposed pixels =====
+  \begin{scope}[shift={(4.9,\h)}]
+    \node[font=\bfseries] at (\w/2, 2*\h+0.5) {FOV کاهش‌یافته \RL{($R=2$)}};
+    \draw[fill=orange!18] (0,\h) rectangle (\w,2*\h);
+    \node at (\w/2, 1.5*\h) {$A + C$};
+    \draw[fill=orange!18] (0,0) rectangle (\w,\h);
+    \node at (\w/2, 0.5*\h) {$B + D$};
+    \draw[<->] (\w+0.25,0) -- (\w+0.25,2*\h)
+      node[midway, right, font=\scriptsize] {$\frac{\mathrm{FOV}_y}{2}$};
+  \end{scope}
+
+  % ===== caption text under right block =====
+  \node[font=\scriptsize, align=center, text width=4.2cm] at (5.8,-0.55)
+    {هر پیکسلِ تاخورده $=$ مجموعِ وزن‌دارِ\\$R$ پیکسلِ واقعی (رابطهٔ برهم‌نهی)};
+
+\end{tikzpicture}}
+\end{document}

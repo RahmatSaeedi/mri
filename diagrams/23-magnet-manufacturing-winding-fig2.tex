@@ -1,0 +1,44 @@
+% Vacuum Pressure Impregnation (VPI) process: six sequential steps.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    vstep/.style={rectangle, rounded corners=3pt, draw=teal!60!black, very thick,
+      fill=teal!8, text width=6.6cm, minimum height=1.0cm, align=left, inner sep=5pt},
+    num/.style={circle, draw=teal!60!black, fill=teal!20, very thick,
+      minimum size=0.7cm, inner sep=0pt, font=\bfseries}]
+
+  \node[font=\bfseries] (title) at (0,1.0) {مراحل فرایند VPI};
+
+  \def\dy{1.35}
+  \node[vstep] (a) at (0,0)        {قرار دادن سیم‌پیچ در محفظهٔ خلأ};
+  \node[vstep] (b) at (0,-1*\dy)   {تخلیهٔ هوا و رطوبت (خلأ)، چند ساعت};
+  \node[vstep] (c) at (0,-2*\dy)   {تزریق رزین اپوکسی کم‌گرانروی زیر خلأ};
+  \node[vstep] (d) at (0,-3*\dy)   {اعمال فشار گاز برای راندن رزین به حفره‌ها};
+  \node[vstep] (e) at (0,-4*\dy)   {پخت گرمایی (نیم‌رخ دما / زمان)};
+  \node[vstep] (f) at (0,-5*\dy)   {سردسازی کنترل‌شده (کمینه‌سازی تنش پسماند)};
+
+  \foreach \n/\nd in {1/a,2/b,3/c,4/d,5/e,6/f}{
+    \node[num] at (\nd.west) {\n};
+  }
+  \foreach \i/\j in {a/b,b/c,c/d,d/e,e/f}{
+    \draw[->, very thick, teal!60!black] (\i.south) -- (\j.north);
+  }
+\end{tikzpicture}}
+\end{document}

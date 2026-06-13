@@ -1,0 +1,80 @@
+% Data- and control-flow path: protocol -> interpreter -> generator -> compiler ->
+% RT controller (loader, scan FSM, feedback) -> FPGA engine -> RFPA/GPA/coil; raw data flows back up.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=8mm,
+    blk/.style={draw, thick, rounded corners=2pt, fill=blue!7, align=center,
+                minimum width=3.6cm, minimum height=8mm, inner sep=4pt},
+    ann/.style={font=\footnotesize, align=left, text=black!70},
+    down/.style={->, thick}]
+
+  \node[blk, fill=gray!10] (proto) {پروتکلِ کاربر / بالینی};
+  \node[blk, below=of proto] (interp) {مفسّرِ پروتکل};
+  \node[blk, below=of interp] (gen) {مولّدِ توالی};
+  \node[blk, below=of gen] (comp) {کامپایلرِ توالی};
+
+  \draw[down] (proto) -- (interp);
+  \draw[down] (interp) -- (gen);
+  \draw[down] (gen) -- (comp);
+
+  % side annotations
+  \node[ann, right=4mm of interp] {پارامترها: TR، TE، FOV، ماتریس، شتاب\dots};
+  \node[ann, right=4mm of gen] {شیءِ توالیِ انتزاعی\\(RF / Grad / ADC، زمانِ نسبی)};
+  \node[ann, right=4mm of comp] {جریانِ رویدادِ سخت‌افزاری \RL{(واژه‌های کنترلی $+\,\Delta t$)}\\
+        بررسیِ قید: slew، SAR، dB/dt، گرما};
+
+  % RT controller container
+  \node[blk, below=14mm of comp, fill=orange!12] (loader) {بارگذارِ توالی $\to$ رویدادِ FIFO};
+  \node[blk, below=of loader, fill=orange!12, minimum width=2.2cm] (fsm) {FSMِ پویش};
+  \node[blk, right=10mm of fsm, fill=orange!12, minimum width=2.2cm] (fb) {حلقهٔ پسخورد};
+  \node[draw, dashed, thick, rounded corners=3pt, fit=(loader)(fsm)(fb),
+        inner sep=7pt, label={[font=\footnotesize\bfseries]above:کنترلگرِ بی‌درنگ}] (rtbox) {};
+
+  \draw[down] (comp) -- (loader);
+  \draw[down] (loader) -- (fsm);
+  \draw[<->, thick] (fsm) -- (fb);
+
+  % FPGA engine container
+  \node[blk, below=16mm of fsm, fill=green!12, minimum width=2cm] (dds) {DDS / RF};
+  \node[blk, right=3mm of dds, fill=green!12, minimum width=2cm] (dac) {DACِ گرادیان};
+  \node[blk, right=3mm of dac, fill=green!12, minimum width=1.6cm] (tr) {گِیتِ T/R};
+  \node[blk, right=3mm of tr, fill=green!12, minimum width=2cm] (adc) {ADC / DMA};
+  \node[draw, dashed, thick, rounded corners=3pt, fit=(dds)(dac)(tr)(adc),
+        inner sep=7pt, label={[font=\footnotesize\bfseries]above:موتورِ FPGA (فصل ۳۹)}] (fpgabox) {};
+
+  % command down from RT to FPGA
+  \draw[down] (fsm.south) -- ++(0,-3mm) -| node[pos=0.25,below,font=\footnotesize]{فرمان} (dds.north);
+  % feedback up: physio / navigator markers
+  \draw[->, thick, dashed] (adc.north) |- ($(fb.south)+(0,-8mm)$)
+        node[pos=0.75,below,font=\footnotesize]{نشانگرهای فیزیولوژیک / ناوبر} -- (fb.south);
+
+  % outputs to hardware chain
+  \node[blk, below=10mm of dds, fill=red!8, minimum width=1.6cm] (rfpa) {RFPA};
+  \node[blk, below=10mm of dac, fill=red!8, minimum width=1.6cm] (gpa) {GPA};
+  \node[blk, below=10mm of tr, fill=red!8, minimum width=1.6cm] (coil) {سیم‌پیچ};
+  \node[blk, below=10mm of adc, fill=cyan!10, minimum width=1.8cm, align=center] (raw)
+        {دادهٔ خام\\\footnotesize (به بازساز، بالادست)};
+
+  \draw[down] (dds) -- (rfpa);
+  \draw[down] (dac) -- (gpa);
+  \draw[down] (tr) -- (coil);
+  \draw[->, thick, dashed] (raw.north) -- (adc.south);
+
+\end{tikzpicture}}
+\end{document}

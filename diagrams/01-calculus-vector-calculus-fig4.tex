@@ -1,0 +1,56 @@
+% Curl: a rotational (shear) field that spins a paddle wheel (curl != 0)
+% versus a uniform irrotational field that leaves it still (curl = 0).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % ---------- ROTATIONAL : curl != 0 ----------
+  \begin{scope}[shift={(0,0)}]
+    % sheared field: top row to the right, bottom row to the left
+    \draw[->, thick, red!75!black] (-1.6, 1.0) -- (0.4, 1.0);
+    \draw[->, thick, red!75!black] (-1.6, 0.5) -- (0.1, 0.5);
+    \draw[->, thick, red!75!black] ( 0.4,-0.5) -- (-1.3,-0.5);
+    \draw[->, thick, red!75!black] ( 0.4,-1.0) -- (-1.6,-1.0);
+    % paddle wheel that spins
+    \draw[thick] (-0.6,0) circle (0.5);
+    \foreach \a in {0,90,180,270} {
+      \draw[thick] (-0.6,0) -- ++(\a:0.5);
+    }
+    \draw[->, very thick, green!45!black] (0.1,0) arc (0:300:0.7);
+    \node[green!45!black] at (0.85,0.55) {$\nabla\!\times\!\mathbf{F}$};
+    \node[font=\footnotesize, align=center] at (-0.6,-2.0)
+      {میدان چرخشی\\\RL{(کرل $\neq$ $0$)}: پره می‌چرخد};
+  \end{scope}
+
+  % ---------- IRROTATIONAL : curl = 0 ----------
+  \begin{scope}[shift={(6.0,0)}]
+    % uniform field: all arrows equal
+    \foreach \y in {-1.0,-0.5,0.5,1.0} {
+      \draw[->, thick, blue!75!black] (-1.6,\y) -- (0.4,\y);
+    }
+    % paddle wheel that stays still
+    \draw[thick] (-0.6,0) circle (0.5);
+    \foreach \a in {0,90,180,270} {
+      \draw[thick] (-0.6,0) -- ++(\a:0.5);
+    }
+    \node[blue!75!black] at (0.95,0) {$\nabla\!\times\!\mathbf{F}=\mathbf{0}$};
+    \node[font=\footnotesize, align=center] at (-0.6,-2.0)
+      {میدان یکنواخت\\\RL{(کرل $=$ $0$)}: پره ساکن می‌ماند};
+  \end{scope}
+\end{tikzpicture}}
+\end{document}

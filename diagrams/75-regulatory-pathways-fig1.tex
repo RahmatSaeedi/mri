@@ -1,0 +1,73 @@
+% Chapter master map: a single tested device (with QMS + risk file) feeds three
+% parallel regulatory pathways (FDA / EU-MDR / Iran IR-FDA), each with its own
+% language of evidence, all converging on a market clearance and a shared
+% lifelong post-market surveillance (PMS) obligation.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  src/.style={draw, rounded corners=3pt, fill=blue!12, very thick, align=center,
+              text width=82mm, minimum height=13mm},
+  path/.style={draw, rounded corners=2pt, fill=blue!8, align=center,
+               text width=30mm, minimum height=22mm, font=\footnotesize},
+  ev/.style={align=center, font=\scriptsize, text width=32mm},
+  res/.style={draw, rounded corners=3pt, align=center, minimum height=13mm},
+  node distance=6mm]
+
+  % Common input
+  \node[src] (in) {\textbf{دستگاه آزموده‌شده}\\[1pt]
+        QMS (ISO 13485) $+$ پروندهٔ ریسک (ISO 14971، فصل ۶۲)};
+
+  % Three pathways
+  \node[path, below=15mm of in, xshift=-46mm] (us)
+        {\textbf{آمریکا / FDA}\\[2pt] 510(k)\\ De Novo\\ PMA};
+  \node[path, below=15mm of in] (eu)
+        {\textbf{اتحادیهٔ اروپا / MDR}\\[2pt] نشان CE\\ نهاد مطلع\\ (Notified Body)};
+  \node[path, below=15mm of in, xshift=46mm] (ir)
+        {\textbf{ایران / IR-FDA}\\[2pt] ثبت\\ و مجوز\\ IMED};
+
+  % Trunk + branches from input to the three pathways
+  \coordinate (bus) at ($(in.south)+(0,-7mm)$);
+  \draw[thick] (in.south) -- (bus);
+  \draw[thick] (bus -| us.north) -- (bus -| ir.north);
+  \foreach \p in {us,eu,ir} { \draw[thick,->] (bus -| \p.north) -- (\p.north); }
+
+  % Evidence language under each pathway
+  \node[ev, below=3mm of us] (eus) {دستگاه مرجع (predicate) $+$\\ هم‌ارزی\\ بنیادین};
+  \node[ev, below=3mm of eu] (eeu) {پیوست I (GSPR) $+$\\ ارزیابی بالینی $+$\\ مستندات فنی $+$ UDI};
+  \node[ev, below=3mm of ir] (eir) {مجوز مرجع $+$\\ استانداردها $+$\\ پروندهٔ فنی};
+  \foreach \p/\e in {us/eus,eu/eeu,ir/eir} { \draw[->] (\p) -- (\e); }
+
+  % Clearance box (converging)
+  \node[res, fill=green!12, very thick, below=12mm of eeu, text width=40mm] (clr)
+        {\textbf{مجوز ورود به بازار}\\[1pt]{\footnotesize clearance / CE / مجوز}};
+  \foreach \e in {eus,eeu,eir} { \draw[->, thick] (\e) -- (clr); }
+
+  % PMS (lifelong loop)
+  \node[res, fill=orange!16, very thick, right=14mm of clr, text width=44mm] (pms)
+        {\textbf{پایش پس از بازار (PMS)}\\[1pt]
+         {\footnotesize مراقبت، PSUR، PMCF،}\\
+         {\footnotesize فراخوان $\to$ CAPA}};
+  \draw[->, very thick] (clr) -- (pms);
+
+  % feedback arc emphasising the lifelong loop
+  \draw[->, dashed, orange!60!black] (pms.north) .. controls +(0,12mm) and +(0,12mm) .. (clr.north)
+        node[midway, above, font=\scriptsize] {حلقهٔ مادام‌العمر};
+\end{tikzpicture}}
+\end{document}

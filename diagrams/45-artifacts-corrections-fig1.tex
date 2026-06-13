@@ -1,0 +1,69 @@
+% Standalone TikZ figure: causal fault tree mapping each violated
+% forward-model assumption to its corresponding MRI artifact class.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    root/.style={draw, rounded corners, very thick, fill=blue!10,
+                 align=center, inner sep=6pt, minimum height=1cm},
+    assum/.style={draw, rounded corners, thick, fill=orange!15,
+                  align=center, inner sep=4pt, text width=2.3cm, minimum height=1cm},
+    art/.style={draw, rounded corners, thick, fill=gray!8,
+                align=center, inner sep=4pt, text width=2.3cm, minimum height=1.6cm},
+    line/.style={->, thick}]
+
+  % ---------- ROOT QUESTION ----------
+  \node[root] (root) at (0,4.2) {کدام فرضِ مدلِ پیشروی\\ نقض شده است؟};
+
+  % ---------- ASSUMPTION ROW ----------
+  \def\xa{-6.6}
+  \def\xb{-3.3}
+  \def\xc{0}
+  \def\xd{3.3}
+  \def\xe{6.6}
+
+  \node[assum] (a1) at (\xa,2.0) {ایستاییِ\\ جسم};
+  \node[assum] (a2) at (\xb,2.0) {نمونه‌برداریِ\\ منظم};
+  \node[assum] (a3) at (\xc,2.0) {تک‌\\بسامدی};
+  \node[assum] (a4) at (\xd,2.0) {پنجرهٔ\\ متناهی};
+  \node[assum] (a5) at (\xe,2.0) {سلامتِ\\ سخت‌افزار};
+
+  % ---------- ARTIFACT ROW ----------
+  \node[art] (b1) at (\xa,-0.2) {{\bf حرکت / شبح}\\[2pt] فازِ ناسازگار در خطوطِ PE};
+  \node[art] (b2) at (\xb,-0.2) {{\bf تاخوردگی}\\[2pt] زیرِ نایکوئیست، شبحِ $N/2$};
+  \node[art] (b3) at (\xc,-0.2) {{\bf خارج‌تشدید}\\[2pt] جابه‌جایی شیمیایی، اعوجاج};
+  \node[art] (b4) at (\xd,-0.2) {{\bf گیبس}\\[2pt] نوسانِ ناشی از برش};
+  \node[art] (b5) at (\xe,-0.2) {{\bf اسپایک، زیپر}\\[2pt] بازتابِ RF، جریان گردابی};
+
+  % ---------- CONNECTORS ----------
+  % root to a manifold/bus
+  \draw[thick] (root.south) -- (0,3.05);
+  \draw[thick] (\xa,3.05) -- (\xe,3.05);
+  \foreach \x in {\xa,\xb,\xc,\xd,\xe}{
+    \draw[line] (\x,3.05) -- (\x,2.55);
+  }
+  % assumption to artifact
+  \draw[line] (a1) -- (b1);
+  \draw[line] (a2) -- (b2);
+  \draw[line] (a3) -- (b3);
+  \draw[line] (a4) -- (b4);
+  \draw[line] (a5) -- (b5);
+
+\end{tikzpicture}}
+\end{document}

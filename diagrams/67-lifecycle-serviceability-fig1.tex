@@ -1,0 +1,61 @@
+% Lifecycle cost: committed cost (locked by design decisions) vs. spent cost.
+% The design window precedes the payment window; ~80% of LCC is committed early.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=13cm, height=8.5cm,
+      axis lines=left,
+      xlabel={مرحلهٔ چرخهٔ عمر $\rightarrow$ زمان},
+      ylabel={هزینهٔ انباشته (\%)},
+      xmin=0, xmax=7, ymin=0, ymax=108,
+      ytick={0,20,40,60,80,100},
+      xtick={0.5,1.5,2.5,3.5,4.5,5.7},
+      xticklabels={مفهوم, طراحی, V\&V, ساخت, نصب, بهره‌برداری/نگه‌داری},
+      x tick label style={rotate=18, anchor=east, font=\footnotesize},
+      clip=false,
+      every axis x label/.style={at={(ticklabel* cs:1.0)}, anchor=west},
+      every axis y label/.style={at={(ticklabel* cs:1.0)}, anchor=south},
+    ]
+    % Committed cost: rises fast, ~80% locked by end of design, saturates near 100%.
+    \addplot[very thick, red!75!black, smooth] coordinates {
+      (0,4) (0.5,12) (1,38) (1.5,68) (2,82) (2.5,88) (3.5,93) (4.5,96) (5.7,99) (6.8,100)
+    };
+    \node[red!75!black, anchor=west] at (axis cs:2.6,90) {متعهدشده};
+
+    % Spent cost: stays low through design/V&V, ramps up in operation.
+    \addplot[very thick, blue!70!black, smooth] coordinates {
+      (0,0.5) (0.5,2) (1,5) (1.5,9) (2,14) (2.5,20) (3.5,34) (4.5,52) (5.7,80) (6.8,100)
+    };
+    \node[blue!70!black, anchor=west] at (axis cs:4.55,44) {هزینه‌شده};
+
+    % 80% reference line.
+    \draw[gray, densely dashed] (axis cs:0,80) -- (axis cs:2,80);
+    \node[gray, anchor=south west, font=\footnotesize] at (axis cs:0.05,80)
+      {$\sim$80\% تا پایان طراحی قفل می‌شود};
+
+    % Decision window bracket (concept..design..V&V).
+    \draw[<->, thick] (axis cs:0.1,-30) -- (axis cs:2.4,-30)
+      node[midway, below, align=center, font=\footnotesize] {پنجرهٔ تصمیمِ طراحی};
+    % Payment window bracket (operation/maintenance).
+    \draw[<->, thick] (axis cs:2.6,-30) -- (axis cs:6.8,-30)
+      node[midway, below, align=center, font=\footnotesize] {پنجرهٔ پرداختِ هزینه};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

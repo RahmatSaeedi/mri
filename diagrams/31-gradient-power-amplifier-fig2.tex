@@ -1,0 +1,62 @@
+% Cascaded multilevel (three-cell) H-bridge GPA: each cell has its own DC link;
+% outputs add in series to feed the gradient coil; up to 7 voltage levels.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    dc/.style={draw, thick, fill=red!8, minimum width=12mm, minimum height=9mm, rounded corners=1pt},
+    cell/.style={draw, thick, fill=blue!8, minimum width=34mm, minimum height=11mm, rounded corners=2pt}]
+
+  % three cells stacked vertically
+  \node[dc]   (DC1) at (0,3.0)  {$\mathrm{DC}_1$};
+  \node[cell] (C1)  at (3.2,3.0) {سلول پل-H ۱\\ $\{+V,\,0,\,-V\}$};
+  \node[dc]   (DC2) at (0,1.0)  {$\mathrm{DC}_2$};
+  \node[cell] (C2)  at (3.2,1.0) {سلول پل-H ۲\\ $\{+V,\,0,\,-V\}$};
+  \node[dc]   (DC3) at (0,-1.0) {$\mathrm{DC}_3$};
+  \node[cell] (C3)  at (3.2,-1.0) {سلول پل-H ۳\\ $\{+V,\,0,\,-V\}$};
+
+  % isolated DC link feeding each cell
+  \foreach \i in {1,2,3}{
+    \draw[thick, red!70!black] (DC\i.east) -- (C\i.west);
+  }
+
+  % series bus on the right (sum of cell outputs)
+  \coordinate (b1) at ($(C1.east)+(0.9,0)$);
+  \coordinate (b2) at ($(C2.east)+(0.9,0)$);
+  \coordinate (b3) at ($(C3.east)+(0.9,0)$);
+  \draw[thick] (C1.east) -- (b1);
+  \draw[thick] (C2.east) -- (b2);
+  \draw[thick] (C3.east) -- (b3);
+  \draw[very thick] (b1) -- (b3); % vertical series collector
+  \foreach \p in {b1,b2,b3}{\fill (\p) circle (1.6pt);}
+
+  % output to gradient coil
+  \coordinate (mid) at ($(b1)!0.5!(b3)$);
+  \draw[very thick, ->] (mid) -- ++(2.4,0)
+        node[midway, above, font=\footnotesize] {جمع سری};
+  \node[draw, dashed, rounded corners, fill=blue!4, align=center,
+        inner sep=3pt] (coil) at ($(mid)+(4.3,0)$) {سیم‌پیچ\\گرادیان};
+  \draw[very thick] ($(mid)+(2.4,0)$) -- (coil.west);
+
+  % output-level annotation
+  \node[align=center, font=\footnotesize, text=red!60!black]
+        at (3.2,-2.6) {ولتاژ خروجی $=$ جمع جبری ۳ سلول \\
+        $\Rightarrow$ تا ۷ تراز $\{-3V \ldots +3V\}$، ریپل بسیار کم};
+
+\end{tikzpicture}}
+\end{document}

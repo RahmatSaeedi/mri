@@ -1,0 +1,65 @@
+% Supplier management cycle: Evaluate -> Approve (ASL) + Quality Agreement
+% -> Monitor & Audit, each with its key activities.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  phase/.style={draw, rounded corners=2pt, fill=blue!12, align=center,
+                text width=34mm, minimum height=12mm},
+  detail/.style={draw, rounded corners=2pt, fill=gray!8, align=left,
+                 text width=38mm, font=\scriptsize, inner sep=4pt}]
+
+  % Three phases left to right
+  \node[phase] (eval) {ارزیابی اولیه\\(ارزیابی)};
+  \node[phase, right=24mm of eval] (appr)
+        {تأیید و درج در ASL\\(فهرست تأمین‌کنندگانِ تأییدشده)};
+  \node[phase, right=24mm of appr] (mon) {پایش و ممیزیِ دوره‌ای};
+
+  \draw[->, very thick] (eval) -- (appr);
+  \draw[->, very thick] (appr) -- (mon);
+
+  % Details below each phase
+  \node[detail, below=6mm of eval] (d1)
+        {$\bullet$ پرسش‌نامهٔ کیفیت\\
+         $\bullet$ گواهی‌نامهٔ ISO 13485\\
+         $\bullet$ نمونهٔ نخست + آزمون\\
+         $\bullet$ مالی / ظرفیت};
+  \node[detail, below=6mm of appr, fill=orange!10] (d2)
+        {\textbf{توافق‌نامهٔ کیفیت:}\\
+         $\bullet$ تعیین مسئولیت‌ها\\
+         $\bullet$ اطلاع‌رسانیِ تغییر\\
+         $\bullet$ حق ممیزی\\
+         $\bullet$ الزام به CoC};
+  \node[detail, below=6mm of mon] (d3)
+        {$\bullet$ کارنامهٔ تأمین‌کننده\\
+         \ \ (تحویل به‌موقع، نرخ نقص)\\
+         $\bullet$ ممیزیِ دوره‌ای\\
+         $\bullet$ بررسی در بازنگری مدیریت\\
+         $\bullet$ تعلیق / حذف در صورت افت};
+
+  \draw[->, thick] (eval) -- (d1);
+  \draw[->, thick] (appr) -- (d2);
+  \draw[->, thick] (mon)  -- (d3);
+
+  % Feedback loop from monitoring back to evaluation/re-approval
+  \draw[->, thick, dashed, gray!55!black]
+        (mon.north) -- ++(0,5mm) -| node[above, pos=0.25, font=\scriptsize]
+        {ارزیابی مجدد / صلاحیت مجدد} (eval.north);
+\end{tikzpicture}}
+\end{document}

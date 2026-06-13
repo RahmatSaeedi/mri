@@ -1,0 +1,105 @@
+% Front cover for the Farsi MRI book. Standalone TikZ -> PDF (print) + PNG/SVG (web).
+% Theme: a stylized MRI scanner bore (concentric rings) framing an axial brain,
+% with a precessing-spin motif and RF/gradient waveform accents, on a deep
+% navy->teal gradient. Persian title set with Vazirmatn (Script=Arabic) + bidi.
+\documentclass[border=0pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{Vazirmatn}[Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold, Script=Arabic, Language=Default]
+\usepackage{tikz}
+\usepackage{bidi}
+\usetikzlibrary{arrows.meta, decorations.pathmorphing, shadings}
+
+\definecolor{navy}{HTML}{0A1A3A}
+\definecolor{deepteal}{HTML}{0E3A4F}
+\definecolor{cyanx}{HTML}{36D1DC}
+\definecolor{softcyan}{HTML}{8FE3EE}
+\definecolor{gold}{HTML}{F4C56B}
+\definecolor{paleink}{HTML}{EAF6FA}
+
+\begin{document}
+\setRTL
+\begin{tikzpicture}[remember picture]
+  % ---- canvas 16 x 23 cm ----
+  \def\W{16} \def\H{23}
+  \shade[top color=navy, bottom color=deepteal] (0,0) rectangle (\W,\H);
+  % faint measurement grid — clipped to the central band only, so the title
+  % (top) and the credits (bottom) sit on a clean gradient and stay legible.
+  \begin{scope}
+    \clip (0,4.7) rectangle (\W,18.3);
+    \foreach \x in {0,1,...,16}{\draw[softcyan!10, very thin] (\x,0)--(\x,\H);}
+    \foreach \y in {0,1,...,23}{\draw[softcyan!10, very thin] (0,\y)--(\W,\y);}
+  \end{scope}
+
+  % ============ central emblem: scanner bore + brain ============
+  \begin{scope}[shift={(8,13)}]
+    % outer bore rings
+    \foreach \r/\o in {5.0/30, 4.55/45, 4.1/65, 3.7/90}{
+      \draw[cyanx, line width=1.1pt, opacity=\o/100] (0,0) circle (\r);
+    }
+    % radial tick marks around the bore
+    \foreach \a in {0,15,...,345}{
+      \draw[softcyan!50, line width=0.6pt] (\a:5.05) -- (\a:5.35);
+    }
+    % patient-table line (below the head, like a real bore bed)
+    \draw[softcyan!50, line width=1pt] (-6.6,-4.0) -- (6.6,-4.0);
+    \draw[softcyan!28, line width=5pt, line cap=round] (-3.4,-4.0) -- (3.4,-4.0);
+
+    % ---- axial brain: clean oval cerebrum + midline + subtle sulci ----
+    \begin{scope}[shift={(0,0.35)}]
+      \draw[paleink, line width=1.5pt, fill=cyanx!9] (0,0) ellipse (2.6 and 3.05);
+      % longitudinal fissure (midline)
+      \draw[paleink, line width=1pt] (0,2.9) .. controls (0.26,1) and (-0.26,-1) .. (0,-2.9);
+      % symmetric sulci hints
+      \foreach \s in {-1,1}{
+        \draw[softcyan!75, line width=0.8pt]
+          (\s*0.5,2.35) .. controls (\s*1.85,1.7) and (\s*1.65,1.0) .. (\s*0.9,0.6);
+        \draw[softcyan!72, line width=0.8pt]
+          (\s*0.7,0.15) .. controls (\s*2.0,-0.25) and (\s*1.75,-1.05) .. (\s*0.8,-1.45);
+        \draw[softcyan!65, line width=0.7pt]
+          (\s*0.5,-1.9) .. controls (\s*1.45,-2.15) and (\s*1.35,-2.55) .. (\s*0.7,-2.75);
+      }
+    \end{scope}
+
+    % ---- precessing-spin motif (top-right of bore): enlarged, brightened,
+    %      and set on a soft dark halo so it reads clearly over the rings ----
+    \begin{scope}[shift={(3.8,3.6)}]
+      \shade[inner color=navy, outer color=navy, opacity=0.62] (0,0.15) circle (1.85);
+      \begin{scope}[scale=1.45]
+        \draw[gold, line width=1.3pt] (0,-1.15) -- (0,1.4);                 % B0 axis
+        \node[gold, font=\bfseries] at (0.46,1.45) {$B_0$};
+        \draw[softcyan!90, line width=1.1pt] (0,0) ellipse (0.98 and 0.34); % precession circle
+        \draw[-{Stealth[length=3.2mm]}, cyanx, line width=2.2pt] (0,0) -- (0.66,0.98); % spin vector
+        \draw[-{Stealth[length=2.6mm]}, softcyan, line width=1.1pt] (0.98,0.06) arc (0:135:0.98 and 0.34);
+      \end{scope}
+    \end{scope}
+  \end{scope}
+
+  % ============ title block ============
+  % Two-line title: the Persian sits on ONE line (plain node -> inherits the
+  % global \setRTL), and the acronym MRI is on its OWN emphasized line, so the
+  % Latin never interrupts the Persian flow at a script boundary.
+  \node[anchor=north] at (8,22.75)
+    {\color{paleink}\fontsize{26}{30}\selectfont\bfseries\RL{ساختِ دستگاهِ پیشرفتهٔ}};
+  \node[anchor=north] at (8,21.35)
+    {\color{cyanx}\fontsize{46}{50}\selectfont\bfseries {\addfontfeature{LetterSpace=10.0}MRI}};
+  \draw[cyanx, line width=1.2pt] (3.5,19.35) -- (12.5,19.35);
+  \node[anchor=north, align=center] at (8,19.05)
+    {\color{softcyan}\fontsize{15}{19}\selectfont \RL{از دبیرستان تا مهندسی}};
+
+  % ============ subtitle + author (bottom) ============
+  \node[anchor=south, align=center, text width=15cm] at (8,3.05)
+    {\color{paleink}\fontsize{14.5}{19}\selectfont\bfseries
+     \RL{یک رسالهٔ جامعِ مهندسی}\\[4pt]
+     {\normalfont\fontsize{12}{17}\selectfont\color{paleink}\RL{فیزیک · الکترونیک · نرم‌افزار · پزشکی · ساخت · ایمنی · نگه‌داری}}};
+
+  \draw[softcyan!55, line width=0.8pt] (4.5,2.2) -- (11.5,2.2);
+  \node[anchor=south, align=center] at (8,1.5)
+    {\color{paleink}\fontsize{15}{18}\selectfont\bfseries \RL{رحمت سعیدی}};
+
+  % ---- FID (free-induction-decay) accent along the very bottom ----
+  \begin{scope}[shift={(8,0.5)}]
+    \draw[cyanx!55, line width=1pt] plot[domain=-6.2:6.2, samples=220, smooth]
+      ({\x}, {0.34*exp(-0.16*(\x+6.2))*sin(200*\x)});
+  \end{scope}
+\end{tikzpicture}
+\end{document}

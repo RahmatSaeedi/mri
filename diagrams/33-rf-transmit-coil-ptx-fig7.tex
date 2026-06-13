@@ -1,0 +1,47 @@
+% "First resonance" tuning workflow with a Vector Network Analyzer (VNA):
+% sniffer-loop S21 to see the modes, identify m=1, tune to f0, match on Smith,
+% load with phantom/head and re-tune, decouple the two quadrature ports, then
+% install the balun/cable trap.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=6mm and 10mm,
+    box/.style={draw, thick, rounded corners=2pt, align=center,
+                text width=52mm, inner sep=4pt, fill=blue!4},
+    meas/.style={font=\footnotesize, blue!55!black}]
+
+  \node[box] (s1) {۱. حلقهٔ بویا را به VNA کوپل کنید؛ $S_{21}$ را اندازه بگیرید\\ $\Rightarrow$ مشاهدهٔ طیف مُدها (چند قله)};
+  \node[box, below=of s1] (s2) {۲. شناسایی مُد $m{=}1$ (بلندترین قله در حالت بالاگذر)؛\\ کاوشگر را بچرخانید تا دو مُد متعامدِ $m{=}1$ دیده شود};
+  \node[box, below=of s2] (s3) {۳. \textbf{تنظیم}: خازن‌های حلقه را تنظیم کنید تا $m{=}1$ به $f_0$ برسد};
+  \node[box, below=of s3] (s4) {۴. کابل را به درگاه وصل کنید؛ $S_{11}$ را اندازه بگیرید.\\ \textbf{تطبیق}: نقطهٔ تغذیه را به مرکز نمودار اسمیت ببرید ($50\,\Omega$)};
+  \node[box, below=of s4] (s5) {۵. سیم‌پیچ را با فانتوم / سر بارگذاری کنید؛\\ بازتنظیم و بازتطبیق (بار، $f$ و $Z$ را جابه‌جا می‌کند)};
+  \node[box, below=of s5] (s6) {۶. هر دو درگاه را تنظیم کنید؛ ایزولاسیونِ درگاه\\ $S_{21}\!<\!-15$ dB (واهم‌بندیِ خوبِ کوادراتور)};
+  \node[box, below=of s6] (s7) {۷. بالون / تلهٔ کابل را نصب کنید؛\\ اثر آن بر تکرارپذیریِ تنظیم را بررسی کنید};
+
+  \foreach \a/\b in {s1/s2, s2/s3, s3/s4, s4/s5, s5/s6, s6/s7}
+    \draw[->, thick] (\a) -- (\b);
+
+  % side annotations of which S-parameter is used
+  \node[meas, right=2mm of s1] {$S_{21}$};
+  \node[meas, right=2mm of s4] {$S_{11}$};
+  \node[meas, right=2mm of s6] {$S_{21}$ (درگاه-درگاه)};
+
+\end{tikzpicture}}
+\end{document}

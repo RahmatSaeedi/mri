@@ -1,0 +1,52 @@
+% Self-test hierarchy: POST -> BIST -> Daily QA, with increasing confidence /
+% coverage as we climb the ladder.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    level/.style={rectangle, rounded corners=3pt, draw=black!70, very thick,
+      align=left, inner sep=8pt, minimum height=1.5cm}]
+
+  % three stacked levels, bottom = lowest confidence
+  \node[level, fill=blue!8,   text width=9.0cm] (post)
+    {\textbf{POST} (خودآزمون هنگام روشن‌شدن) --- محرک: روشن‌شدن\\[2pt]
+     {\footnotesize «آیا اجزا حاضر و سالم‌اند؟»\\
+      (لینک FPGA، چک‌سام میان‌افزار، کارت‌های گیرنده، حسگرها)}};
+
+  \node[level, fill=yellow!18, text width=9.0cm, above=1.2cm of post] (bist)
+    {\textbf{BIST} (خودآزمون درون‌ساخت) --- محرک: دوره‌ای / به دستور\\[2pt]
+     {\footnotesize «آیا هر زیرسامانه به محرک درست پاسخ می‌دهد؟»\\
+      (حلقهٔ بازگشتی، شکل‌موج گرادیان آزمون، پالس RF کم‌توان)}};
+
+  \node[level, fill=green!14, text width=9.0cm, above=1.2cm of bist] (daily)
+    {\textbf{QA روزانه} (آزمون کارکردی) --- محرک: اسکن فانتوم روزانه\\[2pt]
+     {\footnotesize «آیا کل زنجیره کیفیت لازم را تحویل می‌دهد؟»\\
+      (فانتوم استاندارد، سنجه‌های کیفیت تصویر)}};
+
+  % up-arrows
+  \draw[->, very thick, black!55] (post) -- (bist);
+  \draw[->, very thick, black!55] (bist) -- (daily);
+
+  % confidence / coverage axis on the right
+  \draw[->, thick, black!50]
+    ($(post.south east)+(0.7,-0.05)$) -- ($(daily.north east)+(0.7,0.05)$)
+    node[midway, rotate=-90, anchor=south, font=\footnotesize]
+    {افزایش اطمینان و پوشش آزمون};
+\end{tikzpicture}}
+\end{document}

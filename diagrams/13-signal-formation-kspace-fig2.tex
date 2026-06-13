@@ -1,0 +1,69 @@
+% Standalone TikZ figure: single-shot EPI zigzag trajectory in the k-space plane.
+% Bidirectional readout lines (alternating +Gx / -Gx) joined by small phase-encode blips.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  \def\xmin{-3.0}
+  \def\xmax{3.0}
+
+  % axes
+  \draw[->] (\xmin-0.5,0) -- (\xmax+1.2,0) node[right] {$k_x$};
+  \draw[->] (\xmin-0.5,-0.6) -- (\xmin-0.5,3.4) node[above] {$k_y$};
+
+  % faint sampling grid along the traversed lines
+  \foreach \y in {0,0.7,1.4,2.1,2.8} {
+    \foreach \x in {-3.0,-2.4,-1.8,-1.2,-0.6,0,0.6,1.2,1.8,2.4,3.0} {
+      \fill[black!25] (\x,\y) circle (0.028);
+    }
+  }
+
+  % zigzag readout lines (alternating direction) with blips between
+  % line 1: +Gx (left -> right) at y=0
+  \draw[->, very thick, blue!60!black] (\xmin,0) -- (\xmax,0);
+  \node[font=\scriptsize, blue!60!black, below right] at (\xmax,0) {خط ۱: $+G_x$};
+  % blip up
+  \draw[->, thick, red!70!black] (\xmax,0) -- (\xmax,0.7);
+  % line 2: -Gx (right -> left) at y=0.7
+  \draw[->, very thick, blue!60!black] (\xmax,0.7) -- (\xmin,0.7);
+  \node[font=\scriptsize, blue!60!black, below left] at (\xmin,0.7) {خط ۲: $-G_x$};
+  % blip up
+  \draw[->, thick, red!70!black] (\xmin,0.7) -- (\xmin,1.4);
+  % line 3: +Gx at y=1.4
+  \draw[->, very thick, blue!60!black] (\xmin,1.4) -- (\xmax,1.4);
+  \node[font=\scriptsize, blue!60!black, below right] at (\xmax,1.4) {خط ۳: $+G_x$};
+  % blip up
+  \draw[->, thick, red!70!black] (\xmax,1.4) -- (\xmax,2.1);
+  % line 4: -Gx at y=2.1
+  \draw[->, very thick, blue!60!black] (\xmax,2.1) -- (\xmin,2.1);
+  % blip up
+  \draw[->, thick, red!70!black] (\xmin,2.1) -- (\xmin,2.8);
+  % line 5: +Gx at y=2.8 (partial -> continues)
+  \draw[->, very thick, blue!60!black] (\xmin,2.8) -- (2.0,2.8);
+  \node[font=\scriptsize] at (2.6,2.8) {$\cdots$};
+
+  % blip label
+  \node[font=\scriptsize, red!70!black, right] at (\xmax+0.05,1.05) {جهش \RL{($+G_y$)}};
+
+  % title note
+  \node[font=\scriptsize, align=center] at (0,3.25)
+    {EPI تک‌شات: جاروب زیگزاگی کل صفحهٔ $k$};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,69 @@
+% FDA-style design-control "waterfall": user needs cascade down through
+% inputs, outputs, verification, validation, transfer, and change control.
+% Design review feeds each stage; all evidence flows to the DHF.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  stage/.style={draw, rounded corners=2pt, fill=blue!10, align=center,
+                text width=42mm, minimum height=11mm},
+  note/.style={font=\footnotesize, align=left, text width=44mm}]
+
+  \node[draw, rounded corners=2pt, fill=blue!18, align=center,
+        text width=42mm, minimum height=10mm] (un) {نیازهای کاربر / بالینی\\(نیازهای کاربر)};
+  \node[stage, below=7mm of un] (di) {ورودی‌های طراحی};
+  \node[stage, below=7mm of di] (do) {خروجی‌های طراحی};
+  \node[stage, below=7mm of do] (ver) {راستی‌آزمایی};
+  \node[stage, below=7mm of ver] (val) {صحه‌گذاری};
+  \node[stage, below=7mm of val] (tr)  {انتقال طراحی};
+  \node[stage, below=7mm of tr, fill=blue!18] (cc) {تغییرات طراحی\\(حلقهٔ مادام‌العمر)};
+
+  % Main downward flow
+  \foreach \a/\b in {un/di, di/do, do/ver, ver/val, val/tr, tr/cc} {
+    \draw[->, very thick] (\a) -- (\b);
+  }
+
+  % Right-side annotations
+  \node[note, right=6mm of ver] {\emph{«آیا دستگاه را درست ساختیم؟»}\\ خروجی $=$ ورودی؟};
+  \node[note, right=6mm of val] {\emph{«آیا دستگاه درست را ساختیم؟»}\\ نیاز کاربر برآورده شد؟};
+
+  % Design review feeding stages (left side)
+  \node[draw, rounded corners=2pt, fill=orange!15, align=center,
+        text width=30mm, left=14mm of di, font=\footnotesize] (dr)
+        {بازنگری طراحی\\در هر مرحله\\(ذی‌نفعان\\مستقل)};
+  \draw[->, thick, orange!60!black] (dr.east) -- (di.west);
+  \draw[->, thick, orange!60!black, dashed] (dr.south) |- (do.west);
+  \draw[->, thick, orange!60!black, dashed] (dr.south) |- (ver.west);
+
+  % DMR output from transfer
+  \node[draw, rounded corners=2pt, fill=green!12, align=center,
+        right=8mm of tr, text width=30mm, font=\footnotesize] (dmr)
+        {DMR\\(پروندهٔ اصلی دستگاه)};
+  \draw[->, thick] (tr.east) -- (dmr.west);
+
+  % DHF collects all evidence
+  \node[draw, rounded corners=3pt, fill=green!18, very thick, align=center,
+        below=9mm of cc, text width=70mm, minimum height=10mm] (dhf)
+        {\textbf{DHF (پروندهٔ تاریخچهٔ طراحی)}\\
+         {\footnotesize همهٔ شواهد بالا را گرد می‌آورد}};
+  \draw[->, thick] (cc) -- (dhf);
+  \draw[->, thick, green!45!black, dashed]
+        (un.west) -- ++(-2,0) coordinate(c) |- (dhf.west);
+\end{tikzpicture}}
+\end{document}

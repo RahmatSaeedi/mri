@@ -1,0 +1,66 @@
+% Standalone TikZ figure: cryostat thermal budget. Nested enclosures
+% (300 K vacuum vessel -> 40 K shield -> 4.2 K superconducting magnet)
+% with the four dominant heat-leak paths.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, line join=round]
+  % --- Outer vacuum vessel (300 K) ---
+  \draw[thick, fill=red!6, rounded corners=4pt] (0,0) rectangle (9.2,6.2);
+  \node[anchor=north west, font=\bfseries] at (0.15,6.55) {اتاق / دیوارهٔ بیرونی \quad 300\,K (مخزن خلأ)};
+
+  % --- 40 K thermal shield ---
+  \draw[thick, fill=orange!12, rounded corners=4pt] (1.0,1.0) rectangle (8.2,5.0);
+  \node[anchor=north west] at (1.15,4.85) {سپر گرمایی \;$\sim$40\,K \;(مرحلهٔ ۱)};
+
+  % --- 4.2 K magnet ---
+  \draw[thick, fill=blue!10, rounded corners=4pt] (2.2,1.8) rectangle (7.0,3.9);
+  \node[anchor=center, align=center] at (4.6,3.2)
+    {آهنربای ابررسانا \;4.2\,K\\ (سیم‌پیچ NbTi، جریان پایدار)\\[2pt]
+     {\footnotesize مرحلهٔ ۲ / حمام He}};
+
+  % --- MLI hatch hint between outer wall and shield ---
+  \draw[pattern=north east lines, pattern color=red!25, draw=none]
+    (0.15,0.15) rectangle (9.05,0.85);
+  \node[anchor=west, font=\footnotesize] at (0.2,0.5)
+    {MLI + تابش + رسانش تعلیق};
+
+  % --- Cryocooler annotation ---
+  \node[draw, rounded corners=2pt, fill=white, font=\footnotesize, anchor=west]
+    (cooler) at (9.5,4.0) {کرایوکولر};
+  \draw[->] (cooler.west) -- (8.2,4.0);   % to 40 K shield
+  \draw[->] (cooler.west) -- (7.0,3.0);   % to 4.2 K stage
+
+  % --- Heat-leak path arrows ---
+  % (1) radiation 300 -> 40
+  \draw[->, red!70!black, thick] (0.6,5.6) -- (1.5,4.6);
+  \node[red!70!black, font=\footnotesize, anchor=south] at (0.95,5.4)
+    {(1) $\dot Q_{\mathrm{rad}}\,300{\to}40$};
+  % (2) radiation 40 -> 4.2
+  \draw[->, orange!75!black, thick] (1.7,4.4) -- (2.5,3.6);
+  \node[orange!70!black, font=\footnotesize, anchor=west] at (1.05,3.9)
+    {(2) $\dot Q_{\mathrm{rad}}\,40{\to}4.2$ \RL{($\propto T^4$)}};
+  % (3) suspension conduction
+  \draw[->, gray, thick] (4.6,0.9) -- (4.6,1.75);
+  \node[gray, font=\footnotesize, anchor=north] at (4.6,1.0) {(3) رسانش تعلیق};
+  % (4) current-lead / neck conduction
+  \draw[->, gray, thick] (6.4,5.1) -- (6.4,3.95);
+  \node[gray, font=\footnotesize, anchor=south, align=center] at (6.4,5.05)
+    {(4) رسانش گردنه /\\ رابط جریان};
+\end{tikzpicture}}
+\end{document}

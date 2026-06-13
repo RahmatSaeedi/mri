@@ -1,0 +1,41 @@
+% Pipelined 2D FFT recon on FPGA: raw stream -> DDC+FIR decimation (per channel)
+% -> row FFT -> transpose buffer in BRAM -> column FFT -> channel combine -> image out.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=7mm,
+    blk/.style={rounded corners=3pt, draw=black, thick, align=center, inner sep=5pt, minimum width=4.6cm},
+    io/.style={align=center, font=\footnotesize\itshape}]
+
+  \node[io] (in) {ورودیِ نمونهٔ خام (جریانی)};
+  \node[blk, fill=blue!12, below=of in] (ddc) {DDC $+$ کاهش‌نرخِ FIR\\\footnotesize (هر کانال)};
+  \node[blk, fill=green!14, below=of ddc] (rfft) {FFT سطری (خط‌لوله‌ای)};
+  \node[blk, fill=orange!16, below=of rfft] (tr) {بافر ترانهاده در BRAM\\\footnotesize (تنگنای حافظه)};
+  \node[blk, fill=green!14, below=of tr] (cfft) {FFT ستونی (خط‌لوله‌ای)};
+  \node[blk, fill=violet!14, below=of cfft] (comb) {ترکیب کانال‌ها\\\footnotesize (مجموع‌مربعات یا SENSE خطی)};
+  \node[io, below=of comb] (out) {خروجیِ تصویر (جریان به میزبان / نمایش)};
+
+  \draw[->, very thick] (in)  -- (ddc);
+  \draw[->, very thick] (ddc) -- (rfft);
+  \draw[->, very thick] (rfft) -- (tr);
+  \draw[->, very thick] (tr)  -- (cfft);
+  \draw[->, very thick] (cfft) -- (comb);
+  \draw[->, very thick] (comb) -- (out);
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,65 @@
+% Quench vent pipe and pressure-relief architecture: helium vessel ->
+% relief valve + rupture disk -> quench vent pipe -> outdoors/roof.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=10mm,
+    box/.style={draw, very thick, rounded corners=2pt, align=center,
+                minimum width=52mm, minimum height=12mm},
+    flow/.style={->, very thick, blue!55!black}]
+
+  % --- vessel at bottom ---
+  \node[box, fill=cyan!12, minimum height=15mm] (vessel)
+    {مخزن هلیوم + آهنربا\\ \footnotesize $4.2$ K، انرژی ذخیره‌شده $E_{\mathrm{mag}}=\frac{1}{2} L I^2$};
+
+  % --- relief assembly ---
+  \node[box, fill=orange!15, minimum height=18mm, above=of vessel] (relief)
+    {\textbf{شیر اطمینان + دیسک ترکش}\\[1pt]
+     \footnotesize PRV: جوشش عادی (بازنشینِ خودکار)\\
+     \footnotesize دیسک ترکش: کوئنچ کامل (شارش لحظه‌ای بالا)};
+
+  % --- quench vent pipe ---
+  \node[box, fill=green!12, minimum height=16mm, above=of relief] (pipe)
+    {\textbf{لولهٔ تخلیهٔ کوئنچ}\\[1pt]
+     \footnotesize قطر بزرگ $D$، عایق‌بندی‌شده\\
+     \footnotesize (مانع یخ‌زدگی / میعان)};
+
+  % --- outlet ---
+  \node[box, draw=none, fill=none, above=8mm of pipe] (outlet)
+    {\textbf{فضای باز / پشت‌بام}};
+  \node[below=0pt of outlet, font=\scriptsize, text=gray!50!black]
+    {(خروجی توری‌دار و دارای کلاهکِ هواشناختی)};
+
+  % flow arrows
+  \draw[flow] (vessel) -- (relief);
+  \draw[flow] (relief) -- (pipe);
+  \draw[flow] (pipe) -- (outlet);
+
+  % side annotations
+  \node[right=4mm of relief, align=left, font=\scriptsize, text=orange!45!black]
+    {آخرین خط دفاع\\ در برابر اضافه‌فشارِ\\ کرایوستات};
+  \node[left=4mm of pipe, align=right, font=\scriptsize, text=green!40!black]
+    {گاز He را\\ ایمن به بیرونِ\\ ساختمان هدایت می‌کند};
+
+  % overpressure criterion note
+  \node[below=4mm of vessel, font=\scriptsize, align=center]
+    {$p_{\mathrm{vessel}} = p_{\mathrm{atm}} + \Delta p_{\mathrm{pipe}}(\dot V_{\mathrm{peak}}) < p_{\max}$};
+
+\end{tikzpicture}}
+\end{document}

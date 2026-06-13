@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=11cm, height=7cm,
+      xlabel={$t$ (ns)},
+      ylabel={شمار},
+      xmin=-6, xmax=6, ymin=0, ymax=1.18,
+      ytick=\empty,
+      xtick={0,3.2},
+      xticklabels={$t_{\mathrm{nominal}}$, $\bar t$},
+      axis lines=left,
+      enlargelimits=false,
+      clip=false,
+      samples=120,
+      domain=-6:6,
+    ]
+    % measured timing distribution centered at mean (offset from nominal)
+    \def\mean{3.2}
+    \def\sig{1.0}
+    % histogram-like bars
+    \addplot[ybar, bar width=0.34cm, fill=blue!25, draw=blue!55, opacity=0.85]
+      coordinates {
+        (0.6,0.03)(1.0,0.10)(1.4,0.24)(1.8,0.45)(2.2,0.70)(2.6,0.90)
+        (3.0,1.0)(3.4,0.97)(3.8,0.82)(4.2,0.58)(4.6,0.34)(5.0,0.16)
+        (5.4,0.06)(5.8,0.02)
+      };
+    % smooth Gaussian envelope
+    \addplot[very thick, red!70!black, domain=0:6]
+      {exp(-((x-\mean)^2)/(2*\sig*\sig))};
+
+    % nominal time marker
+    \draw[dashed, gray!70] (axis cs:0,0) -- (axis cs:0,1.1);
+    % mean marker
+    \draw[dashed, blue!60!black] (axis cs:\mean,0) -- (axis cs:\mean,1.06);
+
+    % accuracy = mean - nominal
+    \draw[<->, thick] (axis cs:0,1.12) -- (axis cs:\mean,1.12)
+      node[midway, above, font=\scriptsize] {دقت $=\bar t - t_{\mathrm{nominal}}$};
+
+    % jitter = sigma (sigma band)
+    \draw[<->, thick] (axis cs:\mean,0.61) -- (axis cs:{\mean+\sig},0.61)
+      node[midway, above=1pt, font=\scriptsize] {لرزش $=\sigma$};
+    \draw[dashed, gray!55] (axis cs:{\mean+\sig},0) -- (axis cs:{\mean+\sig},0.61);
+
+    \node[red!70!black, font=\scriptsize, anchor=west] at (axis cs:4.4,0.9)
+      {پذیرش: $\sigma \le 10$ ns};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

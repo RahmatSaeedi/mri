@@ -1,0 +1,61 @@
+% Mode spectrum of an N=8 high-pass birdcage: relative frequency vs mode
+% index m, showing the doubly-degenerate working mode m=1 at the top, and
+% the single co-rotating (m=4) and common (m=0) modes at the bottom.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % frequency axis (vertical)
+  \draw[->, thick] (0,-0.3) -- (0,6.0) node[above] {بسامد نسبی};
+  \node[rotate=90, anchor=south] at (-0.55,3.0) {\footnotesize بالاگذر: $\omega_m$ با $m$ کاهش می‌یابد};
+
+  % helper for a degenerate (double) level
+  % #1 = y, #2 = mode label, #3 = current functions, #4 = note
+  \newcommand{\level}[5]{%
+    \draw[#5, very thick] (0.4,#1) -- (3.6,#1);
+    \node[anchor=west, font=\footnotesize] at (3.75,#1) {#2};
+    \node[anchor=west, font=\footnotesize] at (6.0,#1) {#3};
+    \node[anchor=west, font=\footnotesize, gray] at (9.0,#1) {#4};
+  }
+
+  % column headers
+  \node[anchor=west, font=\footnotesize\bfseries] at (3.75,5.7) {مُد $m$};
+  \node[anchor=west, font=\footnotesize\bfseries] at (6.0,5.7) {جریان میله};
+  \node[anchor=west, font=\footnotesize\bfseries] at (9.0,5.7) {نقش};
+
+  % m = 1 (double) -- highest, working mode
+  \level{5.0}{$m{=}1$ (دوگانه)}{$\cos\phi,\ \sin\phi$}{مُد کاری \RL{(یکنواختی $B_1$)}}{red!75!black}
+  % m = 2 (double)
+  \level{3.9}{$m{=}2$ (دوگانه)}{$\cos2\phi,\ \sin2\phi$}{هماهنگ (ناخواسته)}{blue!60!black}
+  % m = 3 (double)
+  \level{2.8}{$m{=}3$ (دوگانه)}{$\cos3\phi,\ \sin3\phi$}{}{blue!60!black}
+  % m = 4 (single) -- co-rotating / anti-phase
+  \level{1.5}{$m{=}4$ (یگانه)}{$\cos4\phi$}{پادفاز / هم‌چرخش}{black}
+  % m = 0 (single) -- common ring mode -- lowest
+  \level{0.5}{$m{=}0$ (یگانه)}{همهٔ میله‌ها برابر}{مُد مشترکِ حلقهٔ انتهایی}{black}
+
+  % bracket marking the operating mode
+  \draw[red!75!black, thick, ->] (0.15,5.6) -- (0.4,5.05);
+  \node[red!75!black, font=\footnotesize, anchor=east] at (0.1,5.55) {بالاترین};
+
+  \draw[thick, ->] (0.15,0.0) -- (0.4,0.45);
+  \node[font=\footnotesize, anchor=east] at (0.1,0.0) {پایین‌ترین};
+
+\end{tikzpicture}}
+\end{document}

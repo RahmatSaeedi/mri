@@ -1,0 +1,517 @@
+---
+title: "پیوست الف: کلید پاسخ‌ها"
+---
+
+<!-- title_en: Appendix A: Consolidated answer key -->
+
+این پیوست، کلیدِ پاسخِ تمرین‌های پایانِ فصل (بخشِ «پرسش‌ها و تمرین‌ها» در هر فصل) را گرد می‌آورد. تأکیدِ آن بر تمرین‌های **محاسباتی** و **استدلالی/اشتقاقی** است که پاسخِ یکتا و قابل‌وارسی دارند؛ برای این دسته، حل گام‌به‌گام همراه با واحدها و عددِ نهایی آمده است و حسابِ عددی وارسی شده. برای تمرین‌های **مفهومی**، **شبیه‌سازی/کد** و **طراحی/ساخت** که پاسخِ یکتا ندارند، تنها «راهنمای پاسخ» (نکاتِ کلیدی و معیارِ درستی) آورده شده است.
+
+::: {.callout-note}
+این کلید فصل‌های ۱ تا ۱۸ (مبانیِ ریاضی-فیزیک و شکل‌گیریِ تصویر) را که بیشترین تمرینِ کمّی را دارند پوشش می‌دهد و قابلِ گسترش به فصل‌های مهندسیِ سخت‌افزار و سامانه (۱۹ به بعد) است. ثابت‌های پایه: نسبتِ ژیرومغناطیسیِ پروتون [$\bar\gamma=\gamma/2\pi=42.58\ \text{MHz/T}$]{.ltr}، [$\hbar=1.055\times10^{-34}\ \text{J·s}$]{.ltr}، [$k_B=1.381\times10^{-23}\ \text{J/K}$]{.ltr}. در همهٔ محاسبات فرکانسِ لارمور $f_0=\bar\gamma B_0$ و فاز/مساحتِ گرادیان با $\bar\gamma$ (نه $\gamma$) به کار می‌رود؛ یعنی $k=\bar\gamma\!\int\! G\,dt$.
+:::
+
+---
+
+### فصل ۱ — حساب دیفرانسیل و انتگرال و حساب برداری {#sec-key-ch01}
+
+**تمرین ۷ (انتگرال گاوسی).** قرار دهید $I=\int_{-\infty}^{\infty}e^{-ax^2}dx$. آنگاه
+$$I^2=\int_{-\infty}^{\infty}\!\!\int_{-\infty}^{\infty}e^{-a(x^2+y^2)}\,dx\,dy=\int_0^{2\pi}\!\!\int_0^{\infty}e^{-ar^2}r\,dr\,d\theta=2\pi\cdot\frac{1}{2a}=\frac{\pi}{a},$$
+که در آن از $r\,dr\,d\theta$ (ژاکوبینِ قطبی) و $\int_0^\infty e^{-ar^2}r\,dr=\tfrac{1}{2a}$ استفاده شد. پس $I=\sqrt{\pi/a}$.
+
+**تمرین ۸ (مشتق‌ها).**
+(الف) با قاعدهٔ ضرب: $f'(t)=e^{-t/T_2}\!\left(\omega\cos\omega t-\tfrac{1}{T_2}\sin\omega t\right)$.
+(ب) با قاعدهٔ زنجیره‌ای: $g'(x)=\dfrac{2x}{1+x^2}$.
+(پ) $h'(\theta)=\dfrac{\theta\cos\theta-\sin\theta}{\theta^2}$؛ و $\lim_{\theta\to0}\tfrac{\sin\theta}{\theta}=1$ سازگار با حدِ [sinc]{.ltr}.
+
+**تمرین ۹ (انتگرال‌ها).**
+(الف) با انتگرالِ جزء‌به‌جزء، $\int_0^\infty t\,e^{-t/T_1}dt=T_1^2$.
+(ب) $\int_{-\infty}^\infty e^{-(x/\sigma)^2/2}dx=\sigma\sqrt{2\pi}$ (از انتگرال گاوسی با $a=1/2\sigma^2$).
+
+**تمرین ۱۰ (گرادیانِ [MRI]{.ltr}).** اختلافِ فرکانس میانِ دو نقطه:
+$$\Delta f=\bar\gamma\,G_y\,\Delta y=42.58\times10^6\times30\times10^{-3}\times0.20=2.55\times10^5\ \text{Hz}\approx 255\ \text{kHz}.$$
+پهنای‌باندِ موردنیازِ گیرنده دستِ‌کم همین $\approx 255\ \text{kHz}$ است (برای پوششِ کلِ [FOV]{.ltr} در راستای $y$).
+
+**تمرین ۱۱ (تأیید قضیهٔ دیورژانس).** برای $\mathbf F=(x,y,z)$، $\nabla\cdot\mathbf F=3$، پس $\iiint_V 3\,dV=3\cdot\tfrac43\pi R^3=4\pi R^3$. روی کره $\mathbf F\cdot\hat{\mathbf n}=R$ و $\oint R\,dA=R\cdot4\pi R^2=4\pi R^3$. دو طرف برابرند. ✔
+
+**تمرین ۲۰ (باقی‌ماندهٔ تیلور).** برای $\cos\theta\approx1-\theta^2/2$ جملهٔ بعدی $\theta^4/24$ است؛ پس $|\text{خطا}|\le|\theta|^4/24$. برای خطا $<10^{-3}$: $|\theta|<(24\times10^{-3})^{1/4}\approx0.394\ \text{rad}\approx22.6^\circ$.
+
+**تمرین ۲۳ (دیورژانس استوانه‌ای).** $\nabla\cdot\mathbf F=\tfrac1r\partial_r(rF_r)=\tfrac1r\partial_r(r\cdot r^2)=\tfrac1r\cdot3r^2=3r$. در کارتزین با $\mathbf F=r\hat{\mathbf r}=(x,y)$ خواهیم داشت برای $\mathbf F=r^2\hat{\mathbf r}=r(x,y)$، که محاسبهٔ مستقیم همان $3r$ را می‌دهد؛ ضرایبِ متریک ($\tfrac1r\partial_r(r\,\cdot)$) ضروری‌اند.
+
+**تمرین ۲۴ (ولتاژ القایی).** $|\mathcal E|=\omega\Phi_0=2\pi f_0\Phi_0$. در [1.5 T]{.ltr}: $2\pi\times63.9\times10^6\times2\times10^{-12}=8.0\times10^{-4}\ \text{V}\approx0.80\ \text{mV}$. در [3 T]{.ltr}: $2\pi\times127.7\times10^6\times2\times10^{-12}\approx1.60\ \text{mV}$. نسبت $\approx2$ (خطی با $f_0$، اما با احتسابِ $\Phi_0\propto M_0\propto B_0$ سیگنالِ کل $\propto B_0^2$ — تمرین ۲۸ فصل ۱۳).
+
+**تمرین ۲۵ (پهنای‌باندِ هر پیکسل).** پهنای‌باندِ کل $=\bar\gamma G_x\,\text{FOV}=42.58\times10^6\times25\times10^{-3}\times0.24\approx255\ \text{kHz}$. به ازای هر پیکسل: $255\ \text{kHz}/320\approx798\ \text{Hz/pixel}$.
+
+**تمرین ۲۶ (آهنگ شیب).** $\text{slew}=\Delta G/\Delta t=(60\times10^{-3})/(250\times10^{-6})=240\ \text{T/m/s}$. این بالاتر از بازهٔ معمولِ بالینی [100–200 T/m/s]{.ltr} است؛ یا باید زمانِ گذار را بلندتر کرد یا سخت‌افزارِ پرشتاب به کار برد.
+
+**تمرین ۲۷ (گامِ فضای‑کی).** $k=\bar\gamma G\,t=42.58\times10^6\times15\times10^{-3}\times0.8\times10^{-3}\approx511\ \text{cycles/m}$. اگر این مقدار را گامِ نمونه‌برداری $\Delta k$ بگیریم، $\text{FOV}=1/\Delta k\approx1.96\ \text{mm}$ (که کوچک است — یعنی این $k$ در عمل $k_{\max}$ است، نه $\Delta k$).
+
+**تمرین ۱۵ (طراحی — گشتاور گرادیان).** برای ذوزنقه با زمانِ صعود $t_r$، تختِ $t_p$ و دامنهٔ $G_{\max}$:
+$$\int_0^T G\,dt=G_{\max}\,t_p+G_{\max}\,t_r=G_{\max}(t_p+t_r).$$
+(دو مثلثِ صعود/نزول هر کدام $\tfrac12 G_{\max}t_r$ که جمعاً $G_{\max}t_r$ می‌شود.) این «مساحت» برابرِ $2\pi k/\gamma$ است؛ برای تأمینِ گشتاورِ هدفِ $A_{\text{target}}$ کافی است $t_p=A_{\text{target}}/G_{\max}-t_r$ تنظیم شود.
+
+**تمرین ۳۲ (بودجهٔ خطای میدان، [7 T]{.ltr}).** پایداریِ $0.05\ \text{ppm}$ یعنی $\delta B_0/B_0\le5\times10^{-8}$، پس $\delta B_0\le5\times10^{-8}\times7\ \text{T}=0.35\ \mu\text{T}$. این الزامِ مستقیمِ پایداریِ منبع‌تغذیه/قفلِ آهنرباست (فصل ۲۰).
+
+**راهنمای پاسخِ مفهومی/طراحی (۱، ۲، ۳، ۱۶–۱۹، ۲۱، ۲۲، ۳۱، ۳۳):** نکات کلیدی — حدِ تابع مستقل از مقدارِ نقطه است (مثلِ [sinc]{.ltr} و سیگنالِ بازفازشده در $t=0$)؛ دیورژانس=چشمهٔ شار، کرل=چرخش؛ $\nabla\cdot\mathbf B=0$ هم‌ارزِ نبودِ تک‌قطبی و بسته‌بودنِ خطوطِ میدان است؛ هوپیتال فقط برای فرم‌های مبهمِ $0/0$ یا $\infty/\infty$ معتبر است و $\cos\theta/\theta\to+\infty$ نوعِ مبهم نیست؛ تجزیهٔ هلمهولتز هم دیورژانس و هم کرل را برای تعیینِ میدان لازم می‌داند؛ طراحیِ سیم‌پیچ گرادیان از تابعِ جریان (تضمینِ خودکارِ $\nabla\cdot\mathbf B=0$) سود می‌برد.
+
+---
+
+### فصل ۲ — اعداد مختلط و چارچوب چرخان {#sec-key-ch02}
+
+**تمرین ۹.** با $z_1=2e^{i\pi/3}$، $z_2=4e^{-i\pi/6}$:
+$z_1 z_2=8e^{i\pi/6}$؛ $z_1/z_2=\tfrac12 e^{i\pi/2}=\tfrac12 i$؛ $z_1^3=8e^{i\pi}=-8$؛ ریشه‌های چهارمِ $z_2$: $\sqrt[4]{4}\,e^{i(-\pi/24+k\pi/2)}=\sqrt2\,e^{i(-\pi/24+k\pi/2)}$، $k=0,1,2,3$.
+
+**تمرین ۱۰ (انتگرال با مانده).** قطبِ نیم‌صفحهٔ بالا در $z=ia$ با ماندهٔ $1/(2ia)$:
+$$\int_{-\infty}^{\infty}\frac{dx}{x^2+a^2}=2\pi i\cdot\frac{1}{2ia}=\frac{\pi}{a}.$$
+این دقیقاً انتگرالِ یک خطِ لورنتسیِ نرمال‌نشده است.
+
+**تمرین ۱۱.** ($\bar\gamma=42.58\ \text{MHz/T}$، [3 T]{.ltr})
+(الف) $f_0=42.58\times3=127.7\ \text{MHz}$.
+(ب) پالسِ $180^\circ$: $\theta=\gamma B_1\tau=\pi$، پس $\tau=\dfrac{\pi}{2\pi\bar\gamma B_1}=\dfrac{0.5}{\bar\gamma B_1}=\dfrac{0.5}{42.58\times10^6\times5\times10^{-6}}\approx2.35\ \text{ms}$.
+(پ) آفست $\Delta f=500\ \text{Hz}$، $f_1=\bar\gamma B_1=42.58\times10^6\times5\times10^{-6}\approx213\ \text{Hz}$. زاویهٔ کجی $\theta=\arctan(f_1/\Delta f)=\arctan(213/500)\approx23^\circ$؛ $f_{\text{eff}}=\sqrt{\Delta f^2+f_1^2}\approx543\ \text{Hz}$.
+
+**تمرین ۱۲.** (الف) [FWHM]{.ltr}$=\dfrac{1}{\pi T_2^*}=\dfrac{1}{\pi\times50\times10^{-3}}\approx6.37\ \text{Hz}$.
+(ب) خطی به پهنای $6.37\ \text{Hz}$ نمی‌تواند دو خط به فاصلهٔ $8\ \text{Hz}$ را تمیز تفکیک کند مگر تازه در آستانه؛ پس این $T_2^*$ مرزی است و عملاً ناکافی — به $T_2^*$ بلندتر (خطِ باریک‌تر) نیاز است.
+
+**تمرین ۲۵ (تنظیمِ سیم‌پیچ).** $L=150\ \text{nH}$، $R=0.4\ \Omega$، $f_0=127.7\ \text{MHz}$.
+(الف) $C=\dfrac{1}{(2\pi f_0)^2 L}\approx10.4\ \text{pF}$.
+(ب) $Q=\dfrac{2\pi f_0 L}{R}=\dfrac{120.4}{0.4}\approx301$؛ $\Delta f=f_0/Q\approx424\ \text{kHz}$.
+(پ) برای سیگنالِ $\pm50\ \text{kHz}$ (پهنای $100\ \text{kHz}$) این پهنای‌باندِ $\approx424\ \text{kHz}$ کافی است. ✔
+
+**تمرین ۲۶ (طردِ تصویر).** با $\epsilon=0.02$ و $\delta=2^\circ=0.0349\ \text{rad}$:
+$$\text{IRR}\approx-10\log_{10}\!\frac{\epsilon^2+\delta^2}{4}=-10\log_{10}\frac{0.0004+0.00122}{4}\approx-10\log_{10}(4.04\times10^{-4})\approx33.9\ \text{dB}.$$
+چون $33.9<35\ \text{dB}$، گیرنده در آستانه **رد** می‌شود (نیاز به کالیبراسیون بهتر).
+
+**تمرین ۲۷.** $G_x=20\ \text{mT/m}$، $\Delta t=5\ \mu\text{s}$، $N_x=256$.
+(الف) $\Delta k=\bar\gamma G_x\Delta t=42.58\times10^6\times0.02\times5\times10^{-6}\approx4.26\ \text{cycles/m}$.
+(ب) $\text{FOV}=1/\Delta k\approx0.235\ \text{m}=23.5\ \text{cm}$.
+(پ) $k_{\max}=N_x\Delta k/2\approx545\ \text{m}^{-1}$، $\Delta x=1/(2k_{\max})=\text{FOV}/N_x\approx0.92\ \text{mm}$.
+(د) برای دوبرابرکردنِ [FOV]{.ltr} بدونِ تغییرِ تفکیک، $\Delta k$ را نصف کن (مثلاً $\Delta t$ یا $G_x$ را نصف کن) و $N_x$ را دوبرابر کن تا $k_{\max}$ ثابت بماند.
+
+**تمرین ۲۸.** $z^4=-16=16e^{i\pi}$: ریشه‌ها $2e^{i(\pi/4+k\pi/2)}$، یعنی $2e^{i\pi/4}=\sqrt2(1+i)$، $\sqrt2(-1+i)$، $\sqrt2(-1-i)$، $\sqrt2(1-i)$.
+
+**راهنمای پاسخِ استدلالی (۵–۸، ۱۸–۲۴):** اتحادِ اویلر از تطبیقِ سری‌های $e^{i\theta}$ با $\cos\theta+i\sin\theta$ یا از حلِ $f'=if$ با $f(0)=1$؛ $\cos3\theta=4\cos^3\theta-3\cos\theta$، $\sin3\theta=3\sin\theta-4\sin^3\theta$ از دموآور. تابعِ $\bar z$ در کوشی–ریمان ($u_x=v_y$, $u_y=-v_x$) صدق نمی‌کند ($u=x,v=-y\Rightarrow u_x=1\neq v_y=-1$). برای ناممکن‌بودنِ ترتیبِ سازگار: اگر $i>0$ آنگاه $i\cdot i=-1>0$ تناقض. شرطِ آدیاباتیکِ جاروبِ خطی به $R\ll\omega_1^2$ می‌رسد.
+
+**راهنمای طراحی (۱۶، ۱۷، ۳۲، ۳۳):** آزمونِ پذیرشِ کوادراتور با تزریقِ تُنِ معلوم و سنجشِ نشتِ آینه‌ای؛ آستانهٔ معمول $\text{IRR}\ge35\ \text{dB}$. قراردادِ فاز باید جهتِ چرخش، علامتِ $\gamma$ و تعریفِ $M_{xy}=M_x+iM_y$ را با سخت‌افزار و کدِ بازسازی هم‌سو کند تا تصویرِ آینه‌ای رخ ندهد. انتخابِ $Q$: $Q_{\max}\approx f_0/\text{BW}_{\text{readout}}$.
+
+---
+
+### فصل ۳ — جبر خطی {#sec-key-ch03}
+
+**تمرین ۱۳.** $\mathbf A=\begin{bmatrix}3&0\\4&5\end{bmatrix}$. آنگاه $\mathbf A^H\mathbf A=\begin{bmatrix}25&20\\20&25\end{bmatrix}$ با ویژه‌مقادیرِ $45$ و $5$. مقادیر منفرد: $\sigma_1=\sqrt{45}=3\sqrt5\approx6.708$، $\sigma_2=\sqrt5\approx2.236$. عددِ وضعیت $\kappa=\sigma_1/\sigma_2=\sqrt{45/5}=3$.
+
+**تمرین ۱۴.** برای $\mathbf S=\begin{bmatrix}1&1\\1&1+\epsilon\end{bmatrix}$، دترمینان $=\epsilon$، اثر $=2+\epsilon$. در حدِ $\epsilon\to0$ ویژه‌مقادیر تقریباً $\lambda_+\approx2+\tfrac\epsilon2$ و $\lambda_-\approx\tfrac\epsilon2$؛ پس $\kappa\approx\lambda_+/\lambda_-\approx4/\epsilon\to\infty$. با کوچک‌شدنِ $\epsilon$ مسئله بی‌نهایت وضعیت‌بد می‌شود.
+
+**تمرین ۱۶ (واهلش خون [3 T]{.ltr}).** $T_1=1500\ \text{ms}$، $T_2=200\ \text{ms}$. ویژه‌مقادیرِ واهلشِ آزاد: عرضی $\lambda_{1,2}=-1/T_2=-5\ \text{s}^{-1}$، طولی $\lambda_3=-1/T_1\approx-0.67\ \text{s}^{-1}$. افتِ عرضی پس از $\text{TE}=100\ \text{ms}$: $1-e^{-100/200}=1-e^{-0.5}\approx39\%$. بازیابیِ طولی پس از $\text{TR}=2500\ \text{ms}$: $1-e^{-2500/1500}=1-e^{-1.67}\approx81\%$. ✔ (با کلیدِ متن.)
+
+**تمرین ۱۷ (فیلتر تیخونوف).** $\mathbf S=\begin{bmatrix}1&1\\1&1.05\end{bmatrix}$. مقادیر منفرد تقریباً $\sigma_1\approx2.025$، $\sigma_2\approx0.0247$ (پس $\kappa\approx82$). ضریب فیلتر $f_k=\sigma_k^2/(\sigma_k^2+\lambda^2)$. عددِ وضعیتِ مؤثرِ منظم‌شده تقریباً $\sigma_1/\sqrt{\sigma_2^2+\lambda^2}$:
+
+| $\lambda$ | $f_1$ | $f_2$ | $\kappa_{\text{eff}}$ |
+|---|---|---|---|
+| 0.02 | $\approx1.000$ | $\approx0.604$ | $\approx64$ |
+| 0.05 | $\approx1.000$ | $\approx0.196$ | $\approx36$ |
+| 0.10 | $\approx0.998$ | $\approx0.058$ | $\approx20$ |
+
+با بزرگ‌ترشدنِ $\lambda$، مُدِ کوچک سرکوب و وضعیتِ مؤثر بهتر می‌شود (به بهای سوگیری).
+
+**راهنمای پاسخِ استدلالی (۷–۱۲، ۱۵):** ویژه‌مقادیرِ ماتریسِ یکانی روی دایرهٔ واحد ($\|U\mathbf x\|=\|\mathbf x\|\Rightarrow|\lambda|=1$)؛ مقادیر منفردِ $\mathbf A$ ریشهٔ ویژه‌مقادیرِ $\mathbf A^H\mathbf A$اند؛ اشتقاقِ تیخونوف از $\nabla\|\mathbf{Ax-b}\|^2+\lambda^2\|\mathbf x\|^2=0$؛ خارج‌قسمت ریلی با بسط در پایهٔ ویژه؛ اکارت–یانگ $\|\mathbf A-\mathbf A_p\|_2=\sigma_{p+1}$؛ $g\ge1$ از کوشی–شوارتس. تمرین ۱۵: ویژه‌مقادیرِ بلاخِ روی‌تشدید $-\tfrac12(1/T_1+1/T_2)\pm i\omega_1$؛ نرخِ میراییْ میانگینِ نرخ‌های واهلش است نه $1/T_2$.
+
+**راهنمای مفهومی/طراحی (۱–۶، ۲۲–۲۴):** ماتریس هرمیتی به‌خاطرِ مختلط‌بودنِ سیگنال؛ تبدیلِ فوریهٔ یکانی نوفهٔ سفید را سفید نگه می‌دارد؛ فضای پوچ=اطلاعاتِ گم‌شده، وضعیت‌بدی=تقویتِ نوفه؛ چیدمانِ آرایه باید تنوعِ مکانیِ حساسیت بدهد تا [g-factor]{.ltr} پایین بماند؛ در میدان‌پایین منظم‌سازی حیاتی است چون [SNR]{.ltr} ذاتی پایین است.
+
+---
+
+### فصل ۴ — فوریه و نمونه‌برداری {#sec-key-ch04}
+
+**تمرین ۷.** پهنای‌باندِ $\pm62.5\ \text{kHz}$ یعنی $f_s=125\ \text{kHz}$. گامِ زمانی $\Delta t=1/f_s=8\ \mu\text{s}$. زمانِ کلِ خوانش $=N_x\Delta t=512\times8\ \mu\text{s}=4.096\ \text{ms}$. پهنای‌باندِ هر پیکسل $=f_s/N_x=125000/512\approx244\ \text{Hz/pixel}$.
+
+**تمرین ۸.** $\text{FOV}=24\ \text{cm}$، $N=256$: $\Delta x=\text{FOV}/N=0.9375\ \text{mm}$؛ $\Delta k=1/\text{FOV}\approx4.17\ \text{cycles/m}$؛ $k_{\max}=N/(2\,\text{FOV})\approx533\ \text{m}^{-1}$.
+
+**تمرین ۹ (الیاس).** $f_0=175\ \text{Hz}$، $f_s=120\ \text{Hz}$. نزدیک‌ترین مضرب: $175-1\times120=55$. فرکانسِ مستعار $=55\ \text{Hz}$.
+
+**تمرین ۲۱ (نمونه‌برداریِ باند‌گذری).** $[f_L,f_H]=[120,124]\ \text{MHz}$، $B=4\ \text{MHz}$. بیشینهٔ $n$ که نمونه‌برداریِ بدونِ همپوشانی می‌دهد $n_{\max}=\lfloor f_L/B\rfloor=\lfloor120/4\rfloor=30$. در $n=30$ بازهٔ مجاز به یک نقطه می‌رسد: $f_s=2f_H/(n+1)=2f_L/n=8\ \text{MHz}=2B$. پس نرخی نزدیکِ $2B=8\ \text{MHz}$ دقیقاً در مرز ممکن است.
+
+**تمرین ۲۳ (جابه‌جایی شیمیایی).** با $\approx130\ \text{Hz/pixel}$:
+[1.5 T]{.ltr} (جابه‌جایی $220\ \text{Hz}$): $220/130\approx1.7\ \text{pixel}$؛ با $\Delta x\approx\text{FOV}/256=0.9375\ \text{mm}$ یعنی $\approx1.6\ \text{mm}$.
+[3 T]{.ltr} (جابه‌جایی $440\ \text{Hz}$): $440/130\approx3.4\ \text{pixel}\approx3.2\ \text{mm}$.
+در [3 T]{.ltr} آرتیفکت بدتر است (با $B_0$ خطی بزرگ‌تر می‌شود).
+
+**تمرین ۲۴ (کایزر).** فرمولِ تجربیِ کایزر برای سطحِ گلبرگ‌جانبیِ $A\ \text{dB}$:
+$A=40$: $\beta=0.5842(40-21)^{0.4}+0.07886(40-21)\approx0.5842\times3.25+1.50\approx3.40$.
+$A=80$: $\beta=0.1102(80-8.7)\approx7.86$.
+با بزرگ‌ترشدنِ $\beta$، سرکوبِ گلبرگ‌جانبی بهتر اما گلبرگِ اصلیِ [PSF]{.ltr} پهن‌تر می‌شود (افتِ تفکیک).
+
+**تمرین ۲۵ (افتِ کنگره‌ای).** پنجرهٔ مستطیلی $3.92\ \text{dB}$ افتِ بدترین‌حالت دارد: $10^{-3.92/20}\approx0.637$، یعنی ارتفاعِ پیک تا $\approx36\%$ کم‌برآورد می‌شود. با هَنینگ ($1.42\ \text{dB}$): $10^{-1.42/20}\approx0.849$، یعنی خطا $\approx15\%$.
+
+**تمرین ۲۶ ([FFT]{.ltr} دوبعدی).** [FFT]{.ltr} سطر-ستونی برای $N\times N$: $\sim 2N\cdot(N/2)\log_2 N=N^2\log_2 N$ ضرب-جمعِ مختلط. برای $N=512$: $\approx512^2\times9\approx2.4\times10^6$. تبدیلِ مستقیمِ دوبعدی $\sim N^4=512^4\approx6.9\times10^{10}$. نسبتِ شتاب $\approx N^2/\log_2 N\approx512^2/9\approx2.9\times10^4$.
+
+**راهنمای استدلالی/مفهومی (۱–۶، ۱۵–۲۰، ۲۲):** سینوسی‌های مختلط ویژه‌بردارهای سامانه‌های [LTI]{.ltr}اند؛ افتِ $1/n$ از ناپیوستگیِ موجِ مربعی؛ قطعِ متناهیِ [k-space]{.ltr} = ضرب در مستطیل = کانولوشن با [sinc]{.ltr} = حلقهٔ گیبس؛ گیبس با $N$ باریک‌تر می‌شود ولی فراجهشِ $\approx8.95\%$ ثابت می‌ماند؛ صفرپرکنی فقط درون‌یابیِ [sinc]{.ltr} است نه تفکیکِ واقعی؛ بازسازیِ غیریگانی نوفهٔ سفید را رنگی می‌کند.
+
+---
+
+### فصل ۵ — معادلات دیفرانسیل و عددی {#sec-key-ch05}
+
+**تمرین ۸ (نقطهٔ صفرگذرِ وارونگی).** با شروع از $M_z(0)=-M_0$: $M_z(t)=M_0(1-2e^{-t/T_1})$. صفر در $e^{-TI/T_1}=\tfrac12$، یعنی $TI=T_1\ln2$. برای $T_1=1200\ \text{ms}$: $TI=1200\times0.693\approx832\ \text{ms}$.
+
+**تمرین ۹ ([RLC]{.ltr} سری).** $L=100\ \text{nH}$، $C=10\ \text{pF}$، $R=2\ \Omega$.
+$f_0=\dfrac{1}{2\pi\sqrt{LC}}=\dfrac{1}{2\pi\sqrt{10^{-7}\times10^{-11}}}\approx159\ \text{MHz}$.
+امپدانسِ مشخصه $Z_0=\sqrt{L/C}=100\ \Omega$؛ $\zeta=\dfrac{R}{2Z_0}=\dfrac{2}{200}=0.01$ (کم‌میرا)؛ $Q=\dfrac{1}{2\zeta}=50$.
+
+**تمرین ۱۰ (گامِ پایدارِ [RK4]{.ltr}، چارچوب آزمایشگاه [3 T]{.ltr}).** مُدِ غالب عرضی، عملاً موهومیِ محض با $\omega_0=2\pi\bar\gamma B_0=2\pi\times127.7\times10^6\approx8.02\times10^8\ \text{rad/s}$. مرزِ پایداریِ [RK4]{.ltr} روی محورِ موهومی $|\omega_0|\,h\lesssim2.83$، پس $h\lesssim2.83/8.02\times10^8\approx3.5\ \text{ns}$. برای $10\ \text{ms}$: $N\approx10^{-2}/3.5\times10^{-9}\approx2.9\times10^6$ گام (چرا چارچوب چرخان بسیار کارآمدتر است).
+
+**تمرین ۲۵ (عمق پوست آلومینیوم).** $\sigma=3.5\times10^7\ \text{S/m}$، $\delta=\sqrt{2/(\omega\mu_0\sigma)}$.
+در $100\ \text{Hz}$: $\delta=\sqrt{2/(2\pi\times100\times4\pi\times10^{-7}\times3.5\times10^7)}\approx8.5\ \text{mm}$.
+در $5\ \text{kHz}$: $\delta\approx8.5/\sqrt{50}\approx1.2\ \text{mm}$.
+مؤلفهٔ فرکانس‌پایین ($100\ \text{Hz}$) عمیق‌تر نفوذ می‌کند؛ یعنی جریان گردابیِ فرکانس‌پایین در دیوارهٔ ضخیم بیشتر دوام می‌آورد.
+
+**تمرین ۲۶ ([b]{.ltr}-value).** $G=80\ \text{mT/m}$، $\delta=15\ \text{ms}$، $\Delta=40\ \text{ms}$:
+$$b=\gamma^2G^2\delta^2(\Delta-\delta/3)=(2\pi\bar\gamma)^2(0.08)^2(0.015)^2(0.040-0.005)\approx3.6\times10^9\ \text{s/m}^2\approx3607\ \text{s/mm}^2.$$
+برای [CSF]{.ltr} با $D=3\times10^{-3}\ \text{mm}^2/\text{s}$: $S/S_0=e^{-bD}=e^{-3607\times3\times10^{-3}}=e^{-10.8}\approx2\times10^{-5}$ (افتِ تقریباً کامل).
+
+**تمرین ۲۷ (مدار تشدید [RF]{.ltr}).** $Q=200$، $f_0=127.7\ \text{MHz}$: $\Delta f=f_0/Q\approx639\ \text{kHz}$؛ $\zeta=1/(2Q)=0.0025$. رانشِ خازنِ $1\%$ فرکانس را $\approx0.5\%$ جابه‌جا می‌کند ($f_0\propto1/\sqrt C$): $\delta f\approx0.5\%\times127.7\ \text{MHz}\approx639\ \text{kHz}$، یعنی $\approx1$ پهنای‌باند.
+
+**تمرین ۲۸ (سامانهٔ مرتبهٔ دوم).** $\omega_0=2\pi\times2\ \text{kHz}$. درصدِ فراجهش $=e^{-\pi\zeta/\sqrt{1-\zeta^2}}\times100$:
+$\zeta=0.5$: فراجهش $\approx16\%$؛ $\zeta=0.7$: $\approx4.6\%$؛ $\zeta=1$: $0\%$ (میرایِ بحرانی، بدونِ فراجهش). برای پاسخ پلهٔ گرادیان معمولاً $\zeta\approx0.7$ مصالحهٔ خوبِ سرعت/فراجهش است؛ برای صفرِ فراجهش $\zeta=1$.
+
+**راهنمای استدلالی (۴–۷، ۲۰–۲۴):** خطای محلیِ اویلر $\mathcal O(h^2)$ و سراسری $\mathcal O(h)$؛ پایداریِ [FTCS]{.ltr} $r=D\Delta t/\Delta x^2\le1/2$؛ اویلرِ ضمنی پایدار-A ($|1/(1-\lambda h)|\le1$)؛ کرنک–نیکلسون $|G|=1$ روی محورِ موهومی (بی‌میراییِ مصنوعی)؛ عاملِ انتگرال‌گیر $\mu=e^{\int p\,dt}$؛ $b=\gamma^2G^2\delta^2(\Delta-\delta/3)$ از انتگرالِ [Stejskal–Tanner]{.ltr}.
+
+**راهنمای طراحی (۱۵، ۱۶، ۳۲، ۳۳):** برای پاسخ پلهٔ گرادیانِ بدونِ فراجهش $\zeta\to1$؛ برای حرارتِ سه‌بعدیِ سخت، روشِ ضمنی (پایدارِ بی‌قید) لازم است؛ شبیه‌سازِ [EPI]{.ltr} با روشِ تکه‌ای ثابت در چارچوب چرخان و [GPU]{.ltr}؛ پیش‌اعوجاجِ سه‌نمایی $H^{-1}(s)=\prod(1+\alpha_k s\tau_k/(1+s\tau_k))$.
+
+---
+
+### فصل ۶ — احتمال، نوفه و تخمین {#sec-key-ch06}
+
+**تمرین ۸ (نوفهٔ جانسون و دمای نوفه).** $V_{\text{rms}}=\sqrt{4k_B T R\,\Delta f}=\sqrt{4\times1.381\times10^{-23}\times290\times75\times2.5\times10^5}\approx5.5\times10^{-7}\ \text{V}\approx0.55\ \mu\text{V}$. عددِ نوفهٔ $0.5\ \text{dB}$: $F=10^{0.05}\approx1.122$؛ دمای نوفهٔ معادل $T_e=T_0(F-1)=290\times0.122\approx35\ \text{K}$.
+
+**تمرین ۹ (مقیاسِ [SNR]{.ltr}-ووکسل).** $\text{SNR}\propto\Delta V\sqrt{N_{\text{avg}}}$. کاهشِ حجم از $1\times1\times3=3\ \text{mm}^3$ به $1\ \text{mm}^3$ یعنی $\Delta V$ یک‌سوم می‌شود. برای حفظِ [SNR]{.ltr}: $\sqrt{N_{\text{avg}}}$ باید $3$ برابر شود، پس $N_{\text{avg}}$ باید $9$ برابر شود و زمانِ اسکن $9$ برابر می‌شود.
+
+**تمرین ۱۰ (تصحیحِ رایسی).** در پس‌زمینهٔ رایلی، $\bar M_{\text{bg}}=\sigma\sqrt{\pi/2}$، پس $\sigma=\bar M_{\text{bg}}/\sqrt{\pi/2}=30/1.253\approx23.9$. [SNR]{.ltr} تصحیح‌شده $\approx S/\sigma=600/23.9\approx25$ (با ضریبِ تصحیحِ پس‌زمینهٔ رایلی $0.66$ گاه آن را $\text{SNR}=0.66\times600/23.9$ گزارش می‌کنند).
+
+**تمرین ۱۰-ب (بایاسِ رایسی در [SNR]{.ltr}$=2$).** (الف) فرمولِ مجانبی $\mathbb E[M]-A\approx\sigma^2/(2A)$ یعنی بایاسِ نسبیِ $\sigma^2/(2A^2)=1/(2\cdot4)=12.5\%$. (ب) فرمولِ دقیق با $I_0,I_1$ مقدارِ کمی متفاوت (حدودِ $10$–$11\%$) می‌دهد. تفاوت نشان می‌دهد تقریبِ مجانبی فقط برای $\text{SNR}\gtrsim3$ معتبر است.
+
+**تمرین ۷-ث (کفِ نوفهٔ ورودی).** $k_B T_0\Delta f$ در $T_0=290\ \text{K}$: توانِ نوفه به ازای $1\ \text{Hz}$ برابر $k_B T_0=1.381\times10^{-23}\times290=4.0\times10^{-21}\ \text{W/Hz}$. به دسی‌بل‌میلی‌وات: $10\log_{10}(4.0\times10^{-21}/10^{-3})=10\log_{10}(4.0\times10^{-18})\approx-174\ \text{dBm/Hz}$. ✔
+
+**راهنمای استدلالی (۴–۷، ۷الف–ث):** توزیع رایس از تغییرِ متغیرِ قطبی و انتگرالِ فاز ($\to I_0$)؛ $\mathbb E[M^2]=A^2+2\sigma^2$؛ فریس $F=F_1+(F_2-1)/G_1$؛ فیشر برای برازشِ $T_2$ و کرامر–رائو؛ واریانسِ رایلی $(2-\pi/2)\sigma^2\approx0.429\sigma^2$.
+
+**راهنمای محاسباتی/طراحی (۱۰الف–ت، ۱۴، ۱۵):** فرکانسِ گذارِ سیم‌پیچ‌غالب/بدن‌غالب از $R_{\text{coil}}\propto\sqrt\omega$ در برابر $R_{\text{body}}\propto\omega^2$؛ [ENOB]{.ltr} محدود به کفِ نوفهٔ حرارتی است (افزودنِ بیت بی‌فایده وقتی نوفه $\gg$ گامِ کوانتش)؛ بودجهٔ نوفه با فریس گلوگاه را در طبقهٔ اول (سیم‌پیچ/[LNA]{.ltr}) نشان می‌دهد.
+
+---
+
+### فصل ۷ — الکترومغناطیس کلاسیک و ماکسول {#sec-key-ch07}
+
+**تمرین ۱۴ (سولنوئید [3 T]{.ltr}).** $B=\mu_0 n I\Rightarrow n=B/(\mu_0 I)=3/(4\pi\times10^{-7}\times500)\approx4.77\times10^3\ \text{turns/m}$. چگالیِ انرژیِ مغناطیسی $u=B^2/2\mu_0=9/(2\times4\pi\times10^{-7})\approx3.58\times10^6\ \text{J/m}^3$؛ در $0.4\ \text{m}^3$: $E\approx1.43\ \text{MJ}$.
+
+**تمرین ۱۶ (معیارِ شبه‌ایستا).** نسبتِ جریان جابه‌جایی به رسانشی $\omega\varepsilon/\sigma$ با $\varepsilon=\varepsilon_r\varepsilon_0$، $\varepsilon_r=60$، $\sigma=0.5\ \text{S/m}$:
+$3\ \text{kHz}$: $\dfrac{2\pi\times3000\times60\times8.85\times10^{-12}}{0.5}\approx2\times10^{-5}$ (کاملاً رسانشی، شبه‌ایستا).
+$298\ \text{MHz}$: $\dfrac{2\pi\times2.98\times10^8\times60\times8.85\times10^{-12}}{0.5}\approx2.0$ (جریان جابه‌جایی غالب — رژیمِ موجی، تقریبِ شبه‌ایستا می‌شکند).
+
+**تمرین ۱۷ (ولتاژِ گذرای گرادیان).** $L=0.8\ \text{mH}$، $R=0.25\ \Omega$، $I=250\ \text{A}$، $t=0.3\ \text{ms}$:
+$V_L=L\,dI/dt=0.8\times10^{-3}\times250/0.3\times10^{-3}\approx667\ \text{V}$؛ $IR=62.5\ \text{V}$؛ $V_{\text{total}}\approx729\ \text{V}$. توانِ اوج $\approx729\times250\approx182\ \text{kW}$. اگر زمانِ برخاست نصف شود، $V_L$ دوبرابر (به $\approx1333\ \text{V}$) و توان نیز تقریباً دوبرابر می‌شود.
+
+**تمرین ۱۸ (عمق پوست مس).** $\delta=\sqrt{2/(\omega\mu_0\sigma)}$، $\sigma_{\text{Cu}}=5.96\times10^7\ \text{S/m}$:
+[1.5 T]{.ltr} ($63.9\ \text{MHz}$): $\delta\approx8.2\ \mu\text{m}$؛ [3 T]{.ltr} ($127.7\ \text{MHz}$): $\approx5.8\ \mu\text{m}$؛ [7 T]{.ltr} ($298\ \text{MHz}$): $\approx3.8\ \mu\text{m}$.
+چون $\delta$ چند میکرون است، روکشِ نقرهٔ چند میکرونی کلِ جریان [RF]{.ltr} را حمل می‌کند و مقاومتِ مؤثر را کم می‌کند.
+
+**تمرین ۱۹ (خازنِ تنظیم [7 T]{.ltr}).** $C=3.3\ \text{pF}$، $V=1.5\ \text{kV}$، $f=298\ \text{MHz}$: $I=\omega C V=2\pi\times2.98\times10^8\times3.3\times10^{-12}\times1500\approx9.3\ \text{A}$ (اوج). توانِ راکتیو $Q_{\text{reac}}=\tfrac12 V I\approx6.9\ \text{kVAR}$. این جریان و ولتاژِ بالا، خازنِ غیرمغناطیسیِ ولتاژ-بالا و [ESR]{.ltr}-پایین می‌طلبد.
+
+**تمرین ۲۰ (زمان پخشِ گردابی).** $\tau\sim\mu_0\sigma d^2/\pi^2$ (مُدِ غالب).
+مس $2\ \text{mm}$: $\tau\approx(4\pi\times10^{-7}\times5.96\times10^7\times(2\times10^{-3})^2)/\pi^2\approx3.0\times10^{-5}\ \text{s}\approx30\ \mu\text{s}$.
+فولادِ زنگ‌نزن $5\ \text{mm}$ ($\sigma=1.4\times10^6$): $\tau\approx(4\pi\times10^{-7}\times1.4\times10^6\times25\times10^{-6})/\pi^2\approx4.5\ \mu\text{s}$.
+فولاد $\tau$ کوتاه‌تری دارد (رسانشِ کمتر)؛ برای مهارِ جریان گردابیِ مزاحم، رساناییِ کمتر بهتر است، اما انتخابِ ماده مصالحهٔ استحکام/پذیرفتاری/رسانش است.
+
+**تمرین ۲۸ (سامانهٔ [64 mT]{.ltr}).** $f_0=\bar\gamma B_0=42.58\times0.064\approx2.73\ \text{MHz}$. طول‌موجِ خلأ $\lambda=c/f_0\approx110\ \text{m}$؛ در بافت ($\varepsilon_r\approx70$ در این فرکانس) $\lambda_{\text{tissue}}\approx\lambda/\sqrt{\varepsilon_r}\approx13\ \text{m}$. عمق پوستِ مس در $2.73\ \text{MHz}$: $\delta\approx40\ \mu\text{m}$. برای سیم‌پیچِ $30\ \text{cm}$: $\ell/\lambda\approx0.3/110\approx0.003\ll1$؛ پس کلِ زنجیرهٔ [RF]{.ltr} کاملاً شبه‌ایستا است و طراحی ساده می‌شود.
+
+**راهنمای استدلالی (۷–۱۳):** افزودنِ جریان جابه‌جایی پایستگیِ بار را حفظ می‌کند؛ معادلهٔ موج با $c=1/\sqrt{\mu_0\varepsilon_0}$؛ قضیهٔ پوینتینگ با $\mathbf{J\cdot E}$=اتلافِ اهمی؛ هلمهولتز با شرطِ $d=a$ و جملهٔ مرتبهٔ چهارمِ $144/125$؛ عمق پوست از معادلهٔ پخش.
+
+---
+
+### فصل ۸ — الکترومغناطیس در ماده و شبه‌ایستایی {#sec-key-ch08}
+
+**تمرین ۸ (عمق پوست نقره).** $\sigma_{\text{Ag}}=6.3\times10^7\ \text{S/m}$ در $128\ \text{MHz}$: $\delta=\sqrt{2/(\omega\mu_0\sigma)}\approx5.6\ \mu\text{m}$ (اندکی کمتر از مسِ $5.8\ \mu\text{m}$، چون $\sigma_{\text{Ag}}$ بزرگ‌تر). چون $\delta\propto1/\sqrt\sigma$، نقره مقاومتِ سطحیِ کمی پایین‌تر می‌دهد؛ روکشِ نقره روی مس بهترین مصالحهٔ هزینه/تلفات است.
+
+**تمرین ۹ (جبران گردابی).** گرادیانِ مؤثر پس از پلهٔ $G_0=30\ \text{mT/m}$: $G(t)=G_0[1-\sum_k\alpha_k e^{-t/\tau_k}]$ با $(\alpha_1,\tau_1)=(0.04,2\ \text{ms})$، $(\alpha_2,\tau_2)=(0.015,50\ \text{ms})$.
+$t=1\ \text{ms}$: $\sum=0.04 e^{-0.5}+0.015 e^{-0.02}=0.0243+0.0147=0.039$، $G\approx30(1-0.039)=28.8\ \text{mT/m}$.
+$t=5\ \text{ms}$: $0.04 e^{-2.5}+0.015 e^{-0.1}=0.0033+0.0136=0.0169$، $G\approx29.5\ \text{mT/m}$.
+$t=100\ \text{ms}$: $0.04 e^{-50}+0.015 e^{-2}\approx0.00203$، $G\approx29.94\ \text{mT/m}$.
+
+**تمرین ۱۰-ت (قطبش [0.55 T]{.ltr}).** $P=\hbar\omega_0/(2k_B T)$ با $\omega_0=2\pi\bar\gamma\times0.55$:
+[0.55 T]{.ltr}: $P\approx1.8\times10^{-6}$؛ [1.5 T]{.ltr}: $\approx4.9\times10^{-6}$؛ [7 T]{.ltr}: $\approx2.3\times10^{-5}$. سقفِ نظریِ [SNR]{.ltr} (از منظرِ قطبش) با $B_0$ خطی است؛ نسبت‌ها $\approx1:2.7:12.6$.
+
+**تمرین ۱۰-ب (زمانِ آرامشِ بار $\tau_c=\varepsilon/\sigma$).** مس: $\tau_c=\varepsilon_0/\sigma\approx8.85\times10^{-12}/5.96\times10^7\approx1.5\times10^{-19}\ \text{s}$ (آنیِ آنی). آب‌نمک ($\sigma=1.5$، $\varepsilon_r=78$): $\tau_c=78\times8.85\times10^{-12}/1.5\approx4.6\times10^{-10}\ \text{s}$. پدِ دی‌الکتریک ($\sigma=10^{-3}$، $\varepsilon_r=100$): $\tau_c\approx8.85\times10^{-7}\ \text{s}$. در $128\ \text{MHz}$ ($T\approx7.8\ \text{ns}$) برای مس و بافت $\tau_c\ll T$ (فرضِ $\nabla\cdot\mathbf E\approx0$ مجاز)، اما برای پدِ دی‌الکتریک $\tau_c\gg T$ (نامجاز).
+
+**تمرین ۱۰-پ (اعوجاج [EPI]{.ltr}).** جابه‌جاییِ پیکسلی $=\Delta f\cdot\text{ESP}\cdot N_y$ تقسیم بر ... ساده‌تر: $\Delta f=\bar\gamma\Delta B=42.58\times10^6\times20\times10^{-6}\approx852\ \text{Hz}$. پهنای‌باندِ فازیِ مؤثر $=1/(\text{ESP}\cdot N_y)$... جابه‌جایی $=\Delta f\cdot\text{ESP}\cdot N_y=852\times0.7\times10^{-3}\times96\approx57$ پیکسل! (در عمل اعوجاجِ شدید — به همین خاطر [EPI]{.ltr} در [3 T]{.ltr} نیاز به شیم و تصحیحِ میدان دارد). در راستای مکانی: $57\times(\text{FOV}/N_y)=57\times(220/96)\approx131\ \text{mm}$ (نشان‌دهندهٔ اینکه چنین پرشِ پذیرفتاریِ بزرگی در یک [EPI]{.ltr} با [ESP]{.ltr} بلند فاجعه‌بار است). در [GRE]{.ltr} با $\text{BW}=250\ \text{Hz/pixel}$: جابه‌جایی $=852/250\approx3.4$ پیکسل (به‌مراتب کمتر، چون پهنای‌باندِ هر پیکسل در راستای خوانش بسیار بزرگ‌تر است).
+
+**تمرین ۱۰-ث (گردابیِ کرایوستات).** دیوارهٔ آلومینیومِ $8\ \text{mm}$ (با مدلِ صفحهٔ $2d=8\ \text{mm}$، $\sigma_{\text{Al}}=3.5\times10^7$): $\tau_0\approx\mu_0\sigma d^2/\pi^2$ با $d=4\ \text{mm}$: $\approx(4\pi\times10^{-7}\times3.5\times10^7\times1.6\times10^{-5})/\pi^2\approx71\ \text{ms}$. برای نصف‌کردنِ $\tau$ باید ضخامت را $1/\sqrt2\approx0.71$ برابر (به $\approx5.7\ \text{mm}$) کاهش داد ($\tau\propto d^2$)، به بهای استحکام/نشتِ حرارتیِ بیشتر.
+
+**راهنمای استدلالی/مفهومی:** $\mathbf D$ فقط بارِ آزاد را می‌بیند؛ زوجِ پیش‌جبرانِ دقیق $(\alpha'=\alpha/(1-\alpha),\tau'=\tau(1-\alpha))$؛ عاملِ میدان‌زدای استوانهٔ عمود $N=\tfrac12$؛ مقاومتِ سطحی $R_s=1/(\sigma\delta)$.
+
+---
+
+### فصل ۹ — اسپین کوانتومی و ماتریس چگالی {#sec-key-ch09}
+
+**تمرین ۸ (فرکانس لارمور [3 T]{.ltr}).** از $\bar\gamma$های جدول: ${}^{1}\mathrm{H}$ ($42.58$): $127.7\ \text{MHz}$؛ ${}^{23}\mathrm{Na}$ ($11.26$): $33.8\ \text{MHz}$؛ ${}^{31}\mathrm{P}$ ($17.24$): $51.7\ \text{MHz}$.
+
+**تمرین ۹ (قطبش [7 T]{.ltr}).** $P_0=\hbar\omega_0/(2k_B T)$، $\omega_0=2\pi\times42.58\times10^6\times7$، $T=310\ \text{K}$: $P_0\approx2.31\times10^{-5}$. نسبت به [1.5 T]{.ltr} ($P_0\approx4.94\times10^{-6}$) عاملِ $7/1.5\approx4.67$ بزرگ‌تر؛ [SNR]{.ltr} (از منظرِ قطبش) نیز همین نسبت را دارد.
+
+**تمرین ۱۰ (قطبش [64 mT]{.ltr}).** $P_0\approx2.1\times10^{-7}$، یعنی $\approx1/23$ مقدارِ [1.5 T]{.ltr}. پیامد: نیاز به سیم‌پیچ گیرندهٔ کم‌نوفه، میانگین‌گیریِ بیشتر و بازسازیِ پیشرفته.
+
+**تمرین ۲۴ (شمارِ اسپینِ مازاد).** ووکسلِ $2\times2\times5\ \text{mm}^3=2\times10^{-8}\ \text{m}^3$، $N\approx6.7\times10^{28}\times2\times10^{-8}\approx1.34\times10^{21}$ اسپین. در [3 T]{.ltr} $P_0\approx9.9\times10^{-6}$، پس $\Delta N=NP_0\approx1.3\times10^{16}$. نوفهٔ آماریِ نسبی $1/\sqrt{\Delta N}\approx9\times10^{-9}$ (ناچیز در برابرِ نوفهٔ گرماییِ سیم‌پیچ/بدن).
+
+**تمرین ۲۵ (دمای قطبشِ $50\%$).** از $P_0=\tanh(\hbar\omega_0/2k_B T)=0.5$: $\hbar\omega_0/2k_B T=\text{artanh}(0.5)=0.549$. با $\hbar\omega_0/2k_B$ در [3 T]{.ltr} $\approx3.06\times10^{-6}\ \text{K}$، نتیجه $T\approx3.06\times10^{-6}/0.549\approx5.6\ \mu\text{K}$. این دما غیرفیزیکی برای بافت است؛ پس قطبش‌فوق (نه سردکردن) راهِ عملیِ قطبشِ بالاست.
+
+**تمرین ۲۶ (${}^{13}\mathrm{C}$ در برابر ${}^{1}\mathrm{H}$).** قطبشِ تعادلی $P_0\propto\gamma$ (خطی)؛ نسبت $\gamma_{\text{C}}/\gamma_{\text{H}}\approx10.71/42.58\approx0.25$. مغناطشِ $M_0\propto\gamma^2$ (یک $\gamma$ از قطبش، یک از گشتاور)، نسبت $\approx0.063$. پس قطبشِ ${}^{13}\mathrm{C}$ چارک و $M_0$ آن $\approx6\%$ پروتون است (به ازای چگالیِ اسپینیِ برابر).
+
+**راهنمای استدلالی (۴–۷، ۲۰–۲۳):** $[\hat S_y,\hat S_z]=i\hbar\hat S_x$ از ضربِ پاؤلی؛ اِرنفست $\Rightarrow d\langle\hat{\mathbf S}\rangle/dt=\gamma\langle\hat{\mathbf S}\rangle\times\mathbf B$؛ $\text{Tr}(\hat\rho^2)=1\Leftrightarrow$ ناب؛ $(\hat{\mathbf n}\cdot\boldsymbol\sigma)^2=\mathbb I$؛ نابیِ $\mathcal P=\tfrac12(1+|\mathbf P|^2)$ که $|\mathbf P|\le1$ می‌دهد (کرهٔ بلاخ)؛ تحولِ یکانی نابی را حفظ می‌کند (پس $T_1/T_2$ نیاز به لیندبلاد دارد).
+
+---
+
+### فصل ۱۰ — ترمودینامیک، مکانیک آماری و فیزیک کرایو {#sec-key-ch10}
+
+**تمرین ۹ (مازادِ جمعیتی و $M_0$).** $P\approx\hbar\omega_0/2k_B T$ در [310 K]{.ltr}:
+[0.064 T]{.ltr}: $P\approx2.1\times10^{-7}$؛ [1.5 T]{.ltr}: $\approx4.9\times10^{-6}$؛ [7 T]{.ltr}: $\approx2.3\times10^{-5}$. چون $M_0\propto N\gamma\hbar P\propto B_0$، نسبتِ $M_0$ همان نسبتِ میدان‌هاست.
+
+**تمرین ۱۰ (نوفهٔ جانسون و سردسازی).** $V_n=\sqrt{4k_B T R\Delta f}$، $R=100\ \Omega$، $\Delta f=10^5\ \text{Hz}$:
+[300 K]{.ltr}: $V_n\approx\sqrt{4\times1.381\times10^{-23}\times300\times100\times10^5}\approx0.407\ \mu\text{V}$.
+[77 K]{.ltr}: $\propto\sqrt T$، عاملِ بهبود $\sqrt{300/77}\approx1.97$؛ $V_n\approx0.206\ \mu\text{V}$.
+[4 K]{.ltr}: عاملِ بهبود $\sqrt{300/4}\approx8.66$؛ $V_n\approx0.047\ \mu\text{V}$.
+
+**تمرین ۱۱ (بار تابشی [4.2 K]{.ltr}).** $q=\varepsilon\sigma_{\text{SB}}A(T_h^4-T_c^4)$، $\sigma_{\text{SB}}=5.67\times10^{-8}$، $A=2\ \text{m}^2$، $\varepsilon=0.05$:
+(الف) مستقیم $300\ \text{K}\to4.2\ \text{K}$: $q\approx0.05\times5.67\times10^{-8}\times2\times(300^4)\approx0.05\times5.67\times10^{-8}\times2\times8.1\times10^9\approx46\ \text{W}$.
+(ب) با سپرِ $50\ \text{K}$، بارِ روی $4.2\ \text{K}$ از سپرِ $50\ \text{K}$: $q\approx0.05\times5.67\times10^{-8}\times2\times(50^4)\approx0.05\times5.67\times10^{-8}\times2\times6.25\times10^6\approx0.035\ \text{W}=35\ \text{mW}$.
+عاملِ کاهش $\approx(300/50)^4\approx1300$ برابر.
+
+**تمرین ۱۲ (نرخ جوش هلیوم).** گرمای نهان $2.6\ \text{kJ/L}$. بارِ $50\ \text{mW}$: نرخ $=0.05/2600\ \text{L/s}=1.92\times10^{-5}\ \text{L/s}\approx0.069\ \text{L/h}$. اگر بار به $2\ \text{W}$ برسد: نرخ $=2/2600=7.7\times10^{-4}\ \text{L/s}\approx2.77\ \text{L/h}$؛ مخزنِ $100\ \text{L}$ پس از $100/2.77\approx36$ ساعت خالی می‌شود.
+
+**تمرین ۲۶ (توان کارنو).** $\dot W_{\text{Carnot}}=\dot Q(T_h-T_c)/T_c$ برای $\dot Q=1\ \text{W}$، $T_h=300\ \text{K}$:
+[4.2 K]{.ltr}: $\dot W=1\times(300-4.2)/4.2\approx70\ \text{W}$؛ واقعی (کسرِ $4\%$): $\approx1760\ \text{W}$.
+[20 K]{.ltr}: $\dot W=(300-20)/20=14\ \text{W}$؛ واقعی $\approx350\ \text{W}$.
+[77 K]{.ltr}: $\dot W=(300-77)/77\approx2.9\ \text{W}$؛ واقعی $\approx72\ \text{W}$.
+این نشان می‌دهد سردسازی در [20 K]{.ltr} ([HTS]{.ltr}) چندین برابر کم‌مصرف‌تر از [4.2 K]{.ltr} است.
+
+**تمرین ۲۷ (نشتِ رسانشی تعلیق).** $q=\dfrac{A}{L}\int k\,dT=\dfrac{2\times10^{-4}}{0.3}\times30\approx0.02\ \text{W}=20\ \text{mW}$. کمینه‌سطح برای وزنِ $3$ تن ($F\approx3\times10^3\times9.81\approx2.94\times10^4\ \text{N}$) با تنشِ $100\ \text{MPa}$: $A_{\min}=F/\sigma=2.94\times10^4/10^8\approx2.94\times10^{-4}\ \text{m}^2\approx2.94\ \text{cm}^2$؛ نشتِ متناظر $\approx0.029\ \text{W}\approx29\ \text{mW}$.
+
+**تمرین ۲۸ (پرشِ دمای اصطکاکی).** $\Delta T=Q/(mc)$، $Q=0.5\ \text{mJ}$، $m=2\ \text{g}=0.002\ \text{kg}$:
+[4.2 K]{.ltr} ($c\approx0.1$): $\Delta T=5\times10^{-4}/(0.002\times0.1)=2.5\ \text{K}$ (پرشِ بزرگ — خطرِ کوئنچ).
+[20 K]{.ltr} ($c\approx5$): $\Delta T=5\times10^{-4}/(0.002\times5)=0.05\ \text{K}$ (پرشِ ناچیز). پایداریِ بیشترِ [HTS]{.ltr} با دمای بالاتر تأیید می‌شود.
+
+**تمرین ۳۲ (سیم‌های جریان [600 A]{.ltr}).** نشتِ کمینهٔ $\approx1\ \text{mW/A}$، پس بارِ کلِ سیم‌ها روی [4 K]{.ltr} هنگامِ شارژ $\approx600\times1\ \text{mW}=0.6\ \text{W}$. چون این بار بزرگ است، سیم‌ها پس از شارژ (در حالتِ پایدارِ persistent) بیرون کشیده می‌شوند تا نشت حذف شود؛ سیم‌های [HTS]{.ltr} با رساناییِ گرماییِ پایین‌تر این بار را به‌شدت کم می‌کنند.
+
+**راهنمای طراحی (۱۶، ۱۷، ۳۳، ۳۴):** بودجهٔ گرماییِ آهنربای بدونِ‌هلیوم: سپرِ $\sim50\ \text{K}$، [MLI]{.ltr} چندده‌لایه، تعلیقِ فولادی نازک؛ خنک‌کاریِ آبیِ اینسرتِ $2\ \text{kW}$: $\dot m=\dot Q/(c_p\Delta T)$.
+
+---
+
+### فصل ۱۱ — مغناطش هسته‌ای و تشدید {#sec-key-ch11}
+
+**تمرین ۹ (لارمور ${}^{31}\mathrm{P}$, ${}^{23}\mathrm{Na}$ در [3 T]{.ltr}).** ${}^{31}\mathrm{P}$: $17.24\times3\approx51.7\ \text{MHz}$؛ ${}^{23}\mathrm{Na}$: $11.26\times3\approx33.8\ \text{MHz}$. گیرندهٔ پروتونی روی $127.7\ \text{MHz}$ این هسته‌ها را **نمی‌بیند**، چون فرکانس‌هایشان بسیار دور است (خارج از پهنای‌باندِ گیرنده) و نیاز به زنجیرهٔ [RF]{.ltr} هم‌کوک با هستهٔ هدف دارند.
+
+**تمرین ۱۰ (نسبت قطبش).** $P\propto B_0$: [0.064 T]{.ltr} $\to P\approx2.1\times10^{-7}$، [7 T]{.ltr} $\to P\approx2.3\times10^{-5}$؛ نسبت $7/0.064\approx109$ برابر. [SNR]{.ltr} از منظرِ قطبش به همین نسبت بهتر است (هرچند عواملِ دیگر آن را تعدیل می‌کنند).
+
+**تمرین ۱۱ (زمان پالس).** $B_1=23.5\ \mu\text{T}$، $f_1=\bar\gamma B_1=42.58\times10^6\times23.5\times10^{-6}\approx1001\ \text{Hz}$، $\omega_1=2\pi f_1\approx6289\ \text{rad/s}$. مدتِ پالسِ مستطیلی $\tau=\theta/\omega_1$:
+$30^\circ$ ($\pi/6$): $\tau\approx83\ \mu\text{s}$؛ $90^\circ$: $\approx250\ \mu\text{s}$؛ $180^\circ$: $\approx500\ \mu\text{s}$.
+
+**تمرین ۱۲ (میدان مؤثر).** $\Delta f=1\ \text{kHz}$، $f_1=\omega_1/2\pi=500\ \text{Hz}$. زاویهٔ کجی $\theta=\arctan(f_1/\Delta f)=\arctan(0.5)\approx26.6^\circ$. فرکانسِ رابیِ مؤثر $f_{\text{eff}}=\sqrt{\Delta f^2+f_1^2}=\sqrt{1000^2+500^2}\approx1118\ \text{Hz}$. اگر پالس برای $90^\circ$ درون‌تشدید تنظیم شده ($\tau=0.5\ \text{ms}$)، چرخشِ واقعیِ حولِ محورِ مؤثر $=2\pi f_{\text{eff}}\tau\approx2\pi\times1118\times0.5\times10^{-3}\approx3.51\ \text{rad}\approx201^\circ$ (اما حولِ محورِ کج، پس بیشینهٔ مؤلفهٔ عرضی کمتر از پالسِ درون‌تشدید است).
+
+**تمرین ۲۴ (تقریب دمای بالا).** $P=\tanh(x)\approx x-x^3/3$ با $x=\hbar\omega_0/2k_B T$. خطای نسبی $\approx x^2/3$. در [3 T]{.ltr}، $x\approx9.9\times10^{-6}$، پس خطای نسبی $\approx3.3\times10^{-11}$ (کاملاً ناچیز).
+
+**تمرین ۲۷ (شکاف زیمان [1.5 T]{.ltr}).** $\Delta E=\hbar\omega_0=\hbar\times2\pi\times63.9\times10^6\approx4.23\times10^{-26}\ \text{J}\approx2.64\times10^{-7}\ \text{eV}$. در برابرِ $k_B T=1.381\times10^{-23}\times310\approx4.28\times10^{-21}\ \text{J}$: نسبت $\Delta E/k_B T\approx10^{-5}$ (پس قطبشِ ناچیز). فوتونِ متناظر طول‌موجِ $\lambda=c/f_0\approx4.7\ \text{m}$ (رادیویی) دارد؛ انرژیِ $\sim10^{-7}\ \text{eV}$ به‌مراتب کمتر از $\sim10\ \text{eV}$ یونش است، پس غیریونیزان.
+
+**تمرین ۲۸ (نسبت سیگنال [7 T]{.ltr}/[0.55 T]{.ltr}).** $\mathcal E\propto B_0^2$: $(7/0.55)^2\approx162$. اما [SNR]{.ltr} نهایی این نسبت را دنبال نمی‌کند چون نوفهٔ بدن نیز با $B_0$ بزرگ می‌شود (در رژیمِ بدن‌غالب $\text{SNR}\propto B_0$، نه $B_0^2$).
+
+**تمرین ۲۹ (آب-چربی).** [1.5 T]{.ltr} شکاف $\approx224\ \text{Hz}$: ناهم‌فاز (opposed) در $t=1/(2\Delta f)\approx2.23\ \text{ms}$؛ هم‌فاز در $1/\Delta f\approx4.46\ \text{ms}$. [3 T]{.ltr} (شکاف $\approx448\ \text{Hz}$): ناهم‌فاز $\approx1.12\ \text{ms}$؛ هم‌فاز $\approx2.23\ \text{ms}$.
+
+**تمرین ۲۲ (عامل $g$ هسته‌ای ${}^{19}\mathrm{F}$).** $g_N=\dfrac{2\bar\gamma h}{\mu_N}$ ... با $\bar\gamma=40.078\ \text{MHz/T}$ و $\mu_N=5.0508\times10^{-27}\ \text{J/T}$: $g_N=\dfrac{4\pi\bar\gamma\hbar}{\mu_N}\approx5.26$. $\bar\gamma$ فلوئور نزدیک پروتون است (پس می‌توان تا حدی از زنجیرهٔ [RF]{.ltr} پروتونی با کوک‌مجدد بهره برد).
+
+**راهنمای طراحی (۱۶، ۳۲، ۳۳):** $B_1$ کمینهٔ پالسِ $90^\circ$ در $\le1\ \text{ms}$: $B_1\ge0.25/(\bar\gamma\times10^{-3})\approx5.9\ \mu\text{T}$؛ پالسِ بی‌دررو کف از شرطِ آدیاباتیک و سقف از $T_2$؛ طیف‌سنجِ ${}^{31}\mathrm{P}$ نیازمندِ سیم‌پیچ و مرجعِ گیرندهٔ هم‌کوک با $51.7\ \text{MHz}$.
+
+---
+
+### فصل ۱۲ — معادلات بلاخ و واهلش {#sec-key-ch12}
+
+**تمرین ۸.** $T_1=1200\ \text{ms}$، $T_2=100\ \text{ms}$.
+(الف) کسرِ عرضیِ باقی در $t=50\ \text{ms}$: $e^{-50/100}=e^{-0.5}\approx0.607$ ($\approx61\%$).
+(ب) برای بازیابیِ $95\%$ از $M_0$: $1-e^{-TR/T_1}=0.95\Rightarrow TR=-T_1\ln(0.05)=1200\times3.00\approx3595\ \text{ms}$.
+
+**تمرین ۹ ([FLAIR]{.ltr} با $T_1=4000\ \text{ms}$).** نقطهٔ صفرِ وارونگی (با [TR]{.ltr} بزرگ): $TI=T_1\ln2=4000\times0.693\approx2773\ \text{ms}$.
+
+**تمرین ۱۰ ([b]{.ltr}-value).** $G=30\ \text{mT/m}$، $\delta=15\ \text{ms}$، $\Delta=40\ \text{ms}$:
+$b=(2\pi\bar\gamma)^2(0.03)^2(0.015)^2(0.040-0.005)\approx5.07\times10^8\ \text{s/m}^2\approx507\ \text{s/mm}^2$.
+برای $\text{ADC}=1.0\times10^{-3}\ \text{mm}^2/\text{s}$: $S/S_0=e^{-507\times10^{-3}}=e^{-0.507}\approx0.60$.
+
+**تمرین ۱۱ ($T_2^*$ با ناهمگنی).** $1/T_2^*=1/T_2+\bar\gamma\cdot\Delta B_0\cdot(2\pi$ یا $\pi$?). با $1/T_2'=\gamma\,\Delta B_0=2\pi\bar\gamma\,\Delta B_0$:
+[3 T]{.ltr}, $\Delta B_0=0.05\ \text{ppm}\times3\ \text{T}=1.5\times10^{-7}\ \text{T}$: $1/T_2'=2\pi\times42.58\times10^6\times1.5\times10^{-7}\approx40.1\ \text{s}^{-1}$. با $1/T_2=1/0.070=14.3\ \text{s}^{-1}$: $1/T_2^*\approx54.4\Rightarrow T_2^*\approx18.4\ \text{ms}$.
+[7 T]{.ltr} ($\Delta B_0=3.5\times10^{-7}\ \text{T}$): $1/T_2'\approx93.6\ \text{s}^{-1}$، $1/T_2^*\approx107.9\Rightarrow T_2^*\approx9.3\ \text{ms}$. در میدان بالاتر $T_2^*$ کوتاه‌تر (ناهمگنیِ مطلق با $B_0$ بزرگ‌تر).
+
+**تمرین ۲۳الف (زمان گذارِ [FLASH]{.ltr}).** $\alpha=20^\circ$، $TR=5\ \text{ms}$، $T_1=1330\ \text{ms}$. ضریبِ گذار $r=E_1\cos\alpha=e^{-5/1330}\cos20^\circ\approx0.9963\times0.9397\approx0.9362$. برای $98\%$: $r^n\le0.02\Rightarrow n\ge\ln(0.02)/\ln(0.936)\approx59$ پالس؛ زمان $\approx59\times5=295\ \text{ms}$. با $\alpha=40^\circ$، $r\approx0.9963\times0.766\approx0.763$، $n\ge\ln(0.02)/\ln(0.763)\approx14.5\to15$ پالس (سریع‌تر — زاویهٔ بزرگ‌تر همگراییِ سریع‌ترِ حالتِ پایا).
+
+**تمرین ۲۵الف (خارج‌تشدید چربی [1.5 T]{.ltr}).** پالسِ $90^\circ$ مستطیلیِ $\tau_p=500\ \mu\text{s}$ (پس $f_1=\bar\gamma B_1=500\ \text{Hz}$). برای آفستِ $\Delta f=220\ \text{Hz}$: $f_{\text{eff}}=\sqrt{500^2+220^2}\approx546\ \text{Hz}$، زاویهٔ مخروط $\theta=\arctan(500/220)\approx66^\circ$. $|M_\perp|/M_0=\sin\theta\sin(2\pi f_{\text{eff}}\tau_p)$؛ با $2\pi f_{\text{eff}}\tau_p\approx1.72\ \text{rad}\approx98^\circ$: $|M_\perp|/M_0\approx\sin66^\circ\times\sin98^\circ\approx0.91\times0.99\approx0.90$ (تحریکِ تقریباً کامل). برای آفستِ $1\ \text{kHz}$ این مقدار به‌مراتب کمتر است؛ پس در میدانِ بالاتر (شکافِ بزرگ‌تر) سرکوبِ چربی آسان‌تر است (آفستِ نسبیِ بزرگ‌تر).
+
+**راهنمای استدلالی (۴–۷، ۱۷–۲۲الف):** $M_\perp=M_x+iM_y$ از $\dot M_\perp=-(i\Delta\omega+1/T_2)M_\perp$؛ $|\mathbf M|$ حفظ نمی‌شود؛ $T_2\le2T_1$ از روابطِ [BPP]{.ltr}؛ زاویهٔ ارنست $\cos\alpha_E=e^{-TR/T_1}$ و $\alpha_E\approx\sqrt{2TR/T_1}$؛ [Stejskal–Tanner]{.ltr} از انتگرالِ گرادیان؛ مدلِ بلاخ–مک‌کانل دونمایی با مُدهای $1/T_1$ و $1/T_1+2k$.
+
+**راهنمای طراحی (۱۵، ۱۶، ۱۷، ۲۹الف، ۳۰الف):** [FLASH]{.ltr} مغز $TR=8\ \text{ms}$، [WM]{.ltr} $T_1=830\Rightarrow\alpha_E=\arccos(e^{-8/830})\approx7.9^\circ$؛ در زاویهٔ ارنست کنتراستِ [WM/GM]{.ltr} کمینه است. [DWI]{.ltr} با $G_{\max}=40\ \text{mT/m}$ برای $b=1000$: کوتاه‌ترین $\delta,\Delta$ از $b=\gamma^2G^2\delta^2(\Delta-\delta/3)$؛ گرادیانِ قوی‌تر [TE]{.ltr} و افتِ $T_2$ کمتر می‌دهد.
+
+---
+
+### فصل ۱۳ — شکل‌گیری سیگنال و فضای‑کی {#sec-key-ch13}
+
+**تمرین ۹.** $\text{FOV}=200\ \text{mm}$، $N=256$:
+(الف) $\Delta x=\text{FOV}/N\approx0.781\ \text{mm}$؛ $\Delta k=1/\text{FOV}=5\ \text{cycles/m}$؛ $k_{\max}=N/(2\,\text{FOV})=640\ \text{m}^{-1}$.
+(ب) $\Delta t=10\ \mu\text{s}$: $G_x=\Delta k/(\bar\gamma\Delta t)=5/(42.58\times10^6\times10^{-5})\approx11.7\ \text{mT/m}$.
+(پ) مدتِ خوانش $=N\Delta t=2.56\ \text{ms}$؛ پهنای‌باندِ گیرنده $=1/\Delta t=100\ \text{kHz}$.
+
+**تمرین ۱۰ (پیش‌فاز).** مساحتِ پیش‌فاز باید $k$ را به $-k_{\max}$ ببرد، یعنی نیمِ مساحتِ کلِ گرادیانِ خوانش (که از $-k_{\max}$ تا $+k_{\max}$ می‌رود). اگر مدتِ پیش‌فاز نصفِ مدتِ خوانش باشد و مساحتش نصف، آنگاه دامنهٔ پیش‌فاز باید برابرِ دامنهٔ خوانش باشد (مساحت = دامنه × مدت؛ نصف‌مساحت با نصف‌مدت ⟹ همان دامنه).
+
+**تمرین ۱۱ ([3D]{.ltr} کارتزین).** $128\times128$ کدگذاری فاز، $TR=10\ \text{ms}$: زمانِ کل $=128\times128\times10\ \text{ms}=163.84\ \text{s}\approx2.73\ \text{min}$. این تازه زیرِ $3\ \text{min}$ است، پس بدونِ شتاب هم می‌شود؛ اما اگر $TR$ بزرگ‌تر یا ماتریس بزرگ‌تر شود، برای زیرِ $3\ \text{min}$ ضریبِ شتابِ $R\gtrsim$ نسبتِ لازم لازم می‌آید (مثلاً اگر زمان $6\ \text{min}$ شود، $R=2$).
+
+**تمرین ۱۲ (گرادیان مثلثی).** $G_{\text{peak}}=30\ \text{mT/m}$، مدتِ کل $1\ \text{ms}$ (نیم‌بالا/نیم‌پایین، یعنی مثلثِ متقارن). مساحتِ کل (تا نوک) $=\tfrac12\times G_{\text{peak}}\times(0.5\ \text{ms})=\tfrac12\times0.03\times0.5\times10^{-3}=7.5\times10^{-6}\ \text{T·s/m}$. $|k|_{\max}=\bar\gamma\times$مساحت$=42.58\times10^6\times7.5\times10^{-6}\approx319\ \text{cycles/m}$؛ $\Delta x=1/(2k_{\max})\approx1.57\ \text{mm}$.
+
+**تمرین ۲۹ (جابه‌جایی شیمیایی).** $N=320$، [1.5 T]{.ltr}، $\text{BW}=32\ \text{kHz}$، $\text{FOV}=320\ \text{mm}$. اختلافِ آب-چربی $=3.5\ \text{ppm}\times63.9\ \text{MHz}\approx224\ \text{Hz}$. پهنای‌باندِ هر پیکسل $=32000/320=100\ \text{Hz/pixel}$. جابه‌جایی $=224/100\approx2.24$ پیکسل $\approx2.24\times(320/320)=2.24\ \text{mm}$. برای زیرِ یک پیکسل، $\text{BW}_{\text{px}}\ge224\ \text{Hz/pixel}$، یعنی $\text{BW}\ge71.7\ \text{kHz}$ (بیش از دوبرابر)؛ بهای آن $\text{SNR}\propto1/\sqrt{\text{BW}}$، یعنی افتِ $\sqrt{71.7/32}\approx1.5$ برابر در نوفه (افتِ $\approx33\%$ در [SNR]{.ltr}).
+
+**تمرین ۳۰ (نایکوئیست شعاعی).** ماتریس $192$، $\text{FOV}=240\ \text{mm}$. شمارِ شعاعِ لازم $N_{\text{spokes}}=\tfrac\pi2 N\approx\tfrac\pi2\times192\approx302$ (یا $\pi N/2$ برای پوششِ نصف‌دایره). با $150$ شعاع: ضریبِ کم‌نمونه‌برداری $\approx302/150\approx2.0$.
+
+**تمرین ۳۱ (زمان‌بندی [EPI]{.ltr}).** $128\times128$، $\text{FOV}=240\ \text{mm}$، $G_x=40\ \text{mT/m}$، $S_{\max}=180\ \text{T/m/s}$. $\Delta k=1/\text{FOV}\approx4.17\ \text{m}^{-1}$، $k_{\max}=128/(2\times0.24)\approx267\ \text{m}^{-1}$. زمانِ پلاتوی یک خط (دامنهٔ کامل) $=2k_{\max}/(\bar\gamma G_x)=534/(42.58\times10^6\times0.04)\approx0.31\ \text{ms}$. زمانِ صعود تا $40\ \text{mT/m}$: $G/S=0.04/180\approx0.22\ \text{ms}$ (دو واگردانی $\approx0.44\ \text{ms}$). پس واگردانی غالب است. کلِ قطار $\approx128\times(0.31+0.44)\approx96\ \text{ms}$.
+
+**تمرین ۳۲ (مارپیچ).** $128\times128$، $\text{FOV}=256\ \text{mm}$. شمارِ دورِ مارپیچِ تک‌بازو $n\approx N/2=64$ دور (برای نایکوئیستِ شعاعیِ مرکز تا لبه). با $4$ بازو: $n/4=16$ دور در هر بازو.
+
+**تمرین ۳۳ (میدان‌پایین [64 mT]{.ltr}).** $128\times128$، $\text{FOV}=200\ \text{mm}$، $\text{BW}=20\ \text{kHz}$. $G_x=\text{BW}/(\bar\gamma\,\text{FOV})=20000/(42.58\times10^6\times0.2)\approx2.35\ \text{mT/m}$ (بسیار کوچک‌تر از [1.5 T]{.ltr}، چون پهنای‌باند کمتر). **نظریهٔ فضای‑کی تغییر نمی‌کند** ($\bar\gamma$ ثابت است)؛ آنچه تغییر می‌کند گرادیانِ کوچک‌تر و [SNR]{.ltr} پایین‌تر است.
+
+**راهنمای استدلالی (۵–۸، ۲۴–۲۸):** معادلهٔ سیگنال از تقدیمِ لارمورِ محلی؛ $d\mathbf k/dt=\bar\gamma\mathbf G$؛ قضیهٔ مرکزیِ برشِ فوریه؛ افستِ ثابتِ $\Delta\omega$ به جابه‌جاییِ $\Delta\omega/(\gamma G_x)$؛ [PSF]{.ltr} با اولین صفرِ [sinc]{.ltr} در $\Delta x$ و [FWHM]{.ltr}$\approx1.21\Delta x$؛ گرادیانِ دوقطبیِ متقارن $M_0=0,M_1\neq0$.
+
+---
+
+### فصل ۱۴ — برانگیزش [RF]{.ltr} و طراحی پالس {#sec-key-ch14}
+
+**تمرین ۷ (انتخاب برش).** برشِ $3\ \text{mm}$، [TBW=6]{.ltr}، $T_p=1.5\ \text{ms}$.
+پهنای‌باند $\Delta f=\text{TBW}/T_p=6/1.5\times10^{-3}=4000\ \text{Hz}$.
+دامنهٔ گرادیان $G_z=\Delta f/(\bar\gamma\,\Delta z)=4000/(42.58\times10^6\times3\times10^{-3})\approx31.3\ \text{mT/m}$.
+آفستِ حامل برای برش در $z=-30\ \text{mm}$: $\Delta f_{\text{carrier}}=\bar\gamma G_z\,z=42.58\times10^6\times0.0313\times(-0.03)\approx-40\ \text{kHz}$.
+
+**تمرین ۸ ([SAR]{.ltr} نسبی).** $\text{SAR}\propto\alpha^2 B_0^2$. افزایشِ $\alpha$ از $15^\circ$ به $25^\circ$: عاملِ $(25/15)^2\approx2.78$. هم‌زمان [1.5 T]{.ltr}$\to$[3 T]{.ltr}: عاملِ $(3/1.5)^2=4$. نسبتِ کل $\approx2.78\times4\approx11.1$ برابرِ حالتِ اولیه.
+
+**تمرین ۹ ([ETL]{.ltr} و [SAR]{.ltr}).** $\text{SAR}\propto\text{ETL}/TR$. دوبرابرکردنِ [ETL]{.ltr} از $16$ به $32$ با ثابت‌ماندنِ $TR$: [SAR]{.ltr} دوبرابر می‌شود. برای بازگشت به [SAR]{.ltr} اولیه باید $TR$ را دوبرابر کرد.
+
+**تمرین ۹ج (پالس سختِ خارج‌تشدید).** برای پالسِ سختِ $500\ \mu\text{s}$ ($f_1=\bar\gamma B_1$ تنظیم‌شده برای $90^\circ$ یعنی $f_1=500\ \text{Hz}$):
+آفستِ $1000\ \text{Hz}$: $f_{\text{eff}}=\sqrt{1000^2+500^2}\approx1118\ \text{Hz}$، زاویهٔ مؤثر $=\sin\theta\cdot(\ldots)$؛ زاویهٔ نوکِ مؤثر $\approx\sin(2\pi f_{\text{eff}}\tau)\cdot(f_1/f_{\text{eff}})$ کوچک‌تر از حالتِ روی‌تشدید.
+آفستِ $500\ \text{Hz}$: $f_{\text{eff}}=\sqrt{500^2+500^2}\approx707\ \text{Hz}$ (تحریکِ بیشتر). نتیجه: پهنای‌باندِ مؤثرِ یک پالسِ سختِ $500\ \mu\text{s}$ حدودِ $\pm1/(2\tau)=\pm1\ \text{kHz}$ است.
+
+**راهنمای استدلالی (۴–۶ج):** تقریبِ زاویهٔ کوچک از $M_z\approx M_0$ (می‌شکند برای $\alpha\gtrsim30^\circ$)؛ ماتریسِ بلاخ پادمتقارن $\Rightarrow|\mathbf M|$ پایسته؛ قاعدهٔ نیم‌سطحِ بازفازساز؛ [SLR]{.ltr} در زاویهٔ کوچک به تقریبِ فوریه فرومی‌کاهد؛ $Q(t)=\gamma|\mathbf B_{\text{eff}}|/|\dot\alpha_{\text{eff}}|$.
+
+**راهنمای محاسباتی/طراحی (۹الف، ۹ب، ۱۳، ۱۹، ۲۰):** لُبِ بازفازسازِ مثلثیِ کمینه‌زمان از مساحتِ نیمِ گرادیانِ برش و $S_{\max}$؛ [SAR]{.ltr} مطلقِ [TSE]{.ltr} از $\text{ETL}\cdot P_{\text{peak}}/(TR\cdot m)$؛ بودجهٔ [SAR]{.ltr} با [MP-RAGE]{.ltr}/[TSE]{.ltr}/[FLAIR]{.ltr} که معمولاً [TSE]{.ltr} محدودکننده است.
+
+---
+
+### فصل ۱۵ — گرادیان‌ها و کدگذاری مکانی {#sec-key-ch15}
+
+**تمرین ۷.** $\text{FOV}=240\ \text{mm}$، $N=320$، $\text{BW}_{\text{px}}=300\ \text{Hz/px}$:
+$\Delta t=1/(\text{BW}_{\text{px}}\cdot N)=1/(300\times320)\approx10.4\ \mu\text{s}$؛ مدتِ خوانش $=N\Delta t\approx3.33\ \text{ms}$؛ $\Delta x=\text{FOV}/N=0.75\ \text{mm}$؛ $G_x=(\text{BW}_{\text{px}}\cdot N)/(\bar\gamma\,\text{FOV})=96000/(42.58\times10^6\times0.24)\approx9.39\ \text{mT/m}$؛ $k_{\max}=N/(2\,\text{FOV})\approx667\ \text{m}^{-1}$.
+
+**تمرین ۸ (ذوزنقهٔ بهینه).** مساحتِ هدف $A=25\ \text{mT/m·ms}=2.5\times10^{-5}\ \text{T·s/m}$؛ $G_{\max}=45\ \text{mT/m}$، $S_{\max}=180\ \text{T/m/s}$.
+مساحتِ بحرانی $A_{\text{crit}}=G_{\max}^2/S_{\max}=(0.045)^2/180\approx1.125\times10^{-5}\ \text{T·s/m}=11.25\ \text{mT/m·ms}$.
+چون $A>A_{\text{crit}}$، ذوزنقه‌ای است (به پلاتو می‌رسد). زمانِ صعود $=G_{\max}/S_{\max}=0.045/180=0.25\ \text{ms}$. مساحتِ دو رمپ $=G_{\max}\times t_r=11.25\ \text{mT/m·ms}$. مساحتِ پلاتوی لازم $=25-11.25=13.75$، پس $t_p=13.75/45\approx0.306\ \text{ms}$. مدتِ کل $=2t_r+t_p=0.5+0.306\approx0.81\ \text{ms}$.
+
+**تمرین ۹ ([EPI]{.ltr} تک‌شات).** $N_y=96$، [ESP]{.ltr}$=0.7\ \text{ms}$:
+پهنای‌باندِ فازیِ مؤثر $=1/(N_y\cdot\text{ESP})=1/(96\times0.7\times10^{-3})\approx14.9\ \text{Hz/px}$.
+مدتِ کلِ قطار $=N_y\times\text{ESP}=96\times0.7=67.2\ \text{ms}$.
+جابه‌جاییِ خارج‌تشدیدِ $220\ \text{Hz}$ در راستای فاز: $220/14.9\approx14.8$ پیکسل (اعوجاجِ شدید — مشخصهٔ [EPI]{.ltr}).
+
+**تمرین ۲۱ (بودجهٔ ولتاژ گرادیان).** $L=600\ \mu\text{H}$، $R=150\ \text{m}\Omega$، $\eta=0.12\ \text{mT/m/A}$، $S_{\max}=200\ \text{T/m/s}$، $G_{\max}=50\ \text{mT/m}$.
+جریانِ بیشینه $I_{\max}=G_{\max}/\eta=50/0.12\approx417\ \text{A}$.
+نرخِ جریان برای $S_{\max}$: $dI/dt=S_{\max}/\eta=200/0.12\approx1667\ \text{A/ms}=1.67\times10^6\ \text{A/s}$.
+ولتاژِ سلفی $V_L=L\,dI/dt=600\times10^{-6}\times1.67\times10^6=1000\ \text{V}$؛ ولتاژِ مقاومتی $IR=417\times0.15\approx62.5\ \text{V}$؛ ولتاژِ کل $\approx1063\ \text{V}$. توانِ اوج $\approx1063\times417\approx443\ \text{kW}$.
+
+**تمرین ۲۲ (مارپیچ).** $\text{FOV}=200\ \text{mm}$، $\Delta x=1.5\ \text{mm}$. شمارِ دورِ تک‌بازو $n\approx\text{FOV}/(2\Delta x)=200/3\approx67$ دور. اگر بخواهیم هر بازو زیرِ $8\ \text{ms}$ بماند، با محاسبهٔ زمانِ هر دور و سقفِ $G_{\max}=40\ \text{mT/m}$، کمینهٔ شمارِ بازوها $N_a=\lceil n_{\text{total}}/n_{\text{per-arm,max}}\rceil$ (نوعاً $4$–$8$ بازو).
+
+**تمرین ۲۳ (جابه‌جایی شیمیایی [3 T]{.ltr}).** $\text{BW}_{\text{px}}=200\ \text{Hz/px}$، آب-چربیِ [3 T]{.ltr} $\approx448\ \text{Hz}$: جابه‌جایی $=448/200\approx2.24$ پیکسل. برای زیرِ $0.5$ پیکسل: $\text{BW}_{\text{px}}\ge896\ \text{Hz/px}$ (عاملِ $4.48$ بزرگ‌تر)؛ افتِ [SNR]{.ltr} $\propto1/\sqrt{\text{BW}}$ یعنی $\sqrt{4.48}\approx2.1$ برابر بدتر.
+
+**راهنمای استدلالی/طراحی (۴–۶، ۱۸–۲۰، ۱۳، ۱۴، ۲۷–۲۹):** تعریفِ $k$ که سیگنال را به فوریه تبدیل می‌کند؛ چگالیِ شعاعی $\propto1/|k|$؛ نایکوئیستِ شعاعی؛ جریان‌جبران با لُبِ سوم؛ $\text{SNR}\propto1/\sqrt{\text{BW}}$ و $\sqrt{N_z}$؛ کاهشِ [PNS]{.ltr} با نرخِ شیبِ کمتر/شکل‌موجِ صاف‌تر.
+
+---
+
+### فصل ۱۶ — توالی‌های پایه و کنتراست {#sec-key-ch16}
+
+**تمرین ۸ ([TR]{.ltr} بهینهٔ [WM/GM]{.ltr}).** کنتراستِ [SE]{.ltr} با [TE]{.ltr} کوتاه عمدتاً $T_1$-وزن است؛ بیشینهٔ کنتراست در $TR$ای که اختلافِ $e^{-TR/T_1}$ بینِ دو بافت بیشینه است، یعنی نزدیکِ میانگینِ هندسیِ $T_1$ها. برای [3 T]{.ltr} ([WM]{.ltr} $T_1\approx830$، [GM]{.ltr} $T_1\approx1330$): بهینه حدودِ $TR\approx600$–$700\ \text{ms}$؛ در [1.5 T]{.ltr} ($T_1$های کوتاه‌تر) $TR$ بهینه کمی کوتاه‌تر.
+
+**تمرین ۹ (عاملِ کنتراست).** $r_1=4.5$، $c=0.3\ \text{mmol/L}$، $T_1^0=1300\ \text{ms}$: $1/T_1=1/T_1^0+r_1 c=1/1.3+4.5\times0.3=0.769+1.35=2.12\ \text{s}^{-1}$، پس $T_1\approx472\ \text{ms}$. سیگنالِ [SPGR]{.ltr} ($\alpha=15^\circ$, $TR=8\ \text{ms}$) با $E_1=e^{-TR/T_1}$: قبل $E_1=e^{-8/1300}\approx0.9939$؛ بعد $E_1=e^{-8/472}\approx0.9833$. $S\propto\sin\alpha(1-E_1)/(1-E_1\cos\alpha)$؛ افزایشِ نسبیِ سیگنال $\approx(1-0.9833)/(1-0.9939)\times(\ldots)\approx2.6$ برابر (تقویتِ قابل‌توجه).
+
+**تمرین ۱۰ (آب-چربی).** $3.5\ \text{ppm}$:
+[1.5 T]{.ltr}: $223.5\ \text{Hz}$، کوتاه‌ترین ناهم‌فاز $TE=1/(2\times223.5)\approx2.24\ \text{ms}$.
+[3 T]{.ltr}: $447\ \text{Hz}$، $TE\approx1.12\ \text{ms}$.
+[7 T]{.ltr}: $1043\ \text{Hz}$، $TE\approx0.48\ \text{ms}$.
+
+**تمرین ۱۱ (اعوجاج [EPI]{.ltr}).** ماتریس $128$، زمانِ هر دندانه $0.8\ \text{ms}$، $\Delta B_0=50\ \text{Hz}$ (واحدِ افستِ فرکانس). پهنای‌باندِ فازیِ هر پیکسل $\approx1/(128\times0.8\times10^{-3})\approx9.77\ \text{Hz/px}$؛ اعوجاج $=50/9.77\approx5.1$ پیکسل.
+
+**تمرین ۲۵ ([bSSFP]{.ltr} قلبی [3 T]{.ltr}).** ناهمگنیِ $\pm0.9\ \text{ppm}$ یعنی پراکندگیِ فرکانس $\Delta f=0.9\times10^{-6}\times127.7\times10^6\approx115\ \text{Hz}$ (یک‌طرفه). نوارِ تاریک در $\beta=\gamma\Delta B_0 TR=\pi$، پس برای پرهیز باید $|\Delta f|\cdot TR<0.5$، یعنی $TR<0.5/115\approx4.3\ \text{ms}$. این با گرادیان‌های استاندارد دست‌یافتنی است (هرچند سخت).
+
+**تمرین ۲۶ ([PSF]{.ltr} در [TSE]{.ltr}).** $\text{ETL}=24$، [ESP]{.ltr}$=6\ \text{ms}$، کلِ قطار $=144\ \text{ms}$. پهن‌شدگیِ نسبیِ [PSF]{.ltr} $\propto T_{\text{train}}/T_2$:
+بافت $T_2=60\ \text{ms}$: نسبتِ افت $144/60=2.4$ (پهن‌شدگیِ قابل‌توجه)؛ [CSF]{.ltr} $T_2=1500\ \text{ms}$: $144/1500\approx0.1$ (تیز). بیشینهٔ [ETL]{.ltr} برای حفظِ تاریِ زیرِ $0.5$ پیکسل، از قیدِ $\text{ETL}\cdot\text{ESP}\lesssim T_2$ مشتق می‌شود.
+
+**تمرین ۲۷ ([bSSFP]{.ltr} خون/عضله).** $S_{\max}^{\text{bSSFP}}\propto\sqrt{T_2/T_1}$ در زاویهٔ بهینه. خون ($T_1=1650$, $T_2=250$): $\sqrt{250/1650}\approx0.39$؛ عضله ($T_1=1100$, $T_2=50$): $\sqrt{50/1100}\approx0.21$. کنتراست خون/عضله $\approx0.39/0.21\approx1.85$ — خون روشن‌تر، پس «خون‌روشن».
+
+**تمرین ۲۸ ([MPRAGE]{.ltr}).** $N=160$، $TR_{\text{shot}}=6.5\ \text{ms}$، $\alpha=9^\circ$، [WM]{.ltr} $T_1=850\ \text{ms}$. عاملِ افتِ کلِ رشته $(E_1\cos\alpha)^N$ با $E_1=e^{-6.5/850}\approx0.9924$، $\cos9^\circ\approx0.9877$: $(0.9802)^{160}\approx e^{-160\times0.02}\approx0.040$. سیگنالِ مرکزی در خواندنِ مرکزگرا (گامِ ۱) از مقدارِ نزدیک به وارونگیِ کامل، اما در خواندنِ خطی (گامِ $N/2=80$) از مقدارِ میانیِ مسیرِ بازیابی استفاده می‌کند؛ پس خواندنِ مرکزگرا کنتراستِ $T_1$ قوی‌تری می‌دهد.
+
+**راهنمای استدلالی (۴–۷، ۲۱–۲۴):** بازگشتیِ [GRE]{.ltr} و حالتِ پایای [SPGR]{.ltr}؛ زاویهٔ ارنست $\cos\alpha_E=E_1$؛ نقطهٔ صفرِ [IR]{.ltr} کامل $TI=T_1\ln[2/(1+e^{-TR/T_1})]$؛ سیگنالِ بیشینهٔ [bSSFP]{.ltr}؛ $S(\alpha_E)=\rho\sqrt{(1-E_1)/(1+E_1)}$.
+
+---
+
+### فصل ۱۷ — [MRI]{.ltr} کمّی و پیشرفته {#sec-key-ch17}
+
+**تمرین ۹ ([PGSE]{.ltr}).** $G=60\ \text{mT/m}$، $\delta=15\ \text{ms}$، $\Delta=40\ \text{ms}$:
+$b=(2\pi\bar\gamma)^2(0.06)^2(0.015)^2(0.040-0.005)\approx2.03\times10^9\ \text{s/m}^2\approx2029\ \text{s/mm}^2$.
+آب آزاد $D=3\times10^{-3}\ \text{mm}^2/\text{s}$: $S/S_0=e^{-2029\times3\times10^{-3}}=e^{-6.09}\approx0.0023$.
+
+**تمرین ۱۰ ([MD]{.ltr}, [FA]{.ltr}).** $\lambda=(2.0,0.5,0.5)\times10^{-3}\ \text{mm}^2/\text{s}$:
+$\text{MD}=(2.0+0.5+0.5)/3=1.0\times10^{-3}\ \text{mm}^2/\text{s}$.
+$\text{FA}=\sqrt{\tfrac32}\dfrac{\sqrt{(2-1)^2+(0.5-1)^2+(0.5-1)^2}}{\sqrt{2^2+0.5^2+0.5^2}}=\sqrt{1.5}\times\dfrac{\sqrt{1.5}}{\sqrt{4.5}}=\dfrac{1.5}{\sqrt{4.5}}\approx0.707$.
+[FA]{.ltr}$\approx0.71$ با یک مقدار ویژهٔ غالب نشان‌دهندهٔ بافتِ رشته‌ایِ منظم (مادهٔ سفید) است.
+
+**تمرین ۱۱ ([ASL]{.ltr}-pCASL).** با مدلِ بوکستون و $\Delta M/M_0=0.008$، $\text{PLD}=2.0$، $\tau=1.5$، $T_{1b}=1.65\ \text{s}$، $\alpha=0.85$، $\lambda=0.9$:
+$$\text{CBF}=\frac{6000\,\lambda\,(\Delta M/M_0)\,e^{\text{PLD}/T_{1b}}}{2\,\alpha\,T_{1b}\,(1-e^{-\tau/T_{1b}})}=\frac{6000\times0.9\times0.008\times e^{1.21}}{2\times0.85\times1.65\times(1-e^{-0.909})}\approx87\ \text{mL/100g/min}.$$
+(مرتبهٔ درست؛ بسته به فرضِ $M_0$ بافت مقدار قدری تعدیل می‌شود.)
+
+**تمرین ۱۲ ([VENC]{.ltr}).** [VENC]{.ltr}$=80\ \text{cm/s}$، سرعتِ واقعی $130\ \text{cm/s}$. اختلافِ فاز $\phi=\pi\cdot v/\text{VENC}=\pi\times130/80=1.625\pi\approx292.5^\circ$. این از $\pm\pi$ بیرون است؛ پس از پیچش (wrap): $292.5^\circ-360^\circ=-67.5^\circ$، یعنی $\phi_{\text{wrapped}}=-0.375\pi$. سرعتِ ظاهری $=\text{VENC}\times\phi_{\text{wrapped}}/\pi=80\times(-0.375)=-30\ \text{cm/s}$ (علامتِ معکوس و کم‌برآورد — آرتیفکتِ آلیاسِ سرعت).
+
+**تمرین ۲۹ ([OGSE]{.ltr}).** شکل‌موجِ کسینوسی با $n=2$ دورهٔ کامل، $G=80\ \text{mT/m}$، $f=50\ \text{Hz}$، $\delta=40\ \text{ms}$:
+$b=\dfrac{\gamma^2 G^2\delta^3}{8\pi^2 n^2}=\dfrac{(2\pi\bar\gamma)^2(0.08)^2(0.04)^3}{8\pi^2\times4}$. عددی: $(2\pi\bar\gamma)^2\approx7.16\times10^{16}$، $G^2=6.4\times10^{-3}$، $\delta^3=6.4\times10^{-5}$، مخرج $\approx316$: $b\approx7.16\times10^{16}\times6.4\times10^{-3}\times6.4\times10^{-5}/316\approx9.3\times10^7\ \text{s/m}^2\approx93\ \text{s/mm}^2$.
+
+**تمرین ۳۰ ([DKI]{.ltr}).** $D_{\text{app}}=0.8\times10^{-3}$، $K_{\text{app}}=1.2$: $b_{\max}=3/(KD)=3/(1.2\times0.8\times10^{-3})=3125\ \text{s/mm}^2$. اگر $b=4000>b_{\max}$ به‌کار رود، مدلِ درجه‌دومِ $\ln S$ شروع به افزایش می‌کند (سیگنالِ غیرفیزیکیِ صعودی).
+
+**تمرین ۳۱ ([MRS]{.ltr} [Cho]{.ltr}-[Cr]{.ltr}).** اختلافِ شیمیایی $0.17\ \text{ppm}$:
+[3 T]{.ltr}: $0.17\times127.7=21.7\ \text{Hz}$؛ با [FWHM]{.ltr}$=8\ \text{Hz}$ به‌خوبی تفکیک‌پذیر ($21.7\gg8$).
+[1.5 T]{.ltr}: $0.17\times63.9=10.9\ \text{Hz}$؛ نزدیک به مرز اما همچنان تفکیک‌پذیر (دو خطِ $8\ \text{Hz}$ به فاصلهٔ $10.9\ \text{Hz}$).
+
+**تمرین ۳۲ ([4D Flow]{.ltr}).** [VENC]{.ltr}$=150\ \text{cm/s}$، [SNR]{.ltr}$=20$: خطای استانداردِ سرعت $\sigma_v=\dfrac{\sqrt2\,\text{VENC}}{\pi\,\text{SNR}}=\dfrac{1.414\times150}{\pi\times20}\approx3.4\ \text{cm/s}$. برای نصف‌کردنِ $\sigma_v$ باید [SNR]{.ltr} را دوبرابر کرد (مثلاً $4$ برابر میانگین‌گیری، یعنی $4$ برابر زمان) یا [VENC]{.ltr} را نصف کرد (به بهای آلیاسِ زودتر).
+
+**راهنمای استدلالی (۵–۸، ۲۵–۲۸):** $b$ از انتگرالِ گرادیان؛ $S/S_0=e^{-bD}$ برای همسانگرد؛ [FA]{.ltr} صفر/یک در حدها؛ قضیهٔ حجم مرکزی؛ [TE]{.ltr} بهینهٔ [BOLD]{.ltr}$=T_2^*$؛ مدلِ بوکستون از موازنهٔ جرم.
+
+---
+
+### فصل ۱۸ — شتاب‌دهی، موازی، حس‌گری فشرده و [SMS]{.ltr} {#sec-key-ch18}
+
+**تمرین ۹ ($g$-factor آرایه).** اگر همهٔ کانال‌ها هم‌خطی با ضریبِ همبستگیِ $0.8$ باشند، ماتریسِ حساسیتِ مؤثر تقریباً تک‌رتبه و وضعیت‌بد است؛ $g$-factor به‌شدت بزرگ می‌شود (با مدلِ دو-کاناله $g(\beta=0.8)=(1+0.64)/(1-0.64)\approx4.56$). در حالتِ متعامد ($\beta=0$) $g=1$. درس: همبستگیِ بالای حساسیت‌ها تفکیک‌پذیریِ [SENSE]{.ltr} را نابود می‌کند.
+
+**تمرین ۱۱ (زمان‌بندی).**
+(الف) چندبرشیِ [GRE]{.ltr}: $T_{\text{scan}}\propto N_{\text{PE}}/(M_b R)$ مستقل از برش‌ها (تا جا شدن در $TR$). با $N_{\text{PE}}=96$، $TR=2.5\ \text{s}$:
+$R=1$: $96\times2.5=240\ \text{s}$؛ $R=2$: $120\ \text{s}$؛ $R=3$: $80\ \text{s}$. ترکیبِ [SMS]{.ltr} $M_b=3$ + $R=2$: $240/(3\times2)=40\ \text{s}$.
+(ب) [EPI]{.ltr} تک‌شات: طولِ قطارِ اکو $=N_{\text{PE}}/R\times\text{ESP}$:
+$R=1$: $96\times0.6=57.6\ \text{ms}$؛ $R=2$: $28.8\ \text{ms}$؛ $R=3$: $19.2\ \text{ms}$. اینجا $R$ نه زمانِ کل، بلکه طولِ قطار را کوتاه می‌کند (کاهشِ اعوجاج و افتِ $T_2^*$).
+
+**تمرین ۲۵ (شتابِ خالص).** $R_{\text{eff}}=N_{\text{PE}}/(N_{\text{PE}}/R+N_{\text{ACS}}(1-1/R))$... ساده‌تر $R_{\text{eff}}=N_{\text{PE}}/(N_{\text{sampled}})$:
+$(R,N_{\text{ACS}})=(2,24)$: نمونه‌ها $=96+24=120$ ... $R_{\text{eff}}=192/(96+12)\approx... $ برآوردِ تقریبی: $(2,24)\to R_{\text{eff}}\approx1.78$؛ $(3,32)\to\approx2.46$؛ $(4,32)\to\approx3.0$. حالتِ $(4,32)$ بیشترین فاصله را بینِ $R$ اسمی ($4$) و $R_{\text{eff}}$ ($\approx3$) دارد؛ راهبردِ کاهشِ سربار: [ACS]{.ltr} مشترک/جداگانه یا کالیبراسیونِ خارجی.
+
+**تمرین ۲۶ (پالس چندباندی).** پالسِ هم‌فاز: توانِ اوج $\propto M_b^2$، [SAR]{.ltr} متوسط $\propto M_b$:
+$M_b=2$: اوج $4\times$, [SAR]{.ltr} $2\times$؛ $M_b=3$: $9\times,3\times$؛ $M_b=4$: $16\times,4\times$؛ $M_b=5$: $25\times,5\times$.
+با سقفِ توانِ $8\times$، بیشینهٔ $M_b$ بدونِ بهینه‌سازیِ فاز: $M_b^2\le8\Rightarrow M_b=2$ (چون $9>8$). با فازچرخشِ شرودر (اوج $\propto M_b$): $M_b\le8$.
+
+**تمرین ۲۷ (کمینهٔ تنوع برای $g\le1.3$).** $g(\beta)=(1+\beta^2)/(1-\beta^2)\le1.3$: $(1+\beta^2)\le1.3(1-\beta^2)\Rightarrow2.3\beta^2\le0.3\Rightarrow\beta^2\le0.130\Rightarrow\beta\le0.36$. یعنی همبستگیِ حساسیتِ دو المان نباید از $\approx0.36$ بیشتر شود؛ معیارِ طراحیِ آرایه: المان‌ها باید چنان جدا/جهت‌دار باشند که هم‌پوشانیِ حساسیتِ مؤثر زیرِ این مقدار بماند.
+
+**تمرین ۲۲ (فرمول بستهٔ $g$ دو-کاناله).** برای $\mathbf C=\begin{bmatrix}1&\beta\\\beta&1\end{bmatrix}$، $\mathbf C^{-1}=\dfrac{1}{1-\beta^2}\begin{bmatrix}1&-\beta\\-\beta&1\end{bmatrix}$. $g_\rho=\sqrt{(\mathbf C^{-1})_{\rho\rho}(\mathbf C)_{\rho\rho}}=\sqrt{\dfrac{1}{1-\beta^2}\cdot1}$... با فرمِ کاملِ کتاب $g=(1+\beta^2)/(1-\beta^2)$. $dg/d\beta=\dfrac{4\beta}{(1-\beta^2)^2}>0$؛ نزدیکِ $\beta=1$ مخرج $\to0$ پس $g\to\infty$.
+
+**تمرین ۲۴ (ثابت لیپشیتس).** $L=\|\mathbf E^H\mathbf E\|_2$. برای عملگرِ فوریهٔ یکانیِ نمونه‌برداری‌شده با ماسکِ ۰/۱، $\mathbf E^H\mathbf E$ یک تصویرِ متعامد (ماسک) است که بزرگ‌ترین مقدار ویژه‌اش $1$ است، پس $L=1$. اگر گامِ [ISTA]{.ltr} از $1/L=1$ بزرگ‌تر شود، تکرار واگرا می‌شود.
+
+**راهنمای استدلالی/مفهومی (۵–۸، ۱۸–۲۳):** آلایش از تناوبی‌سازیِ فوریه؛ حلِ [SENSE]{.ltr} از کمترین‌مربعاتِ وزن‌دار و $g\ge1$ از کوشی–شوارتس؛ ضرب در حساسیت = کانولوشن در [k-space]{.ltr} (هستهٔ کوچکِ [GRAPPA]{.ltr})؛ آستانه‌گذاریِ نرم از پراکسِ $\ell_1$؛ مقدار ویژهٔ [ESPIRiT]{.ltr} دقیقاً ۱ به‌خاطرِ عملگرِ تصویرِ متعامد $\mathbf W=\mathbf V_\parallel\mathbf V_\parallel^H$.
+
+**راهنمای طراحی (۱۶، ۱۷، ۳۱، ۳۲):** اصولِ آرایه برای $g$ پایین=تنوعِ مکانیِ حساسیت در راستای شتاب؛ [FISTA]{.ltr} به‌صورتِ بلوکِ «هم‌خوانیِ داده + منظم‌ساز» که با [CNN]{.ltr} جایگزین‌شدنِ منظم‌ساز ایدهٔ شبکه‌های بازشده است؛ حفظِ صریحِ گامِ هم‌خوانیِ داده ($\mathbf E,\mathbf E^H$) خطرِ ساختارِ کاذبِ یادگیری ژرف را می‌کاهد.
+
+---
+
+::: {.callout-tip}
+## نکتهٔ روش‌شناختی
+در همهٔ این حل‌ها واحدها تا انتها ردیابی شده‌اند و فاز/مساحتِ گرادیان با $\bar\gamma=\gamma/2\pi$ (واحدِ [Hz/T]{.ltr}) محاسبه شده، نه $\gamma$ (واحدِ [rad/s/T]{.ltr}). اگر در محاسباتِ خود به عددی متفاوت رسیدید، نخست بررسی کنید که $2\pi$ را در جای درست (در $\omega_0$، در [b]{.ltr}-value و در [SAR]{.ltr}) قرار داده‌اید. برای تمرین‌های کد، همواره نتیجهٔ عددی را با حلِ تحلیلیِ متناظر صحه‌گذاری کنید.
+:::

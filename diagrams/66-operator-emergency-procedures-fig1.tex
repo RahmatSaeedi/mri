@@ -1,0 +1,74 @@
+% MRI fault-response decision tree (top-level): life > hazard containment > equipment.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    start/.style={draw, rounded corners=2pt, align=center, inner sep=5pt,
+                  fill=blue!10, minimum width=4.2cm},
+    dec/.style={draw, diamond, aspect=2.4, align=center, inner sep=1pt,
+                fill=orange!18, minimum width=3.0cm, text width=3.2cm},
+    act/.style={draw, rounded corners=2pt, align=center, inner sep=5pt,
+                fill=green!12, minimum width=3.4cm, text width=3.3cm},
+    danger/.style={draw, rounded corners=2pt, align=center, inner sep=5pt,
+                fill=red!18, minimum width=3.4cm, text width=3.3cm},
+    proc/.style={draw, rounded corners=2pt, align=center, inner sep=5pt,
+                fill=gray!10, minimum width=3.4cm, text width=3.3cm},
+    flow/.style={->, thick},
+    lbl/.style={font=\footnotesize, fill=white, inner sep=1pt},
+  ]
+
+  \node[start] (event) {\textbf{رخدادِ غیرعادی}};
+  \node[dec, below=0.9cm of event] (life) {تهدیدِ فوریِ جان؟};
+
+  % Left branch: No
+  \node[act, below left=1.5cm and 1.6cm of life] (stop)
+    {\textbf{توقفِ اسکن}\\ سپس ارزیابی};
+
+  % Right branch: Yes -> field cause?
+  \node[dec, below right=1.5cm and 1.0cm of life] (field)
+    {خطر ناشی از \textbf{میدان مغناطیسی}؟};
+
+  % field No -> identify hazard
+  \node[proc, below left=1.4cm and -0.4cm of field] (ident)
+    {شناساییِ نوعِ خطر\\(آتش / الکتریکی / پزشکی / He / پرتابه)};
+  \node[proc, below=1.0cm of ident] (specific)
+    {اجرای رویهٔ ویژهٔ آن خطر};
+
+  % field Yes -> solvable by extraction?
+  \node[dec, below right=1.4cm and 0.2cm of field] (extract)
+    {رفع‌شدنی با خارج‌سازی / رهاسازیِ عادی؟};
+
+  \node[act, below left=1.5cm and -1.0cm of extract] (free)
+    {خارج‌سازی و رهاسازیِ بیمار};
+  \node[danger, below right=1.5cm and -1.0cm of extract] (quench)
+    {\textbf{کوئنچِ عمدی}\\(آخرین چاره)};
+
+  \draw[flow] (event) -- (life);
+  \draw[flow] (life) -| node[lbl, pos=0.25]{خیر} (stop);
+  \draw[flow] (life) -| node[lbl, pos=0.25]{بله} (field);
+
+  \draw[flow] (field) -| node[lbl, pos=0.25]{خیر} (ident);
+  \draw[flow] (ident) -- (specific);
+
+  \draw[flow] (field) -| node[lbl, pos=0.25]{بله} (extract);
+  \draw[flow] (extract) -| node[lbl, pos=0.25]{بله} (free);
+  \draw[flow] (extract) -| node[lbl, pos=0.25]{خیر} (quench);
+
+\end{tikzpicture}}
+\end{document}

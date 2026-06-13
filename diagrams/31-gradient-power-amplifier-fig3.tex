@@ -1,0 +1,55 @@
+% GPA protection chain ordered from fastest to slowest response layer.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=4mm,
+    layer/.style={draw, thick, rounded corners=2pt, minimum height=9mm,
+                  text width=58mm, align=left, inner sep=4pt},
+    time/.style={font=\footnotesize, anchor=west}]
+
+  % layers from fastest (top) to slowest (bottom)
+  \node[layer, fill=red!18]    (L1) {\textbf{[1] DESAT / سیکل‌به‌سیکل}\\ سخت‌افزاری، مستقل از نرم‌افزار};
+  \node[layer, fill=red!12, below=of L1]    (L2) {\textbf{[2] مهار اضافه‌ولتاژ پیوند DC}\\ مقایسه‌گر + چاپر ترمز};
+  \node[layer, fill=orange!16, below=of L2] (L3) {\textbf{[3] قطع اضافه‌جریان}\\ مقایسه‌گر آنالوگ};
+  \node[layer, fill=yellow!22, below=of L3] (L4) {\textbf{[4] اضافه‌دما}\\ NTC + منطق};
+  \node[layer, fill=green!14, below=of L4]  (L5) {\textbf{[5] بررسی توالی PNS / $dB/dt$}\\ نرم‌افزار سطح‌بالا (pre-scan)};
+  \node[layer, fill=blue!12, below=of L5]   (L6) {\textbf{[6] اینترلاک سامانه + ثبت رویداد}\\ به کنترل‌گر اصلی};
+
+  % connecting arrows
+  \foreach \a/\b in {L1/L2, L2/L3, L3/L4, L4/L5, L5/L6}{
+    \draw[->, thick] (\a) -- (\b);
+  }
+
+  % response-time column on the right
+  \node[time] at ($(L1.east)+(0.7,0)$) {$\sim 1$--$5\ \mu\mathrm{s}$};
+  \node[time] at ($(L2.east)+(0.7,0)$) {$\sim 10\ \mu\mathrm{s}$};
+  \node[time] at ($(L3.east)+(0.7,0)$) {$\sim 10$--$50\ \mu\mathrm{s}$};
+  \node[time] at ($(L4.east)+(0.7,0)$) {$\sim$ ms--s};
+  \node[time] at ($(L5.east)+(0.7,0)$) {pre-scan};
+  % (pre-scan: kept as system mode token)
+  \node[time] at ($(L6.east)+(0.7,0)$) {ms};
+
+  % speed axis annotation on the left
+  \draw[-{Stealth[length=3mm]}, thick, gray]
+        ($(L1.west)+(-0.7,0.2)$) -- ($(L6.west)+(-0.7,-0.2)$);
+  \node[gray, rotate=90, anchor=south, font=\footnotesize]
+        at ($(L1.west)!0.5!(L6.west)+(-1.05,0)$) {سریع‌تر $\rightarrow$ کندتر};
+
+\end{tikzpicture}}
+\end{document}

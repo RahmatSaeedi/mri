@@ -1,0 +1,89 @@
+% Two-capacitor tune/match network for an RF coil:
+% the loop (inductor L + R_total) with a parallel tuning capacitor C_t and
+% a series matching capacitor C_m feeding a 50 ohm port.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, scale=1.0]
+  % --- top branch: inductor L (loop) then R_total, from node A (left) to node B (right) ---
+  \coordinate (A) at (0,3);     % top-left node
+  \coordinate (B) at (8,3);     % top-right node
+
+  % left lead into inductor
+  \draw[thick] (A) -- (0.4,3);
+  % Inductor L from (0.4,3) to (3.0,3)
+  \draw[thick] (0.4,3)
+    .. controls (0.4,3.6) and (0.9,3.6) .. (0.9,3)
+    .. controls (0.9,3.6) and (1.4,3.6) .. (1.4,3)
+    .. controls (1.4,3.6) and (1.9,3.6) .. (1.9,3)
+    .. controls (1.9,3.6) and (2.4,3.6) .. (2.4,3)
+    .. controls (2.4,3.6) and (2.9,3.6) .. (2.9,3);
+  \draw[thick] (2.9,3) -- (3.0,3);
+  \node[above] at (1.65,3.6) {$L$ (حلقه)};
+
+  \fill (3.0,3) circle (1.6pt);
+
+  % Resistor R_total from (3.0,3) to (5.0,3)
+  \draw[thick] (3.0,3) -- (3.2,3)
+    -- (3.35,3.25) -- (3.65,2.75) -- (3.95,3.25) -- (4.25,2.75) -- (4.55,3.25) -- (4.7,3)
+    -- (5.0,3);
+  \node[above] at (4.0,3.35) {$R_{\mathrm{total}}$};
+
+  \draw[thick] (5.0,3) -- (B);
+  \fill (B) circle (1.6pt);
+
+  % --- left vertical from A down to bottom rail ---
+  \draw[thick] (A) -- (0,0);
+
+  % --- tuning capacitor C_t: vertical, on the right side, between node B and a mid node ---
+  \coordinate (Bmid) at (8,1.6);
+  \draw[thick] (B) -- (8,2.05);
+  \draw[thick] (7.55,2.05) -- (8.45,2.05);   % top plate
+  \draw[thick] (7.55,1.75) -- (8.45,1.75);   % bottom plate
+  \draw[thick] (8,1.75) -- (Bmid);
+  \node[right] at (8.5,1.9) {$C_t$ (هم‌نوایی)};
+
+  % --- matching capacitor C_m: from Bmid horizontally to the 50 ohm port ---
+  % the lower-right portion forms the output port
+  \draw[thick] (Bmid) -- (8,0.7);
+  \fill (8,0.7) circle (1.6pt);
+
+  % horizontal matching cap branch to port
+  \draw[thick] (8,0.7) -- (10.0,0.7);
+  \draw[thick] (10.0,0.55) -- (10.0,0.85);   % left plate (vertical)
+  \draw[thick] (10.3,0.55) -- (10.3,0.85);   % right plate
+  \node[above] at (10.15,0.9) {$C_m$ (تطبیق)};
+  \draw[thick] (10.3,0.7) -- (11.2,0.7);
+  \node[right] at (11.2,0.7) {درگاه $+$};
+
+  % --- bottom rail ---
+  \draw[thick] (0,0) -- (11.2,0);
+  \node[right] at (11.2,0.0) {درگاه $-$};
+
+  % 50 ohm port label
+  \node[draw, rounded corners, fill=green!8, align=center] at (10.0,-0.9)
+    {خط انتقال $50\,\Omega$};
+  \draw[->] (10.0,-0.55) -- (10.6,0.0);
+
+  % --- explanatory note ---
+  \node[draw, rounded corners, align=left, fill=blue!5, text width=6.0cm] at (3.0,-1.1)
+    {$C_t$ بسامد تشدید $f_0$ را تعیین می‌کند؛\\
+     $C_m$ امپدانس تشدیدی بالا را به $50\,\Omega$ کاهش می‌دهد ($R_p=Q^2R_s$).};
+\end{tikzpicture}}
+\end{document}

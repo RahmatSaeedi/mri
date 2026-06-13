@@ -1,0 +1,81 @@
+% Series RLC circuit as the simple model of an RF coil:
+% resistor R, inductor L, capacitor C in series, driven by a phasor source V.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, scale=1.0]
+  % --- top wire with R, L, C in series ---
+  \coordinate (TL) at (0,2);     % top-left node (+ terminal)
+  \coordinate (TR) at (10,2);    % top-right node (- terminal)
+
+  % left lead
+  \draw[thick] (TL) -- (1,2);
+  \fill (1,2) circle (1.6pt);
+  \node[above left] at (TL) {$+$};
+  \fill (TL) circle (1.6pt);
+
+  % Resistor R (zig-zag) from (1,2) to (3,2)
+  \draw[thick] (1,2) -- (1.2,2)
+    -- (1.35,2.25) -- (1.65,1.75) -- (1.95,2.25) -- (2.25,1.75) -- (2.55,2.25) -- (2.7,2)
+    -- (3,2);
+  \node[above] at (2,2.35) {$R$};
+
+  \fill (3,2) circle (1.6pt);
+
+  % Inductor L (coil) from (3,2) to (5.6,2)
+  \draw[thick] (3,2) -- (3.4,2);
+  \draw[thick] (3.4,2)
+    .. controls (3.4,2.6) and (3.9,2.6) .. (3.9,2)
+    .. controls (3.9,2.6) and (4.4,2.6) .. (4.4,2)
+    .. controls (4.4,2.6) and (4.9,2.6) .. (4.9,2)
+    .. controls (4.9,2.6) and (5.4,2.6) .. (5.4,2);
+  \draw[thick] (5.4,2) -- (5.6,2);
+  \node[above] at (4.4,2.6) {$L$};
+
+  \fill (5.6,2) circle (1.6pt);
+
+  % Capacitor C (parallel plates) around x=7
+  \draw[thick] (5.6,2) -- (6.9,2);
+  \draw[thick] (6.9,1.55) -- (6.9,2.45);   % left plate
+  \draw[thick] (7.2,1.55) -- (7.2,2.45);   % right plate
+  \draw[thick] (7.2,2) -- (10,2);
+  \node[above] at (7.05,2.6) {$C$};
+
+  \node[above right] at (TR) {$-$};
+  \fill (TR) circle (1.6pt);
+
+  % --- left and right verticals down to the source ---
+  \draw[thick] (TL) -- (0,0);
+  \draw[thick] (TR) -- (10,0);
+
+  % --- phasor voltage source (circle with sinusoid) at bottom center ---
+  \draw[thick] (0,0) -- (4.3,0);
+  \draw[thick] (5.7,0) -- (10,0);
+  \draw[thick, fill=white] (5,0) circle (0.7);
+  \draw[thick] (4.6,0) sin (4.8,0.25) cos (5.0,0) sin (5.2,-0.25) cos (5.4,0);
+  \node[below=0.95cm] at (5,0) {$V$ \RL{(تحریک فازوری، $\omega$)}};
+
+  % --- resonance annotation box ---
+  \node[draw, rounded corners, align=center, fill=blue!5, text width=8.2cm]
+    at (5,3.7)
+    {در $\omega=\omega_0=\frac{1}{\sqrt{LC}}$:\quad
+     $j\omega L$ و $\frac{1}{j\omega C}$ یکدیگر را خنثی می‌کنند
+     $\;\Rightarrow\; Z=R$ (کمینه)، $\;I_{\max}=V/R$};
+\end{tikzpicture}}
+\end{document}

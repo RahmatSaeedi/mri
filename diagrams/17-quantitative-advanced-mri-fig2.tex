@@ -1,0 +1,77 @@
+% PGSE (Stejskal-Tanner) pulsed-gradient spin-echo timing diagram: RF (90, 180, echo) + diffusion gradient pair.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % ---- common horizontal extent ----
+  \def\xL{0}     % left
+  \def\xR{12}    % right
+  % gradient pulse 1: x in [2,3.2]; gradient pulse 2: x in [7.8,9]
+  \def\gaL{2}\def\gaR{3.2}
+  \def\gbL{7.8}\def\gbR{9}
+  \def\rfo{2.6}   % 90 deg time (centre of first lobe region)
+  \def\rfi{5.5}   % 180 deg time
+  \def\echo{8.4}  % echo time
+
+  % =================== RF channel ===================
+  \def\rfy{4.4}
+  \draw[->, thick] (\xL,\rfy) -- (\xR,\rfy) node[right] {RF};
+  % 90 deg pulse
+  \draw[very thick, blue!70!black] (\rfo,\rfy) -- (\rfo,\rfy+1.0);
+  \node[blue!70!black, above] at (\rfo,\rfy+1.0) {$90^\circ$};
+  % 180 deg pulse
+  \draw[very thick, blue!70!black] (\rfi,\rfy) -- (\rfi,\rfy+1.4);
+  \node[blue!70!black, above] at (\rfi,\rfy+1.4) {$180^\circ$};
+  % echo (symmetric about 180): TE = 2*(rfi-rfo) -> echo at rfi+(rfi-rfo)
+  \draw[thick, red!70!black]
+       (\echo-0.6,\rfy) -- (\echo,\rfy+0.9) -- (\echo+0.6,\rfy);
+  \node[red!70!black, above] at (\echo,\rfy+0.9) {اکو};
+
+  % =================== Gradient channel ===================
+  \def\gy{1.0}
+  \def\gh{1.1}
+  \draw[->, thick] (\xL,\gy) -- (\xR,\gy) node[right] {$G_{\mathrm{diff}}$};
+  % first gradient lobe (rectangular, amplitude G, width delta)
+  \draw[very thick, black!80, fill=orange!25]
+       (\gaL,\gy) -- (\gaL,\gy+\gh) -- (\gaR,\gy+\gh) -- (\gaR,\gy) -- cycle;
+  \node at ({(\gaL+\gaR)/2},\gy+\gh/2) {$G$};
+  % second gradient lobe (same sign; the 180 makes it effectively opposite)
+  \draw[very thick, black!80, fill=orange!25]
+       (\gbL,\gy) -- (\gbL,\gy+\gh) -- (\gbR,\gy+\gh) -- (\gbR,\gy) -- cycle;
+  \node at ({(\gbL+\gbR)/2},\gy+\gh/2) {$G$};
+
+  % =================== timing annotations ===================
+  % delta width for lobe 1
+  \draw[<->] (\gaL,\gy+\gh+0.25) -- (\gaR,\gy+\gh+0.25)
+       node[midway, above] {$\delta$};
+  % delta width for lobe 2
+  \draw[<->] (\gbL,\gy+\gh+0.25) -- (\gbR,\gy+\gh+0.25)
+       node[midway, above] {$\delta$};
+
+  % Delta: from start of lobe1 to start of lobe2
+  \def\Dy{-0.2}
+  \draw[<->, thick] (\gaL,\Dy) -- (\gbL,\Dy) node[midway, below] {$\Delta$};
+  % drop guide lines
+  \draw[dashed, gray] (\gaL,\gy) -- (\gaL,\Dy);
+  \draw[dashed, gray] (\gbL,\gy) -- (\gbL,\Dy);
+
+  % time axis label
+  \node[anchor=west, font=\footnotesize, text=black!60] at (\xL,\Dy-0.9)
+       {دو لُپ هم‌علامت در دو سوی پالس $180^\circ$: سیگنال با $e^{-bD}$ افت می‌کند};
+\end{tikzpicture}}
+\end{document}

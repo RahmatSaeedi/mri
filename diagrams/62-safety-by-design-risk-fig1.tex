@@ -1,0 +1,76 @@
+% ISO 14971 risk management process: closed-loop flowchart.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, inner sep=5pt,
+                fill=blue!6, minimum width=7.0cm, text width=6.6cm},
+    dec/.style={draw, diamond, aspect=2.2, align=center, inner sep=1pt,
+                fill=orange!18, minimum width=2.6cm},
+    ctrl/.style={draw, rounded corners=2pt, align=left, inner sep=5pt,
+                fill=red!8, minimum width=6.6cm, text width=6.2cm},
+    flow/.style={->, thick},
+  ]
+
+  \node[box] (plan) {\textbf{طرح مدیریت ریسک}};
+  \node[box, below=0.8cm of plan] (analysis)
+    {\textbf{تحلیل ریسک}\\[1pt]
+     \footnotesize کاربرد موردنظر و مشخصه‌های ایمنی\\
+     \footnotesize شناسایی خطر و توالی رویدادها\\
+     \footnotesize برآورد ریسک $(P,S)$ برای هر موقعیت خطرناک};
+  \node[dec, below=0.8cm of analysis] (eval)
+    {\textbf{ارزیابی}\\\textbf{ریسک}\\\footnotesize پذیرفتنی؟};
+
+  % Control branch (No)
+  \node[ctrl, left=2.0cm of eval, yshift=-1.2cm] (control)
+    {\textbf{کنترل ریسک}\\[1pt]
+     \footnotesize ۱) ایمنی ذاتی در طراحی\\
+     \footnotesize ۲) تدابیر حفاظتی (اینترلاک، هشدار)\\
+     \footnotesize ۳) اطلاعات ایمنی\\
+     \footnotesize $\rightarrow$ ارزیابی ریسک باقی‌مانده\\
+     \footnotesize $\rightarrow$ تحلیل ریسک‌های جدید ناشی از کنترل};
+
+  \node[box, below=2.6cm of eval] (overall)
+    {\textbf{ریسک باقی‌ماندهٔ کلی}\\[1pt]
+     \footnotesize تحلیل سود/ریسک، گزارش RM};
+  \node[box, below=0.8cm of overall] (post)
+    {\textbf{تولید و پساعرضه}\\[1pt]
+     \footnotesize بازخورد میدانی، شکایات، رویدادها\\
+     \footnotesize بازنگری و به‌روزرسانی پرونده};
+
+  \draw[flow] (plan) -- (analysis);
+  \draw[flow] (analysis) -- (eval);
+
+  % No -> control
+  \draw[flow] (eval) -| node[above, pos=0.25, font=\footnotesize]{خیر} (control);
+  % control loops back to evaluation
+  \draw[flow] (control.north) |- ($(analysis.south)+(0,-0.35)$)
+        node[above, pos=0.75, font=\footnotesize]{بازگشت به ارزیابی} -| (eval);
+
+  % Yes -> overall
+  \draw[flow] (eval) -- node[right, pos=0.35, font=\footnotesize]{بله} (overall);
+  \draw[flow] (overall) -- (post);
+
+  % closed-loop feedback (post-market back to analysis)
+  \draw[flow, dashed, gray!70!black] (post.east) -- ++(3.2,0)
+        |- ($(analysis.east)+(0,0)$)
+        node[right, pos=0.25, font=\footnotesize, text=gray!70!black]{بازخورد چرخهٔ عمر};
+
+\end{tikzpicture}}
+\end{document}

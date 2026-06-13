@@ -1,0 +1,59 @@
+% Maintenance taxonomy tree: Preventive / Corrective / Predictive (CBM)
+% with their sub-strategies.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[
+    >=Stealth, font=\small,
+    root/.style={draw, rounded corners, fill=blue!12, align=center,
+                 minimum height=8mm, inner sep=4pt, font=\bfseries},
+    cat/.style={draw, rounded corners, fill=green!12, align=center,
+                minimum height=8mm, inner sep=4pt},
+    leaf/.style={draw, fill=gray!8, align=center, font=\footnotesize,
+                 minimum height=7mm, inner sep=3pt},
+    edge/.style={->, thick, gray!60!black},
+  ]
+  % Root.
+  \node[root] (root) {نگه‌داری};
+
+  % Three categories.
+  \node[cat] (prev) at (-5.4,-2.0) {پیشگیرانه\\(PM)};
+  \node[cat] (corr) at (0,-2.0)    {اصلاحی\\(CM)};
+  \node[cat] (pred) at (5.4,-2.0)  {پیش‌بینانه\\(CBM)};
+
+  \draw[edge] (root) -- (prev);
+  \draw[edge] (root) -- (corr);
+  \draw[edge] (root) -- (pred);
+
+  % Preventive leaves.
+  \node[leaf] (pcal) at (-6.9,-4.4) {زمان‌مبنا\\(تقویمی)};
+  \node[leaf] (puse) at (-4.0,-4.4) {کارکردمبنا\\(ساعت/اسکن)};
+  \draw[edge] (prev) -- (pcal);
+  \draw[edge] (prev) -- (puse);
+
+  % Corrective leaves.
+  \node[leaf] (cemr) at (-1.4,-4.4) {اضطراری\\(فوری)};
+  \node[leaf] (cdef) at (1.4,-4.4)  {موکول‌شده\\(برنامه‌ریزی‌شده)};
+  \draw[edge] (corr) -- (cemr);
+  \draw[edge] (corr) -- (cdef);
+
+  % Predictive leaf.
+  \node[leaf] (pcbm) at (5.4,-4.4) {پایش وضعیت\\+ مدل (تله‌متری، AI)};
+  \draw[edge] (pred) -- (pcbm);
+\end{tikzpicture}}
+\end{document}

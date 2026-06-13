@@ -1,0 +1,39 @@
+% Full clinical MRI workflow: order, worklist, acquisition/recon, MPPS, C-STORE, retrieve, report.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    wfstep/.style={draw, rounded corners=2pt, align=left, minimum height=11mm, minimum width=70mm, fill=blue!6},
+    num/.style={circle, draw, fill=blue!15, font=\footnotesize, inner sep=1.5pt}]
+
+  \node[wfstep] (s1) {HIS / RIS -- زمان‌بندی نوبت بیمار};
+  \node[wfstep, below=7mm of s1] (s2) {Scanner $\rightarrow$ RIS / Worklist SCP\\\footnotesize Modality Worklist (C-FIND): تکمیل خودکار مشخصات بیمار};
+  \node[wfstep, below=7mm of s2] (s3) {گرفتن دادهٔ خام $\rightarrow$ بازسازی $\rightarrow$ تصاویر DICOM};
+  \node[wfstep, below=7mm of s3] (s4) {MPPS (N-CREATE / N-SET) $\rightarrow$ RIS\\\footnotesize «روال آغاز شد / پایان یافت»};
+  \node[wfstep, below=7mm of s4] (s5) {Scanner $\rightarrow$ PACS / VNA (C-STORE): ذخیرهٔ تصاویر};
+  \node[wfstep, below=7mm of s5] (s6) {ایستگاه کاری رادیولوژیست $\leftarrow$ PACS\\\footnotesize C-FIND / C-MOVE یا DICOMweb -- تفسیر و گزارش گفتاری};
+  \node[wfstep, below=7mm of s6] (s7) {گزارش (HL7 / FHIR) $\rightarrow$ RIS / HIS $\rightarrow$ پزشک ارجاع‌دهنده};
+
+  \foreach \a/\b in {s1/s2, s2/s3, s3/s4, s4/s5, s5/s6, s6/s7}
+     \draw[->, thick] (\a) -- (\b);
+
+  \foreach \n/\s in {1/s1, 2/s2, 3/s3, 4/s4, 5/s5, 6/s6, 7/s7}
+     \node[num] at (\s.west) {\n};
+
+\end{tikzpicture}}
+\end{document}

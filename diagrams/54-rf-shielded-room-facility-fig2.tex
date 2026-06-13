@@ -1,0 +1,71 @@
+% Standalone TikZ figure: waveguide-below-cutoff penetration for a pipe.
+% A non-conductive (plastic) water pipe passes through the shield wall via a
+% conductive tube acting as a waveguide below cutoff: the RF wave decays
+% evanescently inside (~100 dB). L ~ 18 cm, d = 5 cm.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ---------- shield wall ----------
+  \def\wL{0}    % wall left
+  \def\wR{4.0}  % wall right
+  \def\wB{-1.6}
+  \def\wT{1.6}
+  \fill[gray!25] (\wL,\wB) rectangle (\wR,\wT);
+  \draw[very thick] (\wL,\wB) rectangle (\wR,\wT);
+  \node[align=center] at ({(\wL+\wR)/2},\wT+0.45) {دیوارهٔ حفاظ};
+
+  % ---------- conductive waveguide tube (cutout in wall) ----------
+  \def\tB{-0.5}
+  \def\tT{0.5}
+  \fill[orange!25] (\wL,\tB) rectangle (\wR,\tT);
+  \draw[very thick, orange!70!black] (\wL,\tT) -- (\wR,\tT);
+  \draw[very thick, orange!70!black] (\wL,\tB) -- (\wR,\tB);
+  \node[orange!60!black] at ({(\wL+\wR)/2},0.85) {لولهٔ رسانا};
+
+  % diameter brace
+  \draw[<->] (\wL+0.25,\tB) -- (\wL+0.25,\tT);
+  \node[right] at (\wL+0.3,0) {$d = 5\,\mathrm{cm}$};
+  % length brace
+  \draw[<->] (\wL,\wB-0.3) -- (\wR,\wB-0.3);
+  \node[below] at ({(\wL+\wR)/2},\wB-0.3) {$L \approx 18\,\mathrm{cm}$};
+
+  % ---------- plastic pipe through the tube ----------
+  \draw[line width=3pt, blue!55!cyan] (-3.2,0) -- (\wL,0);
+  \draw[line width=3pt, blue!55!cyan] (\wR,0) -- (7.2,0);
+  \node[align=center, blue!50!cyan] at (-2.0,0.55) {لولهٔ پلاستیکی\\ (نارسانا)};
+  \node[align=center, blue!50!cyan] at (6.0,0.55) {لولهٔ پلاستیکی};
+
+  % ---------- evanescent RF decay inside the tube ----------
+  \begin{scope}
+    \clip (\wL,\tB) rectangle (\wR,\tT);
+    \draw[thick, red!70!black, domain=0:4.0, samples=80, variable=\x]
+          plot ({\x},{ 0.42*exp(-1.1*\x)*cos(deg(6*\x)) });
+  \end{scope}
+  \node[red!70!black] at (-1.9,-0.7) {ورود RF};
+  \draw[->, red!70!black, thick] (-1.0,-0.55) -- (0.4,-0.3);
+
+  % ---------- labels ----------
+  \node[align=center] at ({(\wL+\wR)/2},\wB-1.15)
+        {موج RF درون لوله به‌صورت میرا افت می‌کند \RL{($\approx 100\,\mathrm{dB}$)}};
+  \node[align=center, red!70!black] at (\wR+1.6,-0.85)
+        {هیچ رسانایی\\ نباید عبور کند};
+
+\end{tikzpicture}}
+\end{document}

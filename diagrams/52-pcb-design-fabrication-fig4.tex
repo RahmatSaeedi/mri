@@ -1,0 +1,78 @@
+% Pi-filter (C-L-C) on a DC bias line entering the RF section. Series L is an
+% air-core inductor (no ferrite near the magnet); shunt caps go to chassis GND.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % node x positions
+  \def\xin{0}     % input
+  \def\xa{3.0}    % left junction (C1)
+  \def\xb{6.0}    % right junction (C2)
+  \def\xout{9.0}  % output
+  \def\ytop{2.6}  % signal line height
+  \def\ygnd{0}    % chassis ground rail
+
+  % chassis ground rail
+  \draw[very thick] (-0.4,\ygnd) -- (9.4,\ygnd);
+  \node[anchor=north west, font=\scriptsize] at (-0.4,{\ygnd-0.1}) {GND شاسی};
+  % ground hatching ticks
+  \foreach \x in {0,1,...,9}{
+    \draw[thin] (\x-0.2,\ygnd) -- (\x-0.45,{\ygnd-0.28});
+  }
+
+  % input terminal
+  \filldraw (\xin,\ytop) circle (1.6pt);
+  \node[anchor=east, font=\scriptsize] at (\xin,\ytop) {DC$_\mathrm{in}$};
+
+  % series inductor L (air-core) drawn as coils between xa and xb
+  \draw[thick] (\xin,\ytop) -- (\xa,\ytop);
+  \draw[thick, decorate, decoration={coil, aspect=0.6, segment length=5pt, amplitude=5pt}]
+    (\xa,\ytop) -- (\xb,\ytop);
+  \node[anchor=south, align=center, font=\scriptsize] at ({(\xa+\xb)/2},{\ytop+0.25})
+    {$L$ (سلف هسته‌هوا،\\ نه فریت در MRI)};
+
+  % output line
+  \draw[thick] (\xb,\ytop) -- (\xout,\ytop);
+  \filldraw (\xout,\ytop) circle (1.6pt);
+  \node[anchor=west, font=\scriptsize] at (\xout,\ytop) {DC$_\mathrm{out}$ (به RF)};
+
+  % junction dots
+  \filldraw (\xa,\ytop) circle (1.6pt);
+  \filldraw (\xb,\ytop) circle (1.6pt);
+
+  % C1 shunt
+  \draw[thick] (\xa,\ytop) -- (\xa,1.55);
+  \draw[very thick] (\xa-0.35,1.55) -- (\xa+0.35,1.55);
+  \draw[very thick] (\xa-0.35,1.25) -- (\xa+0.35,1.25);
+  \draw[thick] (\xa,1.25) -- (\xa,\ygnd);
+  \node[anchor=west, font=\scriptsize] at (\xa+0.4,1.4) {$C_1$};
+
+  % C2 shunt
+  \draw[thick] (\xb,\ytop) -- (\xb,1.55);
+  \draw[very thick] (\xb-0.35,1.55) -- (\xb+0.35,1.55);
+  \draw[very thick] (\xb-0.35,1.25) -- (\xb+0.35,1.25);
+  \draw[thick] (\xb,1.25) -- (\xb,\ygnd);
+  \node[anchor=west, font=\scriptsize] at (\xb+0.4,1.4) {$C_2$};
+
+  % cutoff annotation
+  \node[anchor=south, font=\scriptsize, blue!60!black] at ({(\xa+\xb)/2},{\ytop+1.1})
+    {$f_c = \frac{1}{2\pi\sqrt{LC}}$ \; (نوفهٔ HF به شاسی شنت می‌شود)};
+
+\end{tikzpicture}}
+\end{document}

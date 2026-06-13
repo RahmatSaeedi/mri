@@ -1,0 +1,71 @@
+% FDA 510(k) substantial-equivalence (SE) decision tree: the logical chain a new
+% device follows to be judged substantially equivalent (SE) to a legally marketed
+% predicate, or not equivalent (NSE) -> De Novo / PMA.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  q/.style={draw, rounded corners=2pt, fill=blue!8, align=center,
+            text width=42mm, minimum height=12mm, font=\footnotesize},
+  se/.style={draw, rounded corners=2pt, fill=green!18, very thick, align=center,
+             text width=20mm, minimum height=9mm, font=\footnotesize\bfseries},
+  nse/.style={draw, rounded corners=2pt, fill=red!14, very thick, align=center,
+              text width=24mm, minimum height=9mm, font=\footnotesize\bfseries},
+  lbl/.style={font=\scriptsize, fill=white, inner sep=1pt}]
+
+  % Q1
+  \node[q] (q1) {آیا \emph{کاربرد موردنظر} همان\\ دستگاه مرجع (predicate) است؟};
+  % Q2
+  \node[q, below=14mm of q1] (q2) {آیا مشخصات فناورانه\\ یکسان است؟};
+  % Q3
+  \node[q, below=14mm of q2] (q3) {آیا تفاوت‌ها \emph{پرسش‌های نو}\\ دربارهٔ ایمنی / اثربخشی\\ پدید می‌آورند؟};
+  % Q4
+  \node[q, below=14mm of q3] (q4) {آیا داده‌ها نشان می‌دهند به‌اندازهٔ\\ دستگاه مرجع ایمن و اثربخش\\ است؟};
+
+  % SE outcomes (right column)
+  \node[se, right=34mm of q2] (se1) {SE};
+  \node[se, right=34mm of q4] (se2) {SE};
+
+  % NSE outcomes (left column)
+  \node[nse, left=24mm of q1] (nse1) {NSE};
+  \node[nse, left=24mm of q3] (nse2) {NSE\\ {\scriptsize(De Novo /}\\ {\scriptsize PMA)}};
+  \node[nse, below=12mm of q4] (nse3) {NSE};
+
+  % Q1 branches
+  \draw[->] (q1) -- (q2) node[lbl, midway] {بله};
+  \draw[->] (q1) -- (nse1) node[lbl, midway] {خیر};
+
+  % Q2 branches
+  \draw[->] (q2) -- (se1) node[lbl, midway] {بله};
+  \draw[->] (q2) -- (q3) node[lbl, midway] {خیر};
+
+  % Q3 branches
+  \draw[->] (q3) -- (nse2) node[lbl, midway] {بله};
+  \draw[->] (q3) -- (q4) node[lbl, midway] {خیر};
+
+  % Q4 branches
+  \draw[->] (q4) -- (se2) node[lbl, midway] {بله};
+  \draw[->] (q4) -- (nse3) node[lbl, midway] {خیر};
+
+  % Legend
+  \node[align=right, font=\scriptsize, below=8mm of nse3, xshift=20mm]
+    {SE $=$ هم‌ارز بنیادین \quad (قابل تأیید از مسیر 510(k))\\
+     NSE $=$ ناهم‌ارز بنیادین \quad (یافتن دستگاه مرجع بهتر، یا De Novo / PMA)};
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,81 @@
+% Standalone TikZ figure: gradient waveforms (readout Gx, phase-encode Gy)
+% and the corresponding Cartesian k-space trajectory for one gradient echo.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ============ LEFT: gradient waveforms ============
+  \begin{scope}[shift={(0,0)}]
+    % --- Gx (readout) axis ---
+    \draw[->] (0,4.6) -- (5.2,4.6) node[right] {$t$};
+    \draw[->] (0,3.6) -- (0,5.6) node[above] {$G_x$ (خوانش)};
+    \draw[densely dotted] (0,4.6) -- (5.0,4.6);
+    % prephase lobe (negative) then readout lobe (positive)
+    \draw[very thick, blue!60!black]
+      (0,4.6) -- (0.6,4.6) -- (0.6,4.0) -- (1.8,4.0) -- (1.8,4.6)
+              -- (2.2,4.6) -- (2.2,5.3) -- (4.6,5.3) -- (4.6,4.6) -- (5.0,4.6);
+    \node[blue!60!black, font=\scriptsize] at (1.2,3.78) {پیش‌فاز};
+    \node[blue!60!black, font=\scriptsize] at (3.4,5.52) {خوانش \RL{($+G_x$)}};
+
+    % --- Gy (phase-encode) axis ---
+    \draw[->] (0,1.3) -- (5.2,1.3) node[right] {$t$};
+    \draw[->] (0,0.3) -- (0,2.3) node[above] {$G_y$ (کدگذاری فازی)};
+    \draw[densely dotted] (0,1.3) -- (5.0,1.3);
+    % phase-encode blip (a single stepped value)
+    \draw[very thick, red!70!black]
+      (0,1.3) -- (0.6,1.3) -- (0.6,2.05) -- (1.8,2.05) -- (1.8,1.3) -- (5.0,1.3);
+    % ghost (stepped) levels
+    \draw[red!50, densely dashed] (0.6,1.75) -- (1.8,1.75);
+    \draw[red!50, densely dashed] (0.6,1.50) -- (1.8,1.50);
+    \node[red!70!black, font=\scriptsize] at (1.2,2.22) {جهش \RL{($+G_y$)}};
+    \node[red!50, font=\scriptsize, align=center] at (3.6,1.78)
+      {ترازهای پله‌ای\\(یکی در هر TR)};
+  \end{scope}
+
+  % ============ RIGHT: k-space plane ============
+  \begin{scope}[shift={(7.0,0.0)}]
+    \def\R{2.3}
+    % axes
+    \draw[->] (-\R-0.5,0) -- (\R+0.7,0) node[right] {$k_x$};
+    \draw[->] (0,-\R-0.5) -- (0,\R+0.7) node[above] {$k_y$};
+    % sampling grid of dots
+    \foreach \i in {-2,-1.4,-0.8,-0.2,0.4,1.0,1.6,2.2,-2.2} {
+      \foreach \j in {-1.8,-1.2,-0.6,0,0.6,1.2,1.8} {
+        \fill[black!35] (\i,\j) circle (0.026);
+      }
+    }
+    % highlighted k-space line for the chosen Gy (top row)
+    \foreach \i in {-2,-1.4,-0.8,-0.2,0.4,1.0,1.6,2.2,-2.2} {
+      \fill[red!70!black] (\i,1.8) circle (0.045);
+    }
+    % readout sweep arrow along that line
+    \draw[->, very thick, blue!60!black] (-2.2,0) -- (2.2,0);
+    \node[blue!60!black, font=\scriptsize, above] at (1.0,0.05) {جاروب خوانش \RL{($G_x$)}};
+    % prephase jump to lower-left corner of a line
+    \draw[->, thick, green!45!black, densely dashed] (0,0) -- (-2.2,-1.8);
+    \node[green!45!black, font=\scriptsize, align=center] at (-1.3,-1.45) {جهش\\پیش‌فاز};
+    % k_max ticks
+    \draw (\R,-0.08) -- (\R,0.08); \node[font=\scriptsize, below] at (2.3,-0.12) {$+k_{\max}$};
+    \draw (-\R,-0.08) -- (-\R,0.08); \node[font=\scriptsize, below] at (-2.3,-0.12) {$-k_{\max}$};
+    \node[font=\scriptsize, above left] at (0,\R) {$+k_{\max}$};
+    \node[red!70!black, font=\scriptsize, right] at (2.3,1.8) {خط مربوط به یک $G_y$};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

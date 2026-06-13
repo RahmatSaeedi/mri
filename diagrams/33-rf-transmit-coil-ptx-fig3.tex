@@ -1,0 +1,78 @@
+% Capacitive-divider L-match network: series/match capacitor Cm and a
+% shunt tuning capacitor Ct transform the loaded coil (L_coil, R_s) to 50 ohm.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % --- RF input port ---
+  \node[anchor=east] at (-0.2,1.6) {ورودی RF \RL{($50\,\Omega$)}};
+  \draw[thick] (-0.2,1.6) -- (0.4,1.6) coordinate (a);
+  \fill (a) circle (1.4pt);
+
+  % --- series match capacitor Cm (horizontal) ---
+  \draw[thick] (a) -- ++(0.4,0) coordinate (cm1);
+  \draw[thick] (cm1) ++(0,0.22) -- ++(0,-0.44);
+  \draw[thick] (cm1) ++(0.16,0.22) -- ++(0,-0.44);
+  \draw[thick] (cm1) ++(0.16,0) -- ++(0.4,0) coordinate (b);
+  \node[above, font=\footnotesize] at ($(cm1)+(0.08,0.28)$) {$C_m$ (تطبیق)};
+
+  % --- node b: branch to shunt Ct ---
+  \fill (b) circle (1.4pt);
+
+  % --- shunt tuning capacitor Ct (vertical, to GND) ---
+  \draw[thick] (b) -- (b |- 0.4,0.4) coordinate (ct0);
+  \draw[thick] ($(ct0)+(-0.22,0)$) -- ($(ct0)+(0.22,0)$);
+  \draw[thick] ($(ct0)+(-0.22,-0.16)$) -- ($(ct0)+(0.22,-0.16)$);
+  \coordinate (ctb) at ($(ct0)+(0,-0.16)$);
+  \draw[thick] (ctb) -- ++(0,-0.4) coordinate (gnd);
+  \node[right, font=\footnotesize] at ($(ct0)+(0.3,-0.08)$) {$C_t$ (تنظیم)};
+  % ground symbol
+  \draw[thick] ($(gnd)+(-0.3,0)$) -- ($(gnd)+(0.3,0)$);
+  \draw[thick] ($(gnd)+(-0.18,-0.12)$) -- ($(gnd)+(0.18,-0.12)$);
+  \draw[thick] ($(gnd)+(-0.07,-0.24)$) -- ($(gnd)+(0.07,-0.24)$);
+  \node[below, font=\footnotesize] at ($(gnd)+(0,-0.3)$) {GND};
+
+  % --- to the coil branch (right of node b) ---
+  \draw[thick] (b) -- ++(1.6,0) coordinate (c);
+
+  % --- coil: inductor L_coil in series with R_s, drawn as a loop ---
+  % inductor (horizontal coil)
+  \draw[thick] (c) -- ++(0.12,0) coordinate (l0);
+  \draw[thick,decorate,decoration={coil,aspect=0.5,segment length=4.5pt,amplitude=4.5pt}]
+     (l0) -- ++(0.8,0) coordinate (l1);
+  \draw[thick] (l1) -- ++(0.12,0) coordinate (l2);
+  \node[below, font=\footnotesize] at ($(l0)+(0.52,-0.12)$) {$L_{\mathrm{coil}}$};
+
+  % resistor R_s (zigzag, vertical down)
+  \draw[thick] (l2) -- ++(0,-0.25) coordinate (r0);
+  \draw[thick] (r0) -- ++(0.12,-0.1) -- ++(-0.24,-0.2) -- ++(0.24,-0.2)
+                     -- ++(-0.24,-0.2) -- ++(0.12,-0.1) coordinate (r1);
+  \node[right, font=\footnotesize] at ($(r0)+(0.25,-0.45)$) {$R_s$};
+
+  % bottom return wire from coil back to ground rail
+  \draw[thick] (r1) -- (r1 |- gnd) coordinate (ret);
+  \draw[thick] (ret) -- (gnd);
+
+  % resonance annotation (placed high, left-aligned, clear of the circuit)
+  \node[font=\footnotesize, blue!60!black, align=left, anchor=west] at (-0.4,3.15)
+    {تشدید: $\omega_0=1/\sqrt{L_{\mathrm{coil}}\,C_{\mathrm{eff}}}$,\quad
+     $C_{\mathrm{eff}}=\frac{C_tC_m}{C_t+C_m}$,\quad $C_m/C_t\approx\sqrt{R_s/R_0}$};
+
+\end{tikzpicture}}
+\end{document}

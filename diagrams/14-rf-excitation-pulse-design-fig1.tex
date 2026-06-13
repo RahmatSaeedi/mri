@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ============================================================
+  % Slice-selective excitation: RF (apodized sinc) on top,
+  % slice-select gradient Gz (main lobe + rephasing lobe) below.
+  % Common time axis; effective excitation time at t = Tp/2.
+  % ============================================================
+
+  % ---- geometry ----
+  \def\x0{0}        % t = 0
+  \def\xc{4}        % t = Tp/2 (center of symmetry)
+  \def\xp{8}        % t = Tp
+  \def\xr{11}       % end of rephasing lobe
+  \def\xmid{9.5}    % midpoint of rephasing lobe (=(\xp+\xr)/2)
+
+  % ===================== RF channel (top) =====================
+  \begin{scope}[shift={(0,4.2)}]
+    % baseline + axis
+    \draw[->, thick] (-0.6,0) -- (\xr+0.8,0) node[right] {$t$};
+    \draw[->, thick] (\x0,-1.5) -- (\x0,1.7) node[above] {RF: $B_1(t)$};
+
+    % apodized sinc envelope, centered at t = Tp/2 (x=4)
+    \draw[very thick, blue!70!black, smooth, samples=200, domain=0:8]
+      plot (\x, {1.35*(0.54+0.46*cos(deg(2*pi*(\x-4)/8)))
+                 * ( abs(\x-4)<0.01 ? 1 : sin(deg(pi*(\x-4)*0.75))/(deg(pi*(\x-4)*0.75)*pi/180) )});
+
+    % center / effective excitation time
+    \draw[dashed, gray] (\xc,-1.5) -- (\xc,1.55);
+    \node[gray, anchor=south, font=\footnotesize] at (\xc,1.5) {مرکز تقارن};
+
+    % Tp span
+    \draw[<->] (\x0,-1.25) -- (\xp,-1.25);
+    \node[fill=white, inner sep=1pt] at (\xc,-1.25) {$T_{\mathrm p}$};
+  \end{scope}
+
+  % ===================== Gz channel (bottom) ==================
+  \begin{scope}[shift={(0,0)}]
+    % axis
+    \draw[->, thick] (-0.6,0) -- (\xr+0.8,0) node[right] {$t$};
+    \draw[->, thick] (\x0,-1.6) -- (\x0,1.7) node[above] {$G_z(t)$};
+
+    % main slice-select lobe (positive plateau over [0, Tp])
+    \def\gA{1.15}  % main amplitude
+    \def\gB{1.15}  % rephase amplitude (same |G|, reversed sign)
+    \fill[orange!30] (\x0,0) -- (\x0,\gA) -- (\xp,\gA) -- (\xp,0) -- cycle;
+    \draw[very thick, orange!80!black]
+      (\x0,0) -- (\x0,\gA) -- (\xp,\gA) -- (\xp,0);
+    \node[orange!50!black] at (\xc,0.55) {گلبرگ اصلی};
+
+    % rephasing lobe: negative, half the area (duration Tp/2)
+    \fill[teal!25] (\xp,0) -- (\xp,-\gB) -- (\xr,-\gB) -- (\xr,0) -- cycle;
+    \draw[very thick, teal!70!black]
+      (\xp,0) -- (\xp,-\gB) -- (\xr,-\gB) -- (\xr,0);
+    \node[teal!50!black, anchor=north, font=\footnotesize] at (\xmid,{-\gB}) {بازفازسازی};
+
+    % span markers
+    \draw[<->] (\x0,-1.35) -- (\xp,-1.35);
+    \node[fill=white, inner sep=1pt] at (\xc,-1.35) {$T_{\mathrm p}$};
+    \draw[<->] (\xp,1.45) -- (\xr,1.45);
+    \node[fill=white, inner sep=1pt, font=\footnotesize] at (\xmid,1.45) {$T_{\mathrm p}/2$};
+
+    % alignment line for center
+    \draw[dashed, gray] (\xc,-1.6) -- (\xc,\gA+0.1);
+  \end{scope}
+
+  % ===================== relation note ========================
+  \node[draw, rounded corners, fill=yellow!12, align=center,
+        font=\footnotesize] at (\xr+1.4,-2.6)
+    {$\displaystyle\int_{\mathrm{rephase}} G_z\,dt
+       \approx -\frac{1}{2}\int_0^{T_{\mathrm p}} G_z\,dt$\\[2pt]
+     \RL{(مساحت بازفازسازی $\approx$ $-\frac{1}{2}$ مساحت گلبرگ اصلی)}};
+
+  % connector from rephase lobe to note
+  \draw[->, gray] (\xmid,-1.25) to[bend right=12] (\xr+0.2,-2.6);
+
+\end{tikzpicture}}
+\end{document}

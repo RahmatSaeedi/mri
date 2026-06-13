@@ -1,0 +1,65 @@
+% Fault tree: TOP event "Loss of deterministic timing" (console / spectrometer),
+% decomposed via OR into clock reference, real-time SW jitter, TX/RX/gradient sync.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={rectangle, draw=black!75, very thick, fill=red!14,
+      text width=5.0cm, align=center, inner sep=5pt, minimum height=1.0cm},
+    inter/.style={rectangle, draw=black!70, thick, fill=blue!10,
+      text width=2.8cm, align=center, inner sep=4pt, minimum height=1.1cm},
+    basic/.style={circle, draw=black!70, thick, fill=yellow!22,
+      align=center, inner sep=1pt, minimum size=1.4cm, font=\scriptsize},
+    gate/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt},
+    line/.style={-, thick, black!60}]
+
+  \node[top] (top) {رویداد بالا (TOP):\\ \emph{از دست رفتن زمان‌بندی قطعی}};
+  \node[gate, below=0.30cm of top] (g0) {OR};
+
+  \node[inter] (clk) at (-5.2,-2.4) {از دست رفتن مرجع کلاک};
+  \node[inter] (sw)  at ( 0.0,-2.4) {تأخیر / لرزش نرم‌افزار بی‌درنگ};
+  \node[inter] (sync) at (5.2,-2.4) {همگام‌سازی نادرست TX/RX / گرادیان};
+
+  \draw[line] (top) -- (g0);
+  \draw[line] (g0) -- (clk);
+  \draw[line] (g0) -- (sw);
+  \draw[line] (g0) -- (sync);
+
+  \node[gate, below=0.25cm of clk] (g1) {OR};
+  \node[basic] (pll) at (-6.3,-4.9) {قفل‌نشدن PLL};
+  \node[basic] (osc) at (-4.1,-4.9) {خطای نوسانگر مرجع};
+  \draw[line] (clk) -- (g1);
+  \draw[line] (g1) -- (pll);
+  \draw[line] (g1) -- (osc);
+
+  \node[gate, below=0.25cm of sw] (g2) {OR};
+  \node[basic] (rtos) at (-1.1,-4.9) {لرزش RTOS};
+  \node[basic] (cpu) at (1.1,-4.9) {اضافه‌بار CPU};
+  \draw[line] (sw) -- (g2);
+  \draw[line] (g2) -- (rtos);
+  \draw[line] (g2) -- (cpu);
+
+  \node[gate, below=0.25cm of sync] (g3) {OR};
+  \node[basic] (trig) at (4.1,-4.9) {از دست رفتن تریگر};
+  \node[basic] (phase) at (6.3,-4.9) {انحراف فاز کانال};
+  \draw[line] (sync) -- (g3);
+  \draw[line] (g3) -- (trig);
+  \draw[line] (g3) -- (phase);
+\end{tikzpicture}}
+\end{document}

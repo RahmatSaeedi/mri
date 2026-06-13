@@ -1,0 +1,44 @@
+% Metadata index schema: patients -> studies -> series -> instances (1-to-N), blobs referenced by URI.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    tbl/.style={draw, align=left, minimum width=78mm, inner sep=2.5mm, rounded corners=1pt}]
+
+  \node[tbl, fill=blue!8] (patients)
+    {\textbf{patients}\\\footnotesize patient\_id (PK), name\_hash, birth\_date, sex};
+  \node[tbl, fill=teal!8, below=10mm of patients] (studies)
+    {\textbf{studies}\\\footnotesize study\_uid (PK), patient\_id (FK), study\_date, accession, description};
+  \node[tbl, fill=green!8, below=10mm of studies] (series)
+    {\textbf{series}\\\footnotesize series\_uid (PK), study\_uid (FK), modality, seq\_name,\\\footnotesize TR, TE, field\_T, recon\_type, n\_channels, blob\_uri};
+  \node[tbl, fill=orange!10, below=10mm of series] (instances)
+    {\textbf{instances}\\\footnotesize sop\_uid (PK), series\_uid (FK), instance\_no,\\\footnotesize image\_position[3], image\_orientation[6], pixel\_spacing[2],\\\footnotesize storage\_tier, checksum\_sha256, blob\_uri};
+
+  % 1-N relationships (crow's-foot style with labels)
+  \draw[->, thick] (patients.south) -- node[right, font=\footnotesize] {1\,:\,N} (studies.north);
+  \draw[->, thick] (studies.south)  -- node[right, font=\footnotesize] {1\,:\,N} (series.north);
+  \draw[->, thick] (series.south)   -- node[right, font=\footnotesize] {1\,:\,N} (instances.north);
+
+  % blob storage note
+  \node[draw, dashed, rounded corners, fill=gray!8, align=center, font=\footnotesize, right=10mm of series]
+    (blob) {انبارهٔ شیء\\(blob از طریق URI)};
+  \draw[->, dashed, gray] (series.east) -- (blob.west);
+  \draw[->, dashed, gray] (instances.east) to[out=0,in=270] (blob.south);
+
+\end{tikzpicture}}
+\end{document}

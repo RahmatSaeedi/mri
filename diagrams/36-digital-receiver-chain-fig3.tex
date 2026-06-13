@@ -1,0 +1,49 @@
+% Full DDC datapath: ADC real samples at f_s into a complex mixer driven by an
+% NCO/DDS (cos - j sin), then CIC (sinc^N, /R1), CIC compensator, two half-band
+% FIR decimate-by-2 stages, producing I+jQ at f_s/(R1*4).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    block/.style={draw, rounded corners=2pt, minimum height=12mm, minimum width=17mm, align=center, fill=blue!6},
+    mix/.style={draw, circle, minimum size=9mm, inner sep=0pt, fill=orange!18},
+    nco/.style={draw, rounded corners=2pt, minimum height=10mm, minimum width=22mm, align=center, fill=green!10}]
+
+  % main signal row
+  \node (adcin) {ADC};
+  \node[mix, right=12mm of adcin] (mixer) {$\times$};
+  \node[block, right=12mm of mixer] (cic) {CIC\\$\mathrm{sinc}^N$\\$/R_1$};
+  \node[block, right=10mm of cic] (comp) {جبران‌گر\\CIC};
+  \node[block, right=10mm of comp] (hb1) {HB FIR\\$/2$};
+  \node[block, right=8mm of hb1] (hb2) {HB FIR\\$/2$};
+
+  \draw[->, thick] (adcin) -- node[above, font=\scriptsize] {$f_s$} (mixer);
+  \draw[->, thick] (mixer) -- (cic);
+  \draw[->, thick] (cic) -- (comp);
+  \draw[->, thick] (comp) -- (hb1);
+  \draw[->, thick] (hb1) -- (hb2);
+
+  % output
+  \draw[->, thick] (hb2.east) -- ++(14mm,0) node[right, align=center] {$I+jQ$\\(خروجی)\\$f_s/(R_1\!\cdot\!4)$};
+
+  % NCO feeding the mixer
+  \node[nco, below=11mm of mixer] (ncoblk) {NCO/DDS\\$(\cos - j\sin)$};
+  \draw[->, thick] (ncoblk) -- (mixer);
+
+\end{tikzpicture}}
+\end{document}

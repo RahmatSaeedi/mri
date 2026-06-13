@@ -1,0 +1,76 @@
+% Inter-subsystem interface summary. The host talks to the FPGA console over
+% PCIe/10GbE (event table down, I/Q stream up). The console sends optical
+% commands to the GPA (gradient coil), low-level RF to the RF PA, gate/unblank
+% to the T/R switch, and receives digitised data from the RX array over
+% JESD204, with a 10 MHz / SYSREF reference synchronising all converters.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    blk/.style={draw, rounded corners=2pt, align=center, minimum height=10mm, inner sep=4pt},
+    lbl/.style={font=\footnotesize, fill=white, inner sep=1pt}]
+
+  % host
+  \node[blk, fill=gray!12, minimum width=20mm, minimum height=16mm] (host) at (0,0)
+    {\textbf{میزبان}};
+
+  % console
+  \node[blk, fill=blue!8, minimum width=26mm, minimum height=46mm] (con) at (4.6,0)
+    {\textbf{کنسول}\\\footnotesize (FPGA)};
+
+  % right column subsystems
+  \node[blk, fill=teal!12, minimum width=24mm] (gpa) at (10.2,3.2) {GPA};
+  \node[blk, fill=teal!10, minimum width=30mm] (gcoil) at (14.0,3.2) {سیم‌پیچ گرادیان};
+  \node[blk, fill=orange!12, minimum width=24mm] (pa)  at (10.2,1.4) {RF PA};
+  \node[blk, fill=red!10, minimum width=24mm] (tr)  at (10.2,-0.4) {کلید T/R};
+  \node[blk, fill=green!10, minimum width=20mm] (adc) at (9.6,-2.2) {ADC};
+  \node[blk, fill=green!8, minimum width=20mm] (pre) at (12.4,-2.2) {پیش‌تقویت‌کننده};
+  \node[blk, fill=green!8, minimum width=14mm] (rx) at (14.7,-2.2) {RX};
+
+  % host <-> console
+  \draw[->] (host.north east) to[out=30,in=150]
+    node[lbl, above]{PCIe / 10GbE} (con.north west);
+  \draw[<-] (host.south east) to[out=-30,in=-150]
+    node[lbl, below]{جریان I/Q} (con.south west);
+
+  % console -> GPA -> gradient coil
+  \draw[->] (con.east|-gpa) -- node[lbl, above]{نوری} (gpa.west);
+  \draw[->] (gpa.east) -- (gcoil.west);
+
+  % console -> RF PA
+  \draw[->] (con.east|-pa) -- node[lbl, above]{سطح RF} (pa.west);
+
+  % console -> T/R (gate/unblank)
+  \draw[->] (con.east|-tr) -- node[lbl, above]{گِیت / رفع‌انسداد} (tr.west);
+  % RF PA -> T/R
+  \draw[->] (pa.south) -- (tr.north);
+
+  % RX path: RX -> preamp -> ADC -> console (JESD204)
+  \draw[->] (rx.west) -- (pre.east);
+  \draw[->] (pre.west) -- (adc.east);
+  \draw[->] (adc.west) to[out=180,in=-20]
+    node[lbl, above]{JESD204} (con.east|-adc);
+  % T/R -> preamp (receive)
+  \draw[->] (tr.south) to[out=-90,in=90] (pre.north);
+
+  % 10 MHz / SYSREF reference fan-out
+  \draw[->, densely dashed, gray!70] (con.south east) to[out=-30,in=200]
+    node[lbl, below, pos=0.55]{10\,MHz / SYSREF} (adc.south west);
+
+\end{tikzpicture}}
+\end{document}

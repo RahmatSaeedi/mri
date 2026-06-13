@@ -1,0 +1,69 @@
+% Magnet circuit with a persistent-current switch (PCS) and its heater.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, line width=0.9pt]
+
+  \node[font=\bfseries] at (3,3.4) {مدار آهنربا همراه PCS};
+
+  % node coordinates of the loop (rectangle)
+  \coordinate (TL) at (0.5,2.4);
+  \coordinate (TR) at (5.5,2.4);
+  \coordinate (BL) at (0.5,0.4);
+  \coordinate (BR) at (5.5,0.4);
+
+  % --- top branch: the magnet inductor L ---
+  \draw (TL) -- (1.7,2.4);
+  % inductor coil symbol
+  \draw (1.7,2.4) to[out=90,in=90] (2.0,2.4) to[out=-90,in=-90] (2.3,2.4)
+        to[out=90,in=90] (2.6,2.4) to[out=-90,in=-90] (2.9,2.4)
+        to[out=90,in=90] (3.2,2.4) to[out=-90,in=-90] (3.5,2.4);
+  \draw (3.5,2.4) -- (TR);
+  \node at (2.6,2.95) {آهنربا \RL{($L$)}};
+
+  % --- bottom branch: PCS + heater ---
+  \draw (BL) -- (1.6,0.4);
+  % PCS box
+  \node[draw, fill=blue!8, very thick, minimum width=1.3cm, minimum height=0.6cm] (pcs) at (2.4,0.4) {PCS};
+  \draw (3.05,0.4) -- (3.55,0.4);
+  % heater (resistor zig-zag) thermally coupled to PCS
+  \draw (3.55,0.4) -- (3.7,0.4)
+        -- (3.82,0.62) -- (4.06,0.18) -- (4.30,0.62) -- (4.54,0.18) -- (4.66,0.4)
+        -- (BR);
+  \node at (4.18,0.92) {گرم‌کن};
+  % thermal coupling indicator
+  \draw[decorate, decoration={coil, segment length=2pt, amplitude=2pt}, red!70!black, line width=0.5pt]
+        (2.4,0.72) -- (4.18,0.72);
+
+  % --- left & right verticals ---
+  \draw (TL) -- (BL);
+  \draw (TR) -- (BR);
+
+  % --- power supply leads (charge) ---
+  \draw (TL) -- (-1.0,2.4) node[circle, draw, fill=white, inner sep=1.5pt] {};
+  \node[left, align=right] at (-1.1,2.4) {منبع تغذیه\\(شارژ)};
+  \draw (BL) -- (-1.0,0.4) node[circle, draw, fill=white, inner sep=1.5pt] {};
+  \node[left] at (-1.1,0.4) {$\;$};
+
+  % --- mode legend ---
+  \node[anchor=west, align=left, font=\footnotesize] at (-1.2,-0.6)
+    {گرم‌کن خاموش $\Rightarrow$ PCS ابررسانا $\Rightarrow$ \textbf{حالت پایدار}\\
+     گرم‌کن روشن \ $\Rightarrow$ PCS عادی (مقاومتی) $\Rightarrow$ \textbf{مسیر شارژ}};
+
+\end{tikzpicture}}
+\end{document}

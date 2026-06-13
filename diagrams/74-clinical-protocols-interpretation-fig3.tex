@@ -1,0 +1,49 @@
+% Standalone TikZ figure: lumbar spine MRI protocol as an ordered tree.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    seqbox/.style={draw, rounded corners=2pt, align=left, fill=teal!8, thick,
+                  minimum height=8mm, text width=48mm, inner sep=3pt},
+    lbl/.style={font=\footnotesize, text=black!60, align=left, text width=60mm},
+    rootbox/.style={draw, rounded corners=2pt, align=center, fill=teal!18, thick,
+                 minimum height=9mm, text width=52mm}]
+
+  \node[rootbox] (root) at (0,0) {\textbf{ستون فقرات کمری}};
+
+  \node[seqbox] (s1) at (1.2,-1.6)  {T1w ساژیتال FSE};
+  \node[seqbox] (s2) at (1.2,-2.9)  {T2w ساژیتال FSE};
+  \node[seqbox] (s3) at (1.2,-4.2)  {STIR / T2-FS ساژیتال};
+  \node[seqbox] (s4) at (1.2,-5.5)  {T2w اگزیال (سطوح هدف)};
+  \node[seqbox] (s5) at (1.2,-7.0)  {T1w + FS پس از حاجب\\ \quad (در صورت نیاز)};
+
+  \node[lbl, right=4mm of s1] {آناتومی، چربی مغز استخوان، تنگی سوراخ بین‌مهره‌ای};
+  \node[lbl, right=4mm of s2] {دیسک، CSF، فشردگی نخاع / ریشه};
+  \node[lbl, right=4mm of s3] {ادم استخوان، التهاب (سرکوب چربی)};
+  \node[lbl, right=4mm of s4] {فتق دیسک، تنگی کانال};
+  \node[lbl, right=4mm of s5] {تومور / عفونت};
+
+  \coordinate (top) at (0,-0.55);
+  \draw[thick] (top) -- (0,-7.0);
+  \foreach \s in {s1,s2,s3,s4,s5}{
+    \draw[thick] (0,0 |- \s.west) -- (\s.west);
+  }
+
+\end{tikzpicture}}
+\end{document}

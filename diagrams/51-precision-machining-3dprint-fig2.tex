@@ -1,0 +1,82 @@
+% Anatomy of an FDM (fused-deposition) printed part: cross-section showing
+% the build direction (Z), perimeters/shell, internal infill, stacked layers
+% of height h_z, solid bottom layers, and the build plate (bed).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \def\W{6.0}   % part width
+  \def\H{3.6}   % part height
+  \def\t{0.45}  % shell / solid thickness
+
+  % ---- build plate (bed) ------------------------------------------------
+  \fill[gray!35] (-0.6,-0.55) rectangle (\W+0.6,0);
+  \draw[thick] (-0.6,0) -- (\W+0.6,0);
+  \foreach \x in {-0.4,0,...,6.4}{
+    \draw[gray!55] (\x,0) -- (\x-0.25,-0.45);
+  }
+  \node[anchor=north] at (\W/2,-0.55) {صفحهٔ ساخت (بستر)};
+
+  % ---- solid bottom layers ----------------------------------------------
+  \fill[blue!20] (0,0) rectangle (\W,\t);
+  \foreach \yy in {0.11,0.22,0.33}{
+    \draw[blue!55] (0,\yy) -- (\W,\yy);
+  }
+
+  % ---- infill region (hatched honeycomb-like cross-hatch) ---------------
+  \begin{scope}
+    \clip (\t,\t) rectangle (\W-\t,\H-\t);
+    \fill[orange!10] (\t,\t) rectangle (\W-\t,\H-\t);
+    \foreach \d in {-4,-3.4,...,7}{
+      \draw[orange!60] (\t+\d,\t) -- (\t+\d+3.6,\H-\t);
+      \draw[orange!60] (\t+\d,\H-\t) -- (\t+\d+3.6,\t);
+    }
+  \end{scope}
+
+  % ---- perimeters / shell (walls) ---------------------------------------
+  \fill[blue!20] (0,\t) rectangle (\t,\H);          % left wall
+  \fill[blue!20] (\W-\t,\t) rectangle (\W,\H);       % right wall
+  \fill[blue!20] (0,\H-\t) rectangle (\W,\H);        % top
+  \draw[very thick, blue!55!black] (0,0) rectangle (\W,\H);
+  \draw[very thick, blue!55!black] (\t,\t) rectangle (\W-\t,\H-\t);
+
+  % ---- build direction arrow (Z) ----------------------------------------
+  \draw[->, very thick] (\W/2,\H+0.25) -- (\W/2,\H+1.25)
+    node[anchor=south] {جهت ساخت $Z$};
+
+  % ---- layer-height indicator (right side) ------------------------------
+  \draw[<->] (\W+0.35,\H-\t) -- (\W+0.35,\H-\t-0.33);
+  \node[anchor=west, align=left] at (\W+0.45,\H-\t-0.165) {ارتفاع\\لایه $h_z$};
+  \foreach \yy in {\H-\t-0.33,\H-\t-0.66}{
+    \draw[blue!40] (\W-\t,\yy) -- (\W-0.02,\yy);
+  }
+
+  % ---- labels with leaders ----------------------------------------------
+  % shell
+  \draw[->] (\W+0.05,\H-0.22) .. controls (\W+1.0,\H+0.3) .. (\W+1.6,\H-0.05)
+     node[anchor=west, align=left] {پیرامون / پوسته\\(دیواره)};
+  % infill
+  \node[fill=white, inner sep=1pt] at (\W/2,\H/2) {پرشدگی};
+  \draw[->] (\W/2+1.0,\H/2) -- (\W+0.2,\H/2)
+     node[anchor=west, align=left] {پرشدگی داخلی\\(شبکه، لانه‌زنبوری، ژیروئید)};
+  % bottom solid
+  \draw[->] (\t+0.2,\t/2) -- (-1.4,\t/2)
+     node[anchor=east, align=right] {لایه‌های\\تَهِ توپُر};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,62 @@
+% Insulation chain from mains to patient: independent Means-of-Protection (MOP)
+% barriers per IEC 60601-1 leading to a floating BF/CF applied part.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=7mm,
+    stage/.style={draw, rounded corners=2pt, align=center, minimum height=10mm, inner sep=4pt, fill=blue!7},
+    mop/.style={draw, fill=red!12, align=center, minimum height=9mm, inner sep=3pt, font=\footnotesize}]
+
+  % Top rail: mains -> internal bus -> floating SELV secondary
+  \node[stage, fill=gray!15] (mains) {برق شبکه\\230\,V};
+  \node[mop, right=of mains] (mop1) {MOP1:\\عایق پایه\\(PSU)};
+  \node[stage, right=of mop1] (ibus) {باس\\داخلی};
+  \node[mop, right=of ibus] (mop2) {MOP2:\\ترانسفورمر ایزولاسیون\\پزشکی};
+  \node[stage, right=of mop2, fill=green!10] (selv) {ثانویهٔ\\شناور\\(SELV)};
+
+  \draw[->, thick] (mains) -- (mop1);
+  \draw[->, thick] (mop1) -- (ibus);
+  \draw[->, thick] (ibus) -- (mop2);
+  \draw[->, thick] (mop2) -- (selv);
+
+  % PE bond branch off internal bus
+  \node[mop, below=10mm of ibus, fill=orange!18] (pe) {MOP:\\اتصال زمین\\حفاظتی (بدنه)};
+  \draw[->, thick] (ibus.south) -- (pe.north);
+
+  % Bottom rail: low-level circuit -> isolated signal converter -> applied part
+  \node[stage, below=22mm of mains, align=center] (low) {مدار\\سطح‌پایین};
+  \node[mop, right=of low] (iso) {$2\times$MOPP:\\ایزولاتور\\اپتیک/دیجیتال};
+  \node[stage, right=of iso, fill=green!10] (ap) {قطعهٔ تماسی\\نوع BF/CF\\(شناور)};
+  \node[draw, rounded corners=2pt, fill=yellow!15, right=of ap, align=center, minimum height=10mm] (skin)
+    {سطح تماس\\بیمار};
+
+  \draw[->, thick] (low) -- (iso);
+  \draw[->, thick] (iso) -- (ap);
+  \draw[->, thick] (ap) -- (skin);
+
+  % link SELV down into the low-level domain
+  \draw[->, thick, dashed] (selv.south) |- (low.east);
+
+  % Note
+  \node[align=center, font=\footnotesize\itshape, below=8mm of ap, text width=78mm]
+    {هر مسیری که بتواند برق شبکه را به بیمار برساند، به دو سد MOPP مستقل نیاز دارد.};
+
+\end{tikzpicture}}
+\end{document}

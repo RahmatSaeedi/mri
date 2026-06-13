@@ -1,0 +1,68 @@
+% Standalone TikZ figure: MRI-adapted DDS datapath.
+% Phase accumulator (+FTW/clk) -> drop low bits -> +phase offset ->
+% sine LUT -> amplitude modulation -> RF DAC (I), with a cosine path for Q.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=8mm,
+    op/.style={draw, circle, inner sep=1pt, minimum size=6mm},
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=8mm},
+    sig/.style={->, thick}]
+
+  % ---------- Phase accumulator ----------
+  \node[op] (add1) at (0,0) {$+$};
+  \node[box, fill=blue!8, right=10mm of add1] (acc) {phase\_acc\\ $[M{-}1{:}0]$};
+  % feedback register loop (+FTW each clock)
+  \draw[sig] (acc.north) -- ++(0,0.9) -| (add1.north);
+  \node[font=\footnotesize, align=center] at ($(add1)!0.5!(acc) + (0,1.15)$)
+        {ثبات، $+\mathrm{FTW}$ هر کلاک};
+  % FTW input
+  \draw[sig] (-2.4,0) node[left] {FTW} -- (add1.west);
+
+  % ---------- Drop low bits / truncation ----------
+  \node[box, fill=gray!8, right=12mm of acc] (trunc) {حذف\\ بیت‌های کم‌ارزش};
+  \draw[sig] (acc.east) -- (trunc.west);
+  \node[font=\footnotesize, above] at ($(acc.east)!0.5!(trunc.west)+(0,0.05)$) {};
+
+  % ---------- Phase index adder (+ phase offset) ----------
+  \node[op, below=12mm of trunc] (add2) {$+$};
+  \node[box, right=8mm of add2, fill=blue!8] (idx) {نمایهٔ\\ فاز};
+  \draw[sig] (trunc.south) -- node[right, font=\footnotesize] {$P$ بیت بالا} (add2.north);
+  \draw[sig] (-2.4,{-1.97}) node[left] {phase\_offset} -| (add2.west);
+  \draw[sig] (add2.east) -- (idx.west);
+
+  % ---------- Sine LUT ----------
+  \node[box, below=10mm of idx, fill=green!8, minimum width=24mm] (lut) {LUT سینوسی \RL{($2^{P}$)}};
+  \draw[sig] (idx.south) -- (lut.north);
+
+  % ---------- Amplitude modulation ----------
+  \node[op, below=11mm of lut] (mul) {$\times$};
+  \draw[sig] (lut.south) -- node[right, font=\footnotesize] {نمونهٔ sin} (mul.north);
+  \draw[sig] (-2.4,-5.0) node[left] {amp\_envelope} -| (mul.west);
+
+  % ---------- RF DAC output ----------
+  \node[box, below=9mm of mul, fill=orange!12, minimum width=30mm] (dac) {RF DAC (I)};
+  \draw[sig] (mul.south) -- (dac.north);
+
+  % ---------- Q path note ----------
+  \node[draw, dashed, rounded corners=2pt, align=center, font=\footnotesize,
+        right=14mm of mul, fill=yellow!10] (q) {مسیر کسینوسی\\ برای Q (IQ)};
+  \draw[->, dashed, thick] (lut.east) -| (q.north);
+
+\end{tikzpicture}}
+\end{document}

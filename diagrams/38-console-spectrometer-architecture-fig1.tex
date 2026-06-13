@@ -1,0 +1,92 @@
+% High-level MRI console (spectrometer) block diagram. A non-real-time host
+% loads event tables over a host bus into the console; inside the console a
+% common reference clocks the real-time sequencer, TX chain, RX chain and
+% gradient controller. Outputs drive the gradient coil and the RF coil
+% (transmit/receive) via a T/R switch.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    blk/.style={draw, rounded corners=2pt, align=center, minimum height=9mm, inner sep=3pt, fill=blue!6},
+    ref/.style={draw, rounded corners=2pt, align=center, minimum height=8mm, inner sep=3pt, fill=orange!12},
+    phys/.style={draw, rounded corners=2pt, align=center, minimum height=10mm, inner sep=3pt, fill=green!10},
+    lbl/.style={font=\footnotesize}]
+
+  % ---- Host ----
+  \node[blk, fill=gray!12, minimum width=62mm] (host) at (0,8.2)
+    {\textbf{میزبان / سرور بازسازی}\\\footnotesize کامپایل توالی، صف فرمان، گردآوری داده};
+
+  % ---- Console outer box ----
+  \node[draw, dashed, rounded corners=4pt, minimum width=130mm, minimum height=60mm,
+        fill=blue!2] (console) at (0,3.0) {};
+  \node[anchor=north, font=\bfseries] at (console.north) {کنسول / طیف‌سنج};
+
+  % ---- Common reference ----
+  \node[ref, minimum width=110mm] (clk) at (0,5.2)
+    {\textbf{مرجع مشترک:} OCXO $\to$ PLL $\to$ clock\quad
+     $f_{\mathrm{ref}}{=}10\,\mathrm{MHz}\Rightarrow f_s,\ f_{\mathrm{LO}},\ f_{\mathrm{seq}}$};
+
+  % ---- Three main chains ----
+  \node[blk, minimum width=34mm] (seq) at (-4.6,2.7)
+    {\textbf{توالی‌ساز بی‌درنگ}\\\footnotesize (FPGA)\\ماشین حالت زمان‌بندی‌شده};
+  \node[blk, minimum width=34mm] (tx) at (0,2.7)
+    {\textbf{زنجیرهٔ TX}\\\footnotesize NCO$\to$I/Q$\to$DAC$\to$Up\\$\to$ RF PA};
+  \node[blk, minimum width=34mm] (rx) at (4.6,2.7)
+    {\textbf{زنجیرهٔ RX}\\\footnotesize LNA$\to$Down$\to$ADC$\to$DDC};
+
+  % ---- Lower row ----
+  \node[blk, minimum width=24mm] (grad) at (-4.6,0.3)
+    {\textbf{کنترل گرادیان}\\\footnotesize GPA-DAC};
+  \node[blk, fill=red!8, minimum width=22mm] (tr) at (0,0.3)
+    {\textbf{کلید T/R}};
+  \node[blk, minimum width=22mm] (pre) at (4.6,0.3)
+    {\textbf{پیش‌تقویت‌کننده}\\\footnotesize (LNA)};
+
+  % ---- Physical hardware ----
+  \node[phys, minimum width=30mm] (gcoil) at (-4.6,-3.0)
+    {سیم‌پیچ گرادیان};
+  \node[phys, minimum width=44mm] (rfcoil) at (2.3,-3.0)
+    {سیم‌پیچ RF (TX/RX)\\\footnotesize در حفرهٔ آهنربا $+$ بیمار};
+
+  % ===== arrows =====
+  \draw[->] (host) -- node[right, lbl]{گذرگاه میزبان (PCIe / 10GbE)} (clk);
+
+  % clock fan-out
+  \draw[->] (clk.south -| seq.north) -- node[left, lbl]{کلاک}(seq.north);
+  \draw[->] (clk.south -| tx.north)  -- node[left, lbl]{کلاک}(tx.north);
+  \draw[->] (clk.south -| rx.north)  -- node[left, lbl]{کلاک}(rx.north);
+
+  % sequencer drives TX
+  \draw[->] (seq) -- (tx);
+  % sequencer triggers to gradient + T/R
+  \draw[->] (seq.south) -- node[left, lbl]{تریگر} (grad.north);
+  \draw[->] (seq.east) to[out=-30,in=150] node[above, lbl, pos=0.6]{تریگر} (tr.north west);
+
+  % TX PA to T/R
+  \draw[->] (tx.south) -- (tr.north);
+  % preamp to RX
+  \draw[->] (pre.north) -- (rx.south);
+  % T/R to preamp (receive path)
+  \draw[->] (tr.east) -- node[above, lbl]{} (pre.west);
+
+  % to physical
+  \draw[->] (grad.south) -- node[right, lbl]{جریان} (gcoil.north);
+  \draw[<->] (tr.south) -- node[right, lbl]{$B_1^{+}$ / سیگنال MR} (rfcoil.north);
+
+\end{tikzpicture}}
+\end{document}

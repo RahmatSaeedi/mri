@@ -1,0 +1,902 @@
+# =====================================================================
+#  MASTER OUTLINE — single source of truth for the book's structure.
+#  Edit here, then run:  python tools/gen_stubs.py
+#  to (re)generate chapters/*.qmd stubs and _quarto.yml.
+#
+#  Per-chapter fields:
+#    n         integer chapter number (unique, 1..77)
+#    slug      kebab-case file slug -> chapters/NN-slug.qmd
+#    title_fa  Persian chapter title (reader-facing)
+#    title_en  English title (planning / glossary cross-reference)
+#    pages     rough page estimate
+#    prereqs   list of chapter numbers that must come first
+#    flags     content types this chapter must include (see flag_legend)
+#    objectives  author-facing planning bullets (English); the reader-facing
+#                Persian "اهداف یادگیری" is written during chapter authoring.
+# =====================================================================
+
+book:
+  title_fa: "ساخت دستگاه پیشرفتهٔ MRI: از دبیرستان تا مهندسی"
+  title_en: "Building a State-of-the-Art MRI: From High School to Engineer"
+  subtitle_fa: "یک رسالهٔ جامع مهندسی — فیزیک، الکترونیک، نرم‌افزار، پزشکی، ساخت، ایمنی و نگه‌داری"
+  author: "رحمت سعیدی"
+
+flag_legend:
+  diagrams:        "needs TikZ/Asymptote vector figures"
+  code-lab:        "runnable Python/PyPulseq/recon lab"
+  fem-lab:         "EM/thermal/mechanical simulation lab (FEMM/Elmer/openEMS)"
+  circuit-design:  "circuit-level design + KiCad/SPICE"
+  hdl:             "FPGA/HDL (Verilog/VHDL) content"
+  calculations:    "worked numerical problems"
+  derivation:      "rigorous mathematical derivation"
+  test-procedure:  "includes a formal test procedure"
+  safety-analysis: "includes hazard/risk analysis (ISO 14971 style)"
+  repair-entry:    "includes maintenance/repair knowledge-base entries"
+  build:           "physical build / reference-design walkthrough"
+
+volumes:
+  - id: 1
+    title_fa: "مبانی ریاضی و فیزیک"
+    title_en: "Mathematical & Physical Foundations"
+    pages: 280
+    chapters:
+      - n: 1
+        slug: calculus-vector-calculus
+        title_fa: "حساب دیفرانسیل و انتگرال و حساب برداری"
+        title_en: "Calculus and vector calculus"
+        pages: 32
+        prereqs: []
+        flags: [diagrams, calculations, derivation]
+        objectives:
+          - "Build fluency with derivatives, integrals, and partial derivatives from high-school algebra."
+          - "Introduce grad/div/curl, line and surface integrals, and the geometry of fields."
+      - n: 2
+        slug: complex-numbers-rotating-frame
+        title_fa: "اعداد مختلط، آنالیز مختلط و چارچوب چرخان"
+        title_en: "Complex numbers, complex analysis, and the rotating frame"
+        pages: 26
+        prereqs: [1]
+        flags: [diagrams, calculations]
+        objectives:
+          - "Master complex arithmetic, phasors, and rotation as the language of MR signals."
+          - "Introduce the rotating frame geometrically."
+      - n: 3
+        slug: linear-algebra
+        title_fa: "جبر خطی: تبدیل‌ها، تجزیهٔ ویژه و SVD"
+        title_en: "Linear algebra: transforms, eigendecomposition, SVD"
+        pages: 30
+        prereqs: [1, 2]
+        flags: [code-lab, calculations, derivation]
+        objectives:
+          - "Treat matrices as transforms; cover bases, eigenvalues/vectors, and SVD."
+          - "Connect to imaging: sensitivity matrices, least squares, conditioning."
+      - n: 4
+        slug: fourier-sampling
+        title_fa: "آنالیز فوریه و تابعی؛ نظریهٔ نمونه‌برداری"
+        title_en: "Fourier and functional analysis; sampling theory"
+        pages: 34
+        prereqs: [1, 2, 3]
+        flags: [diagrams, code-lab, derivation]
+        objectives:
+          - "Develop Fourier series/transform intuition and the convolution theorem."
+          - "Establish sampling, Nyquist, aliasing — the conceptual heart of k-space."
+      - n: 5
+        slug: differential-equations-numerics
+        title_fa: "معادلات دیفرانسیل و روش‌های عددی"
+        title_en: "Differential equations and numerical methods"
+        pages: 28
+        prereqs: [1, 3]
+        flags: [code-lab, calculations, derivation]
+        objectives:
+          - "Solve ODEs/PDEs relevant to fields and dynamics; introduce numerical integration."
+          - "Prepare for the Bloch equations and field solvers."
+      - n: 6
+        slug: probability-noise-estimation
+        title_fa: "احتمال، نوفه و تخمین"
+        title_en: "Probability, noise, and estimation"
+        pages: 26
+        prereqs: [3, 4]
+        flags: [code-lab, calculations]
+        objectives:
+          - "Cover random variables, distributions, and noise models (thermal/Johnson)."
+          - "Introduce SNR, estimation, and statistics used throughout imaging."
+      - n: 7
+        slug: classical-em-maxwell
+        title_fa: "الکترومغناطیس کلاسیک تا معادلات ماکسول"
+        title_en: "Classical electromagnetism to Maxwell's equations"
+        pages: 36
+        prereqs: [1]
+        flags: [diagrams, derivation, calculations]
+        objectives:
+          - "Build E&M from Coulomb/Biot–Savart to the full Maxwell equations."
+          - "Develop the field intuition underpinning magnets, gradients, and RF."
+      - n: 8
+        slug: em-in-matter-quasistatics
+        title_fa: "میدان‌های الکترومغناطیسی در ماده، شبه‌ایستایی و جریان‌های گردابی"
+        title_en: "EM fields in matter, quasistatics, and eddy currents"
+        pages: 28
+        prereqs: [7]
+        flags: [diagrams, derivation, fem-lab]
+        objectives:
+          - "Treat magnetization, boundary conditions, skin effect, and eddy currents."
+          - "Connect to gradient eddy currents and RF penetration."
+      - n: 9
+        slug: quantum-spin-density-matrix
+        title_fa: "مکانیک کوانتومی اسپین: از شهود تا فرمول‌بندی ماتریس چگالی"
+        title_en: "Quantum mechanics of spin: intuition to density-matrix formalism"
+        pages: 32
+        prereqs: [2, 3, 7]
+        flags: [derivation, diagrams]
+        objectives:
+          - "Introduce spin, magnetic moment, populations, and the density operator."
+          - "Bridge classical and quantum pictures used in later sequence design."
+      - n: 10
+        slug: thermo-stat-mech-cryo-physics
+        title_fa: "ترمودینامیک، مکانیک آماری و فیزیک دمای پایین"
+        title_en: "Thermodynamics, statistical mechanics, and low-temperature physics"
+        pages: 28
+        prereqs: [6]
+        flags: [calculations, diagrams]
+        objectives:
+          - "Cover thermodynamics, Boltzmann statistics, and heat transfer."
+          - "Lay groundwork for superconductivity and cryogenics."
+
+  - id: 2
+    title_fa: "فیزیک تشدید مغناطیسی، شکل‌گیری سیگنال و توالی‌های پالس"
+    title_en: "MR Physics, Signal Formation, and Pulse Sequences"
+    pages: 300
+    chapters:
+      - n: 11
+        slug: nuclear-magnetism-resonance
+        title_fa: "مغناطش هسته‌ای، قطبش، تشدید و چارچوب چرخان"
+        title_en: "Nuclear magnetism, polarization, resonance, rotating frame"
+        pages: 28
+        prereqs: [2, 9]
+        flags: [diagrams, derivation]
+        objectives:
+          - "Derive net magnetization, Larmor precession, and resonance."
+          - "Establish the rotating-frame description used everywhere after."
+      - n: 12
+        slug: bloch-equations-relaxation
+        title_fa: "معادلات بلاخ و واهلش (T1/T2/T2*)؛ بلاخ–توری"
+        title_en: "Bloch equations and relaxation; Bloch–Torrey"
+        pages: 34
+        prereqs: [5, 11]
+        flags: [derivation, code-lab, calculations]
+        objectives:
+          - "Derive and solve the Bloch equations; explain T1/T2/T2* mechanisms."
+          - "Extend to Bloch–Torrey for diffusion."
+      - n: 13
+        slug: signal-formation-kspace
+        title_fa: "شکل‌گیری سیگنال، معادلهٔ سیگنال MR و نظریهٔ فضای‑کی"
+        title_en: "Signal formation, the MR signal equation, and k-space theory"
+        pages: 34
+        prereqs: [4, 12]
+        flags: [derivation, diagrams, code-lab]
+        objectives:
+          - "Derive the MR signal equation and the k-space formalism rigorously."
+          - "Show how gradients move through k-space."
+      - n: 14
+        slug: rf-excitation-pulse-design
+        title_fa: "برانگیزش رادیوفرکانس: انتخاب برش، طراحی پالس و SAR"
+        title_en: "RF excitation: slice selection, pulse design, and SAR"
+        pages: 32
+        prereqs: [12, 13]
+        flags: [derivation, code-lab, calculations]
+        objectives:
+          - "Design slice-selective and small/large-tip pulses (incl. SLR/optimal control)."
+          - "Introduce SAR and its constraints."
+      - n: 15
+        slug: gradients-spatial-encoding
+        title_fa: "گرادیان‌ها و کدگذاری مکانی؛ مسیرهای فضای‑کی"
+        title_en: "Gradients and spatial encoding; k-space trajectories"
+        pages: 30
+        prereqs: [13]
+        flags: [diagrams, code-lab, derivation]
+        objectives:
+          - "Explain frequency/phase encoding and Cartesian/radial/spiral/EPI trajectories."
+          - "Relate trajectory to sampling and image properties."
+      - n: 16
+        slug: core-sequences-contrast
+        title_fa: "توالی‌های پایه (SE, GRE, IR, EPI, bSSFP) و سازوکارهای کنتراست"
+        title_en: "Core sequences and contrast mechanisms"
+        pages: 34
+        prereqs: [14, 15]
+        flags: [diagrams, code-lab]
+        objectives:
+          - "Build the standard sequence family and their contrast behavior."
+          - "Introduce contrast agents and weighting choices."
+      - n: 17
+        slug: quantitative-advanced-mri
+        title_fa: "MRI کمی و پیشرفته: دیفیوژن/DTI، پرفیوژن، fMRI، MRS، اثرانگشت مغناطیسی"
+        title_en: "Quantitative and advanced MRI"
+        pages: 34
+        prereqs: [16]
+        flags: [diagrams, code-lab, calculations]
+        objectives:
+          - "Cover diffusion/DTI, perfusion, fMRI/BOLD, spectroscopy, MR fingerprinting, flow."
+          - "Connect physics to quantitative biomarkers."
+      - n: 18
+        slug: acceleration-parallel-cs-sms
+        title_fa: "شتاب‌دهی: تصویربرداری موازی (SENSE/GRAPPA)، چندبرشی هم‌زمان، حس‌گری فشرده"
+        title_en: "Acceleration: parallel imaging, SMS, compressed sensing"
+        pages: 32
+        prereqs: [13, 15, 16]
+        flags: [derivation, code-lab, diagrams]
+        objectives:
+          - "Explain SENSE/GRAPPA/ESPIRiT, simultaneous multi-slice, and compressed sensing."
+          - "Set up the acceleration concepts deep-learning recon builds on."
+      - n: 19
+        slug: bloch-pulseq-simulation-lab
+        title_fa: "آزمایشگاه شبیه‌سازی بلاخ و توالی (PyPulseq/KomaMRI)"
+        title_en: "Bloch and sequence simulation lab"
+        pages: 30
+        prereqs: [12, 14, 16]
+        flags: [code-lab, build]
+        objectives:
+          - "Design, simulate, and inspect real sequences in PyPulseq and a Bloch simulator."
+          - "Capstone: predict contrast and artifacts for a designed sequence."
+
+  - id: 3
+    title_fa: "مهندسی آهنربا، برودت‌زایی و میدان"
+    title_en: "Magnet, Cryogenics, and Field Engineering"
+    pages: 320
+    chapters:
+      - n: 20
+        slug: magnet-requirements
+        title_fa: "الزامات سامانهٔ آهنربا: شدت میدان، یکنواختی، پایداری و میدان پراکنده"
+        title_en: "Magnet system requirements"
+        pages: 28
+        prereqs: [7, 8]
+        flags: [diagrams, calculations]
+        objectives:
+          - "Quantify field strength, homogeneity (ppm/DSV), temporal stability, fringe field."
+          - "Translate imaging needs into magnet specs."
+      - n: 21
+        slug: superconductivity-engineering
+        title_fa: "مهندسی ابررسانایی: NbTi/Nb3Sn، HTS و انتخاب رسانا"
+        title_en: "Superconductivity engineering and conductor choice"
+        pages: 34
+        prereqs: [10, 20]
+        flags: [diagrams, calculations, derivation]
+        objectives:
+          - "Cover the critical surface, NbTi/Nb3Sn/HTS conductors, and AC losses."
+          - "Select conductors for a target magnet."
+      - n: 22
+        slug: superconducting-magnet-design
+        title_fa: "طراحی آهنربای ابررسانا: طرح‌های پوشش‌دار فعال و بهینه‌سازی میدان"
+        title_en: "Superconducting magnet design (actively shielded)"
+        pages: 36
+        prereqs: [21]
+        flags: [fem-lab, calculations, diagrams, derivation]
+        objectives:
+          - "Design solenoid and actively-shielded coil sets; optimize homogeneity."
+          - "Simulate the field with an FEM/Biot–Savart solver."
+      - n: 23
+        slug: magnet-manufacturing-winding
+        title_fa: "ساخت آهنربا: سیم‌پیچی، قالب‌ها، اتصالات و کلید جریان پایا"
+        title_en: "Magnet manufacturing: winding, joints, persistent switch"
+        pages: 34
+        prereqs: [22]
+        flags: [build, diagrams, test-procedure]
+        objectives:
+          - "Detail coil winding, formers, superconducting joints, persistent-current switch, training."
+          - "Walk through manufacturing tolerances and acceptance."
+      - n: 24
+        slug: quench-physics-protection
+        title_fa: "فیزیک و حفاظت کوئنچ: آشکارسازی، مقاومت تخلیه و گرم‌کن‌ها"
+        title_en: "Quench physics and protection"
+        pages: 30
+        prereqs: [22, 23]
+        flags: [circuit-design, calculations, safety-analysis, diagrams]
+        objectives:
+          - "Explain quench propagation; design detection, dump resistors, and quench heaters."
+          - "Analyze quench hazards and protection requirements."
+      - n: 25
+        slug: cryostat-cryogenics
+        title_fa: "مهندسی کرایوستات و برودت‌زایی؛ آهنرباهای بدون هلیوم و کرایوکولر"
+        title_en: "Cryostat and cryogenics; helium-free magnets and cryocoolers"
+        pages: 34
+        prereqs: [10, 23]
+        flags: [diagrams, calculations, build, safety-analysis]
+        objectives:
+          - "Design the vacuum vessel, thermal shields, and helium bath."
+          - "Cover conduction-cooled / helium-free magnets, cryocoolers, and quench venting."
+      - n: 26
+        slug: permanent-halbach-lowfield
+        title_fa: "آهنربای دائمی و هالباخ؛ آهنربای مقاومتی؛ معماری میدان‑پایین"
+        title_en: "Permanent/Halbach, resistive, and low-field architectures"
+        pages: 32
+        prereqs: [20]
+        flags: [fem-lab, build, diagrams, calculations]
+        objectives:
+          - "Design Halbach permanent-magnet arrays and resistive options."
+          - "Make the low-field case as the realistic build stepping-stone."
+      - n: 27
+        slug: shimming-field-monitoring
+        title_fa: "شیم‌بندی: شیم غیرفعال و فعال، پایش میدان و نقشه‌برداری B0"
+        title_en: "Shimming and field monitoring"
+        pages: 30
+        prereqs: [22, 26]
+        flags: [fem-lab, calculations, diagrams, test-procedure]
+        objectives:
+          - "Design passive (steel) and active shim coils; map B0."
+          - "Introduce integrated field monitoring and real-time correction."
+      - n: 28
+        slug: em-multiphysics-sim-lab
+        title_fa: "آزمایشگاه شبیه‌سازی الکترومغناطیس/چندفیزیک (FEMM/Elmer)"
+        title_en: "EM/multiphysics simulation lab"
+        pages: 30
+        prereqs: [8, 22]
+        flags: [fem-lab, code-lab, build]
+        objectives:
+          - "Run magnetostatic and thermal simulations of your own magnet/shim designs."
+          - "Compare open-source (FEMM/Elmer/getDP) with commercial standards."
+
+  - id: 4
+    title_fa: "الکترونیک گرادیان و رادیوفرکانس"
+    title_en: "Gradient and RF Electronics"
+    pages: 340
+    chapters:
+      - n: 29
+        slug: gradient-coil-design
+        title_fa: "طراحی سیم‌پیچ گرادیان: روش میدان‑هدف/تابع‑جریان و پوشش فعال"
+        title_en: "Gradient coil design (target-field/stream-function)"
+        pages: 34
+        prereqs: [8, 15, 22]
+        flags: [fem-lab, derivation, diagrams, calculations]
+        objectives:
+          - "Design linear, self-shielded gradient coils via the stream-function/target-field method."
+          - "Cover eddy-current compensation and head-only high-slew inserts (Connectome 2.0, MAGNUS)."
+      - n: 30
+        slug: gradient-coil-fabrication
+        title_fa: "ساخت و خنک‌کاری سیم‌پیچ گرادیان؛ نوفهٔ صوتی و نیروها"
+        title_en: "Gradient coil fabrication, cooling, acoustic noise"
+        pages: 30
+        prereqs: [29]
+        flags: [build, diagrams, calculations, test-procedure]
+        objectives:
+          - "Fabricate wire patterns, potting, and water cooling."
+          - "Manage Lorentz forces and acoustic noise."
+      - n: 31
+        slug: gradient-power-amplifier
+        title_fa: "طراحی تقویت‌کنندهٔ توان گرادیان (IGBT/MOSFET) و حلقه‌های کنترل"
+        title_en: "Gradient power amplifier design"
+        pages: 36
+        prereqs: [29]
+        flags: [circuit-design, calculations, safety-analysis, diagrams]
+        objectives:
+          - "Design switching amplifiers (IGBT/MOSFET) for hundreds of A / kV."
+          - "Close the current-control loop; address protection and safety."
+      - n: 32
+        slug: rf-coil-theory
+        title_fa: "نظریهٔ سیم‌پیچ رادیوفرکانس: تشدید، میدان B1، تقابل و SNR"
+        title_en: "RF coil theory"
+        pages: 30
+        prereqs: [7, 8, 13]
+        flags: [derivation, diagrams, calculations]
+        objectives:
+          - "Develop resonance, B1 fields, reciprocity, and the coil noise/SNR picture."
+          - "Set up the design framework for transmit/receive coils."
+      - n: 33
+        slug: rf-transmit-coil-ptx
+        title_fa: "طراحی و ساخت سیم‌پیچ فرستندهٔ RF: بردکیج، TEM و آرایه‌های pTx"
+        title_en: "RF transmit coil design and build; parallel transmit"
+        pages: 34
+        prereqs: [32]
+        flags: [circuit-design, build, diagrams, fem-lab]
+        objectives:
+          - "Design and build birdcage/TEM coils and parallel-transmit (pTx) arrays."
+          - "Tune/match, balun design, and B1 shimming."
+      - n: 34
+        slug: rf-receive-arrays-lna
+        title_fa: "آرایه‌های گیرندهٔ RF پرچگال، واهم‌بندی و پیش‌تقویت‌کنندهٔ کم‌نوفه"
+        title_en: "RF receive arrays and low-noise preamplifiers"
+        pages: 34
+        prereqs: [32]
+        flags: [circuit-design, build, diagrams, calculations]
+        objectives:
+          - "Design high-density (64–128ch) receive arrays with decoupling and active detuning."
+          - "Design low-noise preamplifiers and the noise budget."
+      - n: 35
+        slug: rf-power-amplifier-tr-switch
+        title_fa: "طراحی تقویت‌کنندهٔ توان RF (کیلووات)، کلید T/R و بلنکینگ"
+        title_en: "RF power amplifier, T/R switch, blanking"
+        pages: 32
+        prereqs: [32]
+        flags: [circuit-design, calculations, safety-analysis, diagrams]
+        objectives:
+          - "Design kW-class RF power amplifiers, directional couplers, and the T/R switch."
+          - "Handle blanking and protection."
+      - n: 36
+        slug: digital-receiver-chain
+        title_fa: "زنجیرهٔ گیرندهٔ دیجیتال: تبدیل پایین، ADC و بودجهٔ نوفه"
+        title_en: "Digital receiver chain"
+        pages: 30
+        prereqs: [4, 6, 34]
+        flags: [circuit-design, hdl, calculations, diagrams]
+        objectives:
+          - "Design down-conversion, ADC sampling, decimation, and NCO/DDS."
+          - "Compute the receiver noise-figure budget."
+      - n: 37
+        slug: rf-safety-sar-em-sim
+        title_fa: "ایمنی RF، محاسبهٔ SAR و شبیه‌سازی الکترومغناطیسی سیم‌پیچ (openEMS)"
+        title_en: "RF safety, SAR computation, EM simulation of coils"
+        pages: 28
+        prereqs: [33, 34]
+        flags: [fem-lab, calculations, safety-analysis, diagrams]
+        objectives:
+          - "Compute SAR and simulate coil B1/E fields (FDTD/MoM, e.g. openEMS)."
+          - "Tie RF design to patient-safety limits."
+
+  - id: 5
+    title_fa: "کنسول، میان‌افزار و نرم‌افزار سامانه"
+    title_en: "Console, Firmware, and System Software"
+    pages: 260
+    chapters:
+      - n: 38
+        slug: console-spectrometer-architecture
+        title_fa: "معماری کنسول/طیف‌سنج: TX/RX، زمان‌بندی و هم‌زمانی"
+        title_en: "Console/spectrometer architecture"
+        pages: 28
+        prereqs: [14, 15, 36]
+        flags: [diagrams, hdl]
+        objectives:
+          - "Lay out the TX/RX chains, timing, and synchronization of a console."
+          - "Define interfaces between subsystems."
+      - n: 39
+        slug: fpga-firmware-realtime
+        title_fa: "میان‌افزار FPGA (Verilog/VHDL): توالی‌سازی بی‌درنگ و زمان‌بندی قطعی"
+        title_en: "FPGA firmware: real-time sequencing"
+        pages: 36
+        prereqs: [38]
+        flags: [hdl, code-lab, diagrams]
+        objectives:
+          - "Implement deterministic real-time sequencing, DDS, and gating in HDL."
+          - "Meet timing constraints for gradient/RF/ADC events."
+      - n: 40
+        slug: opensource-consoles
+        title_fa: "کنسول‌های متن‌باز: OCRA، MaRCoS و Red Pitaya"
+        title_en: "Open-source consoles: OCRA, MaRCoS, Red Pitaya"
+        pages: 30
+        prereqs: [38, 39]
+        flags: [build, hdl, code-lab]
+        objectives:
+          - "Build a working low-cost console on Red Pitaya with OCRA/MaRCoS."
+          - "Bring up TX/RX and acquire a first free-induction decay."
+      - n: 41
+        slug: realtime-control-software
+        title_fa: "نرم‌افزار کنترل بی‌درنگ: کامپایل توالی، انتزاع سخت‌افزار و RTOS"
+        title_en: "Real-time control software"
+        pages: 30
+        prereqs: [39]
+        flags: [code-lab, diagrams]
+        objectives:
+          - "Compile sequences to hardware events; design the hardware-abstraction layer and state machines."
+          - "Use an RTOS / Linux-RT for deterministic control."
+      - n: 42
+        slug: pulseq-end-to-end
+        title_fa: "چارچوب‌های توالی پالس: Pulseq/PyPulseq به‌صورت سرتاسری"
+        title_en: "Pulseq/PyPulseq end-to-end"
+        pages: 28
+        prereqs: [19, 40]
+        flags: [code-lab, build]
+        objectives:
+          - "Author a sequence in PyPulseq and execute it on the open-source console."
+          - "Close the loop from design to acquired data."
+      - n: 43
+        slug: data-acquisition-dicom
+        title_fa: "اکتساب داده، شبکه، DICOM و ذخیره‌سازی"
+        title_en: "Data acquisition, networking, DICOM, storage"
+        pages: 26
+        prereqs: [41]
+        flags: [code-lab, diagrams]
+        objectives:
+          - "Handle data buffering, transfer, and the DICOM format/PACS basics."
+          - "Define storage and metadata for reconstruction."
+
+  - id: 6
+    title_fa: "بازسازی تصویر و تصویربرداری محاسباتی"
+    title_en: "Image Reconstruction and Computational Imaging"
+    pages: 260
+    chapters:
+      - n: 44
+        slug: fourier-reconstruction
+        title_fa: "بازسازی فوریه (۲بعدی/۳بعدی) و گریدینگ غیرکارتزین"
+        title_en: "Fourier reconstruction and non-Cartesian gridding"
+        pages: 30
+        prereqs: [4, 13, 18]
+        flags: [code-lab, derivation, diagrams]
+        objectives:
+          - "Reconstruct 2D/3D Cartesian data and grid non-Cartesian trajectories (Python lab)."
+          - "Relate sampling to resolution and FOV."
+      - n: 45
+        slug: artifacts-corrections
+        title_fa: "آرتیفکت‌ها: حرکت، الایاسینگ، گوست و خارج‑تشدید"
+        title_en: "Artifacts and their corrections"
+        pages: 28
+        prereqs: [44]
+        flags: [diagrams, code-lab]
+        objectives:
+          - "Diagnose motion, aliasing, ghosting, off-resonance, chemical shift."
+          - "Apply correction strategies."
+      - n: 46
+        slug: iterative-model-based-cs
+        title_fa: "بازسازی تکراری و مدل‑مبنا؛ منظم‌سازی و حس‌گری فشرده"
+        title_en: "Iterative/model-based reconstruction and compressed sensing"
+        pages: 32
+        prereqs: [3, 18, 44]
+        flags: [derivation, code-lab, calculations]
+        objectives:
+          - "Formulate inverse problems, regularization, and compressed-sensing recon."
+          - "Implement an iterative reconstructor."
+      - n: 47
+        slug: deep-learning-reconstruction
+        title_fa: "بازسازی یادگیری ژرف: شبکه‌های بازشده/تغییراتی، مدل‌های انتشار و fastMRI"
+        title_en: "Deep-learning reconstruction"
+        pages: 34
+        prereqs: [46]
+        flags: [code-lab, diagrams]
+        objectives:
+          - "Cover unrolled/variational networks, diffusion models, and self-supervised (SSDU)."
+          - "Use the fastMRI dataset; discuss AIR Recon DL / Deep Resolve."
+      - n: 48
+        slug: realtime-hpc-recon
+        title_fa: "محاسبات بی‌درنگ و کارایی‑بالا: GPU/CUDA و بازسازی روی FPGA"
+        title_en: "Real-time and high-performance reconstruction"
+        pages: 26
+        prereqs: [44, 47]
+        flags: [code-lab, hdl, diagrams]
+        objectives:
+          - "Accelerate reconstruction on GPU/CUDA and FPGA; manage latency."
+          - "Design a real-time recon pipeline."
+      - n: 49
+        slug: ai-beyond-recon
+        title_fa: "هوش مصنوعی فراتر از بازسازی: نوفه‌زدایی، اَبَرتفکیک و قطعه‌بندی"
+        title_en: "AI beyond reconstruction"
+        pages: 26
+        prereqs: [47]
+        flags: [code-lab, diagrams]
+        objectives:
+          - "Apply AI to denoising, super-resolution, and segmentation."
+          - "Introduce foundation models in imaging."
+
+  - id: 7
+    title_fa: "ساخت و یکپارچه‌سازی سامانه"
+    title_en: "Manufacturing and System Integration"
+    pages: 210
+    chapters:
+      - n: 50
+        slug: materials-science-selection
+        title_fa: "علم مواد و انتخاب آن (رسانا، دی‌الکتریک، سازه‌ای، غیرمغناطیسی، زیست‌سازگار)"
+        title_en: "Materials science and selection"
+        pages: 28
+        prereqs: [10]
+        flags: [diagrams, calculations]
+        objectives:
+          - "Select conductors, dielectrics, structural, non-magnetic, and biocompatible materials."
+          - "Match material properties to subsystem requirements."
+      - n: 51
+        slug: precision-machining-3dprint
+        title_fa: "ماشین‌کاری دقیق، رواداری، GD&T و پرینت سه‌بعدی"
+        title_en: "Precision machining, tolerancing, 3D printing"
+        pages: 28
+        prereqs: [50]
+        flags: [build, diagrams]
+        objectives:
+          - "Apply tolerancing/GD&T and surface finish to MRI components."
+          - "Use 3D printing for formers and fixtures."
+      - n: 52
+        slug: pcb-design-fabrication
+        title_fa: "طراحی و ساخت PCB (KiCad)، مونتاژ، حفاظ و زمین"
+        title_en: "PCB design and fabrication"
+        pages: 30
+        prereqs: [31, 34, 36]
+        flags: [circuit-design, build, diagrams]
+        objectives:
+          - "Design low-noise PCBs in KiCad with proper shielding and grounding."
+          - "Assemble and inspect boards."
+      - n: 53
+        slug: mechanical-structural-design
+        title_fa: "طراحی مکانیکی و سازه‌ای: بور، تخت بیمار و جداسازی ارتعاش"
+        title_en: "Mechanical and structural design"
+        pages: 26
+        prereqs: [25, 30]
+        flags: [fem-lab, diagrams, calculations]
+        objectives:
+          - "Design the bore, patient table, and vibration isolation under magnetic forces."
+          - "Run structural simulations."
+      - n: 54
+        slug: rf-shielded-room-facility
+        title_fa: "اتاق حفاظ‌دار RF/قفس فارادی، حفاظ مغناطیسی و مکان‌یابی تأسیسات"
+        title_en: "RF-shielded room, magnetic shielding, facility siting"
+        pages: 26
+        prereqs: [37]
+        flags: [diagrams, calculations, safety-analysis]
+        objectives:
+          - "Design the Faraday cage and magnetic shielding; plan facility siting."
+          - "Address portable-MRI siting."
+      - n: 55
+        slug: system-integration-first-signal
+        title_fa: "یکپارچه‌سازی سامانه: گرفتن «اولین سیگنال» و عیب‌یابی کل زنجیره"
+        title_en: "System integration and first signal"
+        pages: 36
+        prereqs: [23, 30, 33, 40, 44]
+        flags: [build, test-procedure, repair-entry, diagrams]
+        objectives:
+          - "Integrate subsystems and obtain a first MR signal/image; debug the full chain."
+          - "Document the integration bring-up procedure."
+      - n: 56
+        slug: quality-management-iso13485
+        title_fa: "مدیریت کیفیت و ISO 13485: پروندهٔ طراحی، اعتبارسنجی فرایند و کنترل تأمین‌کننده"
+        title_en: "Quality management and ISO 13485"
+        pages: 26
+        prereqs: [55]
+        flags: [safety-analysis, test-procedure]
+        objectives:
+          - "Establish a QMS: design history/device master record and process validation."
+          - "Set up supplier control and document control."
+
+  - id: 8
+    title_fa: "آزمون، راستی‌آزمایی و راه‌اندازی"
+    title_en: "Testing, Verification, and Commissioning"
+    pages: 190
+    chapters:
+      - n: 57
+        slug: test-engineering-equipment
+        title_fa: "مهندسی آزمون و تجهیزات: اسیلوسکوپ، تحلیل‌گر شبکه، دوربین میدان و فانتوم"
+        title_en: "Test engineering and equipment"
+        pages: 28
+        prereqs: [36, 55]
+        flags: [test-procedure, diagrams, build]
+        objectives:
+          - "Use oscilloscopes, spectrum/vector-network analyzers, field cameras, and phantoms."
+          - "Plan a measurement strategy with uncertainty."
+      - n: 58
+        slug: subsystem-test-plans
+        title_fa: "طرح‌های آزمون زیرسامانه با معیار قبول/رد (آهنربا، گرادیان، RF، کنسول)"
+        title_en: "Subsystem test plans with pass/fail criteria"
+        pages: 32
+        prereqs: [57]
+        flags: [test-procedure, calculations, diagrams]
+        objectives:
+          - "Define magnet/gradient/RF/console subsystem tests and acceptance criteria."
+          - "Write repeatable test procedures."
+      - n: 59
+        slug: system-acceptance-testing
+        title_fa: "آزمون سطح‑سامانه و پذیرش: SNR/CNR، تفکیک، دقت هندسی و پایداری"
+        title_en: "System-level and acceptance testing"
+        pages: 30
+        prereqs: [58]
+        flags: [test-procedure, calculations, diagrams]
+        objectives:
+          - "Measure SNR/CNR, resolution, geometric accuracy/distortion, ghosting, stability."
+          - "Run acceptance and performance protocols."
+      - n: 60
+        slug: qa-programs-phantoms
+        title_fa: "برنامه‌های تضمین کیفیت: QA دوره‌ای، فانتوم ACR/IEC و کالیبراسیون"
+        title_en: "Quality-assurance programs and phantoms"
+        pages: 26
+        prereqs: [59]
+        flags: [test-procedure, repair-entry, diagrams]
+        objectives:
+          - "Set up daily/weekly/periodic QA with ACR/IEC phantoms and calibration."
+          - "Apply statistical process control to drift."
+      - n: 61
+        slug: verification-validation
+        title_fa: "راستی‌آزمایی و صحه‌گذاری در برابر الزامات؛ ردیابی و مستندسازی آزمون"
+        title_en: "Verification and validation; traceability"
+        pages: 24
+        prereqs: [56, 59]
+        flags: [test-procedure, safety-analysis]
+        objectives:
+          - "Trace tests to requirements; document V&V evidence."
+          - "Prepare records for regulatory submission."
+
+  - id: 9
+    title_fa: "مهندسی ایمنی: بیمار و دستگاه"
+    title_en: "Safety Engineering: Patient and Device"
+    pages: 200
+    chapters:
+      - n: 62
+        slug: safety-by-design-risk
+        title_fa: "ایمنی در طراحی: تحلیل خطر، مدیریت ریسک (ISO 14971)، اینترلاک و حالت ایمن"
+        title_en: "Safety-by-design and risk management (ISO 14971)"
+        pages: 30
+        prereqs: [24, 31, 35]
+        flags: [safety-analysis, diagrams]
+        objectives:
+          - "Perform hazard analysis and ISO 14971 risk management."
+          - "Design interlocks, fail-safe states, watchdogs, and fault detection."
+      - n: 63
+        slug: patient-safety-iec60601
+        title_fa: "ایمنی بیمار: IEC 60601-1/-2-33، اثرات زیستی، حدود SAR/صوتی و ایمپلنت‌ها"
+        title_en: "Patient safety (IEC 60601-1/-2-33)"
+        pages: 34
+        prereqs: [37, 62]
+        flags: [safety-analysis, calculations, diagrams]
+        objectives:
+          - "Apply IEC 60601-1/-2-33; analyze static/gradient/RF bioeffects, SAR/acoustic limits, PNS."
+          - "Handle implants, MR-conditional labeling, pregnancy, contrast, projectile hazard, zones I–IV."
+      - n: 64
+        slug: device-electrical-safety
+        title_fa: "ایمنی برقی و دستگاه: ولتاژ بالا، زمین، حفاظت خطا، LOTO و EMC"
+        title_en: "Device and electrical safety"
+        pages: 28
+        prereqs: [31, 35, 62]
+        flags: [safety-analysis, circuit-design, diagrams]
+        objectives:
+          - "Address high-voltage gradient/RF and mains hazards, grounding/bonding, insulation, fault protection."
+          - "Cover lockout/tagout, EMC/EMI, fire and thermal safety."
+      - n: 65
+        slug: cryogenic-magnet-safety
+        title_fa: "ایمنی برودتی و آهنربا: کوئنچ، واحد تخلیهٔ اضطراری (ERDU) و پایش اکسیژن"
+        title_en: "Cryogenic and magnet safety"
+        pages: 28
+        prereqs: [24, 25, 62]
+        flags: [safety-analysis, diagrams, repair-entry]
+        objectives:
+          - "Cover quench behavior, the emergency rundown unit (ERDU), oxygen-deficiency monitoring."
+          - "Manage asphyxiation/cold hazards, quench venting, and field labeling."
+      - n: 66
+        slug: operator-emergency-procedures
+        title_fa: "رویه‌های اپراتور و اضطراری: توقف اضطراری، پاسخ به خطا و آموزش"
+        title_en: "Operator and emergency procedures"
+        pages: 24
+        prereqs: [63, 64, 65]
+        flags: [safety-analysis, repair-entry]
+        objectives:
+          - "Define emergency stop, magnet rundown, and fault-response procedures."
+          - "Plan training, signage, and a functional-safety mindset for firmware."
+
+  - id: 10
+    title_fa: "سرویس، نگه‌داری و پایگاه دانش تعمیرات"
+    title_en: "Service, Maintenance, and Repair Knowledge Base"
+    pages: 190
+    chapters:
+      - n: 67
+        slug: lifecycle-serviceability
+        title_fa: "چرخهٔ عمر و قابلیت سرویس: طراحی برای نگه‌داری و مستندسازی سرویس"
+        title_en: "Lifecycle and serviceability"
+        pages: 26
+        prereqs: [55, 56]
+        flags: [repair-entry, diagrams]
+        objectives:
+          - "Design for maintainability: access, modularity, and service documentation."
+          - "Plan the maintenance lifecycle."
+      - n: 68
+        slug: preventive-maintenance
+        title_fa: "نگه‌داری پیشگیرانه: زمان‌بندی، مدیریت هلیوم/سرد‌سر و کالیبراسیون"
+        title_en: "Preventive maintenance"
+        pages: 28
+        prereqs: [25, 60, 67]
+        flags: [repair-entry, test-procedure]
+        objectives:
+          - "Build preventive-maintenance schedules: cryogen/cold-head service, consumables, calibration."
+          - "Define maintenance intervals and records."
+      - n: 69
+        slug: condition-monitoring-diagnostics
+        title_fa: "پایش وضعیت و عیب‌یابی: ثبت/تله‌متری، نگه‌داری پیش‌بینانه و تحلیل ریشه‌ای"
+        title_en: "Condition monitoring and diagnostics"
+        pages: 30
+        prereqs: [43, 67]
+        flags: [repair-entry, code-lab, diagrams]
+        objectives:
+          - "Use logging/telemetry, self-test, and alarms for predictive maintenance."
+          - "Apply root-cause analysis."
+      - n: 70
+        slug: fault-trees-failure-modes
+        title_fa: "درخت‌های خطا و حالت‌های خرابی هر زیرسامانه (علائم ← تشخیص)"
+        title_en: "Fault trees and failure modes per subsystem"
+        pages: 32
+        prereqs: [69]
+        flags: [repair-entry, safety-analysis, diagrams]
+        objectives:
+          - "Build fault trees and failure-mode catalogs per subsystem (magnet, cryo, gradient, RF, console, recon, cooling)."
+          - "Map symptoms to diagnoses."
+      - n: 71
+        slug: repair-procedures-knowledge-base
+        title_fa: "رویه‌های تعمیر و پایگاه دانش تعمیرات: مدخل‌های علامت←علت←درمان"
+        title_en: "Repair procedures and the repair knowledge base"
+        pages: 30
+        prereqs: [70]
+        flags: [repair-entry, test-procedure]
+        objectives:
+          - "Author structured symptom -> cause -> remedy repair entries and a corrective-action workflow."
+          - "Cover part replacement and post-repair re-verification."
+      - n: 72
+        slug: spares-logistics-decommission
+        title_fa: "قطعات یدکی، تدارکات، گردش‑کار سرویس میدانی و از‑رده‑خارج‌سازی"
+        title_en: "Spares, logistics, field service, decommissioning"
+        pages: 24
+        prereqs: [71]
+        flags: [repair-entry, safety-analysis]
+        objectives:
+          - "Manage spare parts, logistics, obsolescence, and the field-service workflow."
+          - "Plan safe decommissioning and disposal."
+
+  - id: 11
+    title_fa: "پزشکی، مقررات و تجاری‌سازی"
+    title_en: "Medical, Regulatory, and Commercialization"
+    pages: 190
+    chapters:
+      - n: 73
+        slug: anatomy-physiology-clinical
+        title_fa: "آناتومی/فیزیولوژی و زمینهٔ بالینی موردنیاز مهندس MRI"
+        title_en: "Anatomy/physiology and clinical context"
+        pages: 28
+        prereqs: [16, 17]
+        flags: [diagrams]
+        objectives:
+          - "Cover the anatomy/physiology an MRI engineer must understand."
+          - "Link tissue properties to contrast."
+      - n: 74
+        slug: clinical-protocols-interpretation
+        title_fa: "پروتکل‌های بالینی، مبانی تفسیر تصویر و نیاز رادیولوژیست"
+        title_en: "Clinical protocols and image interpretation basics"
+        pages: 28
+        prereqs: [73]
+        flags: [diagrams]
+        objectives:
+          - "Survey clinical protocols and basic image interpretation."
+          - "Understand what radiologists need from the system."
+      - n: 75
+        slug: regulatory-pathways
+        title_fa: "مسیرهای مقرراتی: FDA 510(k)، CE/MDR، ایران (IR-FDA) و نظارت پساعرضه"
+        title_en: "Regulatory pathways"
+        pages: 30
+        prereqs: [56, 61, 63]
+        flags: [safety-analysis]
+        objectives:
+          - "Map FDA 510(k), CE/MDR, and Iran (IR-FDA) pathways with realistic cost/effort."
+          - "Plan post-market surveillance."
+      - n: 76
+        slug: manufacturing-business-opensource
+        title_fa: "ساخت به‌مثابهٔ کسب‌وکار: زنجیرهٔ تأمین، مدل هزینه و فرصت متن‌باز"
+        title_en: "Manufacturing as a business; the open-source opportunity"
+        pages: 28
+        prereqs: [75]
+        flags: [calculations]
+        objectives:
+          - "Model supply chain, cost, capital, team, and service network."
+          - "Assess the open-source opportunity honestly (e.g., why Hyperfine raised ~$90M)."
+      - n: 77
+        slug: frontiers-roadmaps
+        title_fa: "مرزهای دانش و نقشه‌راه: میدان‌فوق‌بالا، مدل‌های بنیادی هوش مصنوعی و آینده"
+        title_en: "Frontiers and roadmaps"
+        pages: 26
+        prereqs: [47, 76]
+        flags: [diagrams]
+        objectives:
+          - "Survey ultra-high-field (7T clinical, 9.4–11.7T research) and AI foundation models."
+          - "Lay out research roadmaps and next steps."
+
+appendices:
+  - id: A
+    slug: answer-key
+    title_fa: "پیوست الف: کلید پاسخ‌ها"
+    title_en: "Appendix A: Consolidated answer key"
+  - id: B
+    slug: glossary
+    title_fa: "پیوست ب: واژه‌نامهٔ فارسی–انگلیسی"
+    title_en: "Appendix B: Farsi-English glossary"
+  - id: C
+    slug: reference-tables
+    title_fa: "پیوست پ: معادلات، ثابت‌ها و مقادیر مرجع"
+    title_en: "Appendix C: Equations, constants, reference values"
+  - id: D
+    slug: tools-software
+    title_fa: "پیوست ت: ابزارها، نرم‌افزار و پروژه‌های متن‌باز"
+    title_en: "Appendix D: Software/EDA/FEM tools and open-source projects"
+  - id: E
+    slug: reference-designs-bom
+    title_fa: "پیوست ث: طرح‌های مرجع و فهرست قطعات (BOM)"
+    title_en: "Appendix E: Reference designs and BOMs"
+  - id: F
+    slug: maintenance-repair-templates
+    title_fa: "پیوست ج: زمان‌بندی نگه‌داری و قالب‌های پایگاه دانش تعمیرات"
+    title_en: "Appendix F: Maintenance schedules and repair-KB templates"
+  - id: G
+    slug: safety-qa-forms
+    title_fa: "پیوست چ: سیاهه‌های ایمنی و فرم‌های آزمون/کیفیت"
+    title_en: "Appendix G: Safety checklists and QA/test forms"

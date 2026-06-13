@@ -1,0 +1,91 @@
+% 4-layer symmetric PCB stack-up cross-section (1.6 mm total).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % geometry: x in [0,9], copper layers thin, dielectrics thick
+  \def\W{9}      % board width
+  \def\tc{0.32}  % copper layer drawn thickness
+  \def\hp{0.7}   % prepreg drawn thickness
+  \def\hc{1.5}   % core drawn thickness
+
+  % colors
+  \definecolor{cu}{RGB}{184,115,51}
+  \definecolor{fr4}{RGB}{60,140,60}
+
+  % --- stack from bottom (y=0) up ---
+  % L4 copper
+  \fill[cu] (0,0) rectangle (\W,\tc);
+  % prepreg
+  \fill[fr4!55] (0,\tc) rectangle (\W,{\tc+\hp});
+  % L3 copper (PWR)
+  \fill[cu] (0,{\tc+\hp}) rectangle (\W,{2*\tc+\hp});
+  % core
+  \fill[fr4!75] (0,{2*\tc+\hp}) rectangle (\W,{2*\tc+\hp+\hc});
+  % L2 copper (GND)
+  \fill[cu] (0,{2*\tc+\hp+\hc}) rectangle (\W,{3*\tc+\hp+\hc});
+  % prepreg
+  \fill[fr4!55] (0,{3*\tc+\hp+\hc}) rectangle (\W,{3*\tc+2*\hp+\hc});
+  % L1 copper
+  \fill[cu] (0,{3*\tc+2*\hp+\hc}) rectangle (\W,{4*\tc+2*\hp+\hc});
+
+  \draw[thin,black] (0,0) rectangle (\W,{4*\tc+2*\hp+\hc});
+
+  % y-centers of each layer
+  \def\yLfour{\tc/2}
+  \def\yPb{\tc+\hp/2}
+  \def\yLthree{1.5*\tc+\hp}
+  \def\yCore{2*\tc+\hp+\hc/2}
+  \def\yLtwo{2*\tc+\hp+\hc+0.5*\tc}
+  \def\yPt{3*\tc+1.5*\hp+\hc}
+  \def\yLone{3.5*\tc+2*\hp+\hc}
+
+  % microstrip trace on L1 (top)
+  \fill[cu] (3.0,{4*\tc+2*\hp+\hc}) rectangle (3.9,{4*\tc+2*\hp+\hc+0.28});
+  \node[anchor=south, font=\scriptsize] at (3.45,{4*\tc+2*\hp+\hc+0.30}) {ترک \RL{($W$)}};
+
+  % right-side labels for layers
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yLone) {L1: سیگنال + RF (ریزنوار)، 35\,$\mu$m Cu};
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yPt) {پیش‌آغشته، 0.20\,mm FR-4};
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yLtwo) {L2: صفحهٔ GND (پیوسته)، 35\,$\mu$m Cu};
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yCore) {هسته، 1.065\,mm FR-4};
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yLthree) {L3: صفحهٔ PWR، 35\,$\mu$m Cu};
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yPb) {پیش‌آغشته، 0.20\,mm FR-4};
+  \node[anchor=west, font=\scriptsize] at (\W+0.2,\yLfour) {L4: سیگنال + قطعات، 35\,$\mu$m Cu};
+
+  % h dimension (microstrip dielectric height) between L1 and L2
+  \draw[<->,thin] (1.4,{4*\tc+2*\hp+\hc}) -- (1.4,{3*\tc+\hp+\hc})
+    node[midway,fill=white,inner sep=1pt,font=\scriptsize] {$h$};
+
+  % total thickness bracket on left
+  \draw[<->,thin] (-0.55,0) -- (-0.55,{4*\tc+2*\hp+\hc})
+    node[midway,fill=white,inner sep=1pt,rotate=90,font=\scriptsize] {1.6\,mm};
+
+  % microstrip 50 ohm annotation arrow
+  \draw[->,thin,blue!60!black] (3.45,{4*\tc+2*\hp+\hc+0.62})
+    .. controls (5.2,{4*\tc+2*\hp+\hc+1.0}) .. (6.5,{4*\tc+2*\hp+\hc+0.75})
+    node[anchor=west,font=\scriptsize,blue!60!black,align=left]
+    {L1 روی L2 یک\\ ریزنوار 50\,$\Omega$ می‌سازد};
+
+  % distributed plane cap between L2 and L3
+  \draw[->,thin,red!60!black] (0.4,\yLtwo) .. controls (-0.9,{\yCore}) .. (0.4,\yLthree);
+  \node[anchor=east,font=\scriptsize,red!60!black,align=right] at (-0.7,\yCore)
+    {GND/PWR =\\ خازن صفحه‌ای\\ توزیع‌شده};
+
+\end{tikzpicture}}
+\end{document}

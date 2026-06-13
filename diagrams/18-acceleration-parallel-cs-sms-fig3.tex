@@ -1,0 +1,70 @@
+% Standalone TikZ figure: CAIPIRINHA concept for simultaneous multi-slice.
+% Without CAIPIRINHA, the two simultaneous slices overlap in the image FOV
+% (collinear sensitivities -> large g). With CAIPIRINHA (FOV/2 shift), the
+% slices are offset in the phase-encode direction -> easy separation, small g.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  \def\W{2.6}   % FOV width
+  \def\H{3.0}   % FOV height
+  \def\bh{0.7}  % object band height
+
+  % =================== LEFT: without CAIPIRINHA ===================
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\bfseries, align=center] at (\W/2, \H+0.55) {بدونِ CAIPIRINHA};
+    \draw[thick] (0,0) rectangle (\W,\H);
+    % slice 1 band
+    \fill[blue!45, opacity=0.7] (0, \H/2) rectangle (\W, \H/2+\bh);
+    % slice 2 band (same location -> overlap)
+    \fill[red!45, opacity=0.55] (0, \H/2) rectangle (\W, \H/2+\bh);
+    \node[font=\scriptsize, align=center] at (\W/2, \H/2+\bh/2)
+      {برش ۱ $\equiv$ برش ۲};
+    % FOV labels
+    \node[font=\scriptsize, below] at (\W/2,-0.05) {FOV تصویر};
+    \node[font=\scriptsize, rotate=90, anchor=south] at (-0.25,\H/2) {کدگذاری فازی};
+    % verdict
+    \node[font=\scriptsize, align=center, text=red!70!black] at (\W/2,-0.7)
+      {هم‌پوشان $\Rightarrow$ $s_c$ مشابه\\$g$ بزرگ (جداسازیِ دشوار)};
+  \end{scope}
+
+  % =================== arrow ===================
+  \draw[->, very thick, blue!60!black] (\W+0.45, \H/2) -- (\W+1.7, \H/2)
+    node[midway, above, font=\scriptsize, align=center] {افزودنِ\\فاز $\phi_j$};
+
+  % =================== RIGHT: with CAIPIRINHA ===================
+  \begin{scope}[shift={(\W+2.15,0)}]
+    \node[font=\bfseries, align=center] at (\W/2, \H+0.55) {با CAIPIRINHA};
+    \draw[thick] (0,0) rectangle (\W,\H);
+    % slice 1 band (upper)
+    \fill[blue!45, opacity=0.85] (0, \H/2+0.45) rectangle (\W, \H/2+0.45+\bh);
+    \node[font=\scriptsize] at (\W/2, \H/2+0.45+\bh/2) {برش ۱};
+    % slice 2 band shifted down by FOV/2-ish
+    \fill[red!45, opacity=0.85] (0, \H/2-0.45-\bh) rectangle (\W, \H/2-0.45);
+    \node[font=\scriptsize] at (\W/2, \H/2-0.45-\bh/2) {برش ۲};
+    % shift annotation
+    \draw[<->, gray] (\W+0.2, \H/2-0.45-\bh/2) -- (\W+0.2, \H/2+0.45+\bh/2)
+      node[midway, right, font=\scriptsize, align=left] {جابه‌جاییِ\\FOV/2};
+    % verdict
+    \node[font=\scriptsize, align=center, text=green!45!black] at (\W/2,-0.7)
+      {جداشده $\Rightarrow$ $s_c$ متنوع\\$g$ کوچک (جداسازیِ آسان)};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

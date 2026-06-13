@@ -1,0 +1,59 @@
+% NbTi-to-NbTi superconducting joint: conceptual cross-section + build steps.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  \node[font=\bfseries] at (3.4,3.1) {اتصال NbTi--NbTi (مفهومی)};
+
+  % ----- left: conceptual cross-section of the joint -----
+  % copper stabilizer of wire 1 (etched away at the joint region)
+  \fill[orange!30] (-0.2,1.4) rectangle (2.0,2.0);
+  \fill[orange!30] (-0.2,0.4) rectangle (2.0,1.0);
+  \node[font=\footnotesize, orange!60!black] at (0.9,2.25) {پایدارساز Cu (سیم ۱)};
+  \node[font=\footnotesize, orange!60!black] at (0.9,0.15) {پایدارساز Cu (سیم ۲)};
+
+  % exposed bare NbTi filaments brought side by side, inside solder
+  \fill[gray!25, rounded corners=3pt] (2.0,0.55) rectangle (5.4,1.85);
+  \node[font=\footnotesize, gray!50!black] at (4.4,1.65) {لحیم ابررسانا (PbBi/PbSn)};
+  % filaments
+  \foreach \y in {1.05,1.2,1.35}{
+    \draw[very thick, blue!60!black] (2.05,\y) -- (5.0,\y);
+  }
+  \foreach \y in {0.85,1.0}{
+    \draw[very thick, red!65!black] (2.05,\y) -- (5.0,\y);
+  }
+  \node[font=\footnotesize, blue!60!black] at (3.5,1.5) {رشته‌های لخت NbTi};
+
+  % joint box outline
+  \draw[thick, black!70, dashed, rounded corners=4pt] (1.9,0.35) rectangle (5.6,2.05);
+  \node[font=\footnotesize, black!70] at (5.05,0.2) {جعبهٔ اتصال};
+
+  % ----- right: ordered build steps -----
+  \def\bx{6.6}
+  \def\dy{0.72}
+  \node[font=\bfseries, anchor=west] at (\bx,2.85) {مراحل ساخت};
+  \node[anchor=west, text width=6.0cm] at (\bx,2.85-1*\dy) {۱) اچ اسیدی مس برای نمایان‌کردن NbTi لخت};
+  \node[anchor=west, text width=6.0cm] at (\bx,2.85-2*\dy) {۲) قرار دادن رشته‌های هر دو سیم کنار هم};
+  \node[anchor=west, text width=6.0cm] at (\bx,2.85-3*\dy) {۳) لحیم با آلیاژ ابررسانا (ابررسانا در $4.2\,$K)};
+  \node[anchor=west, text width=6.0cm] at (\bx,2.85-4*\dy) {\quad\itshape یا ۴) جوش سرد / نقطه‌ای مستقیم NbTi};
+  \node[anchor=west, text width=6.0cm] at (\bx,2.85-5*\dy) {۵) محصورسازی در جعبهٔ اتصال (پوشش مکانیکی و مغناطیسی)};
+
+\end{tikzpicture}}
+\end{document}

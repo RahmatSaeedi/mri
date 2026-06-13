@@ -1,0 +1,67 @@
+% MRI electrical hazard map: equipment room power sources and scan room hazards,
+% linked through the penetration panel / site reference ground.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=8mm, fill=blue!6, inner sep=4pt},
+    haz/.style={draw, rounded corners=2pt, align=center, minimum height=8mm, fill=red!8, inner sep=4pt},
+    room/.style={draw, very thick, rounded corners=4pt, inner sep=10pt}]
+
+  % ---------- Equipment room ----------
+  \node[box, fill=gray!12] (mains) {برق شبکهٔ سه‌فاز\\400/480\,V AC\\(+UPS)};
+  \node[box, right=10mm of mains] (sw) {کلید اصلی\\MCCB};
+  \node[box, right=8mm of sw] (iso) {ترانسفورمر\\ایزولاسیون\\(در صورت نیاز)};
+
+  \node[haz, below=10mm of sw, xshift=8mm] (grad) {تقویت‌کنندهٔ گرادیان:\\یکسوساز $\to$ DC-bus $\pm$1--1.5\,kV\\$\to$ بانک خازنی (انرژی ذخیره)\\$\to$ IGBT bridge $\to$ سیم‌پیچ};
+  \node[haz, below=6mm of grad] (rfpa) {RFPA: PSU $\to$ LDMOS\\$\to$ خروجی kW \RL{$(V_\mathrm{peak}\sim\mathrm{kV})$}};
+  \node[box, below=6mm of rfpa] (console) {کنسول / رایانه\\(SELV/PELV)};
+  \node[box, below=6mm of console] (comp) {کمپرسور He /\\کلدهد (موتور سه‌فاز)};
+
+  \draw[->, thick] (mains) -- (sw);
+  \draw[->, thick] (sw) -- (iso);
+  \draw[->] (sw.south) |- (grad.west);
+  \draw[->] (sw.south) |- (rfpa.west);
+  \draw[->] (sw.south) |- (console.west);
+  \draw[->] (sw.south) |- (comp.west);
+
+  \begin{scope}[on background layer]
+    \node[room, fill=blue!2, fit=(mains)(iso)(grad)(rfpa)(console)(comp)] (eqroom) {};
+  \end{scope}
+  \node[anchor=north west, font=\small\bfseries] at (eqroom.north west) {اتاق تجهیزات};
+
+  % ---------- Penetration panel ----------
+  \node[draw, rounded corners=2pt, fill=green!10, align=center, below=10mm of comp, xshift=10mm] (panel)
+    {پنل عبور\\(فیلترهای EMI عبوری)\\= زمین مرجع سایت};
+  \draw[->, thick] (comp.south) -- ++(0,-3mm) -| (panel.north);
+
+  % ---------- Scan room ----------
+  \node[haz, below=10mm of panel, xshift=-26mm] (magnet) {آهنربای ابررسانا\\$E_\mathrm{mag}\sim$10--40\,MJ\\کوئنچ $\to$ ولتاژ بین‌لایه‌ای، گرما};
+  \node[haz, right=6mm of magnet] (gcoil) {سیم‌پیچ گرادیان\\\RL{(ولتاژ گذرا، $dB/dt$)}};
+  \node[haz, below=6mm of magnet] (rfcoil) {سیم‌پیچ RF\\($V_\mathrm{peak}$، میدان E نزدیک)};
+  \node[box, fill=yellow!15, right=6mm of rfcoil] (patient) {بیمار\\(قطعهٔ تماسی،\\لیدهای فیزیولوژیک)};
+
+  \draw[->, thick] (panel.south) -- ++(0,-4mm) -| (magnet.north);
+
+  \begin{scope}[on background layer]
+    \node[room, fill=green!3, fit=(magnet)(gcoil)(rfcoil)(patient)] (scanroom) {};
+  \end{scope}
+  \node[anchor=north west, font=\small\bfseries] at (scanroom.north west) {اتاق اسکن (قفس فارادی با حفاظ RF)};
+
+\end{tikzpicture}}
+\end{document}

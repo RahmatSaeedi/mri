@@ -1,0 +1,69 @@
+% Risk matrix: severity x probability mapped to acceptance regions (A / ALARP / U).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \def\cw{2.0}   % cell width
+  \def\ch{1.1}   % cell height
+
+  % Acceptance region colors
+  \definecolor{accA}{RGB}{198,239,206}   % acceptable - green
+  \definecolor{accL}{RGB}{255,235,156}   % ALARP - yellow
+  \definecolor{accU}{RGB}{255,199,206}   % unacceptable - red
+
+  % region map: rows = probability 5(top)..1(bottom), cols = severity 1..5
+  % values: 0=A, 1=ALARP, 2=U
+  % P5: ALARP U U U U
+  % P4: A ALARP U U U
+  % P3: A A ALARP U U
+  % P2: A A A ALARP U
+  % P1: A A A A ALARP
+  \foreach \r/\row in {0/{1,2,2,2,2}, 1/{0,1,2,2,2}, 2/{0,0,1,2,2}, 3/{0,0,0,1,2}, 4/{0,0,0,0,1}} {
+    \foreach \c [count=\i from 0] in \row {
+      \pgfmathparse{\c==0 ? "accA" : (\c==1 ? "accL" : "accU")}
+      \edef\col{\pgfmathresult}
+      \pgfmathparse{\c==0 ? "A" : (\c==1 ? "ALARP" : "U")}
+      \edef\lab{\pgfmathresult}
+      \fill[\col, draw=black!55] (\i*\cw, -\r*\ch) rectangle (\i*\cw+\cw, -\r*\ch-\ch);
+      \node at (\i*\cw+0.5*\cw, -\r*\ch-0.5*\ch) {\lab};
+    }
+  }
+
+  % Severity (column) labels along the top
+  \foreach \i/\s in {0/{۱ ناچیز}, 1/{۲ جزئی}, 2/{۳ جدی}, 3/{۴ بحرانی}, 4/{۵ فاجعه‌بار}} {
+    \node[rotate=0, align=center, font=\footnotesize] at (\i*\cw+0.5*\cw, 0.55) {\s};
+  }
+  \node[font=\bfseries] at (5*\cw*0.5, 1.25) {شدت $S\;\rightarrow$};
+
+  % Probability (row) labels on the left
+  \foreach \r/\p in {0/{۵ مکرر}, 1/{۴ محتمل}, 2/{۳ گاه‌به‌گاه}, 3/{۲ بعید}, 4/{۱ نامحتمل}} {
+    \node[anchor=east, font=\footnotesize] at (-0.15, -\r*\ch-0.5*\ch) {\p};
+  }
+  \node[font=\bfseries, rotate=90] at (-2.4, -2.5*\ch) {احتمال $P\;\downarrow$};
+
+  % Legend
+  \begin{scope}[shift={(0,-5.9)}]
+    \fill[accA, draw=black!55] (0,0) rectangle (0.5,0.4);
+    \node[anchor=west, font=\footnotesize] at (0.6,0.2) {A = پذیرفتنی};
+    \fill[accL, draw=black!55] (3.2,0) rectangle (3.7,0.4);
+    \node[anchor=west, font=\footnotesize] at (3.8,0.2) {ALARP = کاهش تا حد عملاً ممکن};
+    \fill[accU, draw=black!55] (0,-0.7) rectangle (0.5,-0.3);
+    \node[anchor=west, font=\footnotesize] at (0.6,-0.5) {U = ناپذیرفتنی};
+  \end{scope}
+\end{tikzpicture}}
+\end{document}

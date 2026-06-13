@@ -1,0 +1,68 @@
+% ERDU architecture: Magnet-Stop buttons (fail-safe series loop) + interlocks
+% -> ERDU/MCU logic -> two shutdown paths (forced quench vs controlled rundown).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, very thick, rounded corners=2pt, align=center},
+    flow/.style={->, very thick, blue!55!black}]
+
+  % --- top: magnet-stop buttons in series ---
+  \node[box, fill=red!12, minimum width=110mm, minimum height=11mm] (btn)
+    {\textbf{دکمه‌های توقف آهنربا} (اتاق کنترل + اتاق اسکن + ورودی)};
+  \node[below=1mm of btn, font=\scriptsize, text=red!50!black]
+    {سری، ایمن در خرابی، به‌طور عادی بسته (با فشار / قطع سیم، تماس باز می‌شود)};
+
+  % --- central logic unit ---
+  \node[box, fill=gray!14, minimum width=46mm, minimum height=18mm,
+        below=16mm of btn] (mcu)
+    {\textbf{منطق ERDU /}\\ \textbf{واحد کنترل آهنربا (MCU)}};
+
+  % interlocks on the right
+  \node[box, draw=gray!55!black, dashed, align=left, fill=yellow!10,
+        right=14mm of mcu, font=\scriptsize] (intl)
+    {سایر اینترلاک‌ها:\\
+     $\bullet$ تشخیص کوئنچ\\
+     $\bullet$ هشدار سطح ۲ِ O$_2$\\
+     $\bullet$ فرمان سرویس};
+
+  \draw[flow] (btn) -- (mcu);
+  \draw[->, very thick, orange!60!black] (intl) -- (mcu);
+
+  % --- two output branches ---
+  \node[box, fill=red!10, minimum width=44mm, minimum height=16mm,
+        below left=18mm and -6mm of mcu] (heater)
+    {\textbf{گرم‌کن کوئنچ}\\ \footnotesize (کوئنچِ اجباری)};
+  \node[box, fill=cyan!12, minimum width=46mm, minimum height=16mm,
+        below right=18mm and -6mm of mcu] (switch)
+    {\textbf{گرم‌کن سوییچ پایدار}\\ \textbf{+ مقاومت تخلیه}\\ \footnotesize \RL{(راندآونِ کنترل‌شده، $\tau=L/R$)}};
+
+  \draw[flow] (mcu) -- node[left, font=\scriptsize] {فرمان} (heater);
+  \draw[flow] (mcu) -- node[right, font=\scriptsize] {فرمان} (switch);
+
+  % --- outcomes ---
+  \node[align=center, below=10mm of heater, font=\scriptsize] (out1)
+    {آهنربا نرمال می‌شود\\ $\Rightarrow$ میدان $=0$،\\ \textbf{هلیوم می‌جوشد و خارج می‌شود}};
+  \node[align=center, below=10mm of switch, font=\scriptsize] (out2)
+    {جریان در $R$ تخلیه می‌شود\\ $\Rightarrow$ میدان $=0$،\\ \textbf{هلیوم حفظ می‌شود} (روش نوین)};
+
+  \draw[->, thick, red!55!black] (heater) -- (out1);
+  \draw[->, thick, cyan!45!black] (switch) -- (out2);
+
+\end{tikzpicture}}
+\end{document}

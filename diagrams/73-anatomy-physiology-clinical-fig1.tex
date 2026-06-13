@@ -1,0 +1,51 @@
+% Bridge diagram: physics & hardware -> this chapter (molecular environment) -> clinic & regulation.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    col/.style={rounded corners=3pt, draw, thick, align=center, inner sep=5pt, minimum height=9mm, text width=33mm},
+    head/.style={font=\bfseries\small, align=center},
+    arr/.style={->, thick}]
+
+  % column headers
+  \node[head, text width=36mm] (h1) at (0,3.4) {فیزیک و سخت‌افزار\\\footnotesize(فصل ۱--۷۲)};
+  \node[head, text width=36mm, blue!55!black] (h2) at (6,3.4) {این فصل\\\footnotesize(پل ارتباطی)};
+  \node[head, text width=36mm] (h3) at (12,3.4) {بالین و مقررات\\\footnotesize(فصل ۷۴--۷۷)};
+
+  % left column (sources)
+  \node[col, fill=gray!10] (l1) at (0,2.0) {معادلات بلاخ، $T_1/T_2$};
+  \node[col, fill=gray!10] (l2) at (0,0.5) {SAR، $B_1$};
+  \node[col, fill=gray!10] (l3) at (0,-1.0) {سرعت اکتساب};
+
+  % middle column (bridge concepts)
+  \node[col, fill=blue!10] (m1) at (6,2.0) {محیط مولکولی آب};
+  \node[col, fill=blue!10] (m2) at (6,0.5) {فیزیولوژی گرما و رسانایی};
+  \node[col, fill=blue!10] (m3) at (6,-1.0) {منابع حرکت فیزیولوژیک};
+
+  % right column (clinical outcomes)
+  \node[col, fill=green!12] (r1) at (12,2.0) {کنتراست بافت سالم/بیمار};
+  \node[col, fill=green!12] (r2) at (12,0.5) {ایمنی و بارگذاری سیم‌پیچ};
+  \node[col, fill=green!12] (r3) at (12,-1.0) {دروازه‌بندی، حبس نفس};
+
+  % arrows
+  \foreach \a/\b in {l1/m1, l2/m2, l3/m3} \draw[arr] (\a) -- (\b);
+  \foreach \a/\b in {m1/r1, m2/r2, m3/r3} \draw[arr, blue!55!black] (\a) -- (\b);
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,54 @@
+% Network topology of an MRI system: Faraday-caged magnet room, equipment room, and clinical network.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=8mm,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=10mm, fill=blue!6}]
+
+  % --- Zone 1: magnet room (Faraday cage) ---
+  \node[box, fill=blue!10] (recv) {گیرندهٔ دیجیتال /\\طیف‌سنج};
+  \node[draw=gray!70, very thick, dashed, rounded corners, fit=(recv), inner sep=6mm,
+        label={[font=\footnotesize]above:اتاق آهنربا (درون قفس فارادی)}] (cage) {};
+
+  % --- Zone 2: equipment room ---
+  \node[box, below=20mm of recv] (host) {رایانهٔ میزبان\\(کنترل)};
+  \node[box, left=26mm of host] (recon) {رایانهٔ بازسازی};
+  \draw[<->, thick] (recon) -- node[above, font=\scriptsize, align=center] {شبکهٔ پرسرعتِ اختصاصی\\\scriptsize 10/25/100 GbE / InfiniBand} (host);
+  \node[draw=teal!60, very thick, dashed, rounded corners, fit=(recon)(host), inner sep=6mm,
+        label={[font=\footnotesize]above:اتاق تجهیزات}] (eqr) {};
+
+  % fiber from cage to equipment room
+  \draw[->, very thick, orange!70!black] (recv.south) -- node[right, font=\scriptsize, align=left] {فیبر نوری\\\scriptsize (از طریق موج‌بر)} (host.north);
+
+  % --- Zone 3: clinical network ---
+  \node[box, fill=green!8, below=20mm of host] (pacs) {PACS};
+  \node[box, fill=green!8, left=8mm of pacs] (vna) {VNA / بایگانی};
+  \node[box, fill=green!8, right=8mm of pacs] (ws) {ایستگاه کاری\\رادیولوژی};
+  \node[box, fill=green!8, right=8mm of ws] (ris) {RIS / HIS};
+  \draw[<->, thick] (vna) -- (pacs);
+  \draw[<->, thick] (pacs) -- (ws);
+  \draw[<->, thick] (ws) -- (ris);
+  \node[draw=green!50!black, very thick, dashed, rounded corners, fit=(vna)(pacs)(ws)(ris), inner sep=6mm,
+        label={[font=\footnotesize]below:شبکهٔ بالینی (DICOM / HL7)}] (clin) {};
+
+  % link equipment room to clinical net
+  \draw[->, thick] (host.south) -- node[right, font=\scriptsize] {DICOM / HL7} (pacs.north);
+
+\end{tikzpicture}}
+\end{document}

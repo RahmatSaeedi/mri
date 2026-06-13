@@ -1,0 +1,53 @@
+% Vacuum Pressure Impregnation (VPI) process flow for potting a gradient coil.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    pstep/.style={draw, thick, rounded corners=3pt, align=center,
+                 minimum width=3.9cm, minimum height=1.05cm},
+    num/.style={circle, draw, thick, fill=white, font=\bfseries\footnotesize,
+                inner sep=1pt, minimum size=5mm}]
+
+  \node[pstep, fill=blue!8]   (s1) {خشک‌کردن: کورهٔ خلأ\\برای حذف رطوبت};
+  \node[pstep, fill=blue!8, below=0.85cm of s1] (s2) {تخلیهٔ هوا: کشیدنِ هوا از\\همهٔ حفره‌ها و درزها};
+  \node[pstep, fill=cyan!12, below=0.85cm of s2] (s3) {تزریق رزین: کشیدنِ رزینِ\\کم‌گرانروی زیر خلأ};
+  \node[pstep, fill=cyan!12, below=0.85cm of s3] (s4) {اعمال فشار: راندنِ رزین به\\میکروحفره‌ها، فروپاشیِ حباب‌ها};
+  \node[pstep, fill=orange!14, below=0.85cm of s4] (s5) {پخت: گرمایشِ کنترل‌شده\\$\rightarrow$ بسپارش رزین};
+  \node[pstep, fill=green!12, below=0.85cm of s5] (s6) {سردکردنِ آرام: کنترل نرخ\\برای کمینه‌سازیِ تنش گرمایی};
+
+  \foreach \a/\b in {s1/s2, s2/s3, s3/s4, s4/s5, s5/s6} {
+     \draw[->, very thick] (\a) -- (\b);
+  }
+
+  \foreach \n/\s in {1/s1, 2/s2, 3/s3, 4/s4, 5/s5, 6/s6} {
+     \node[num] at (\s.west) {\n};
+  }
+
+  % phase brackets
+  \draw[decorate, decoration={brace, amplitude=5pt}, thick]
+     ($(s1.north east)+(0.5,0)$) -- ($(s2.south east)+(0.5,0)$)
+     node[midway, right=6pt, font=\scriptsize, align=left]{آماده‌سازی /\\خلأ};
+  \draw[decorate, decoration={brace, amplitude=5pt}, thick]
+     ($(s3.north east)+(0.5,0)$) -- ($(s4.south east)+(0.5,0)$)
+     node[midway, right=6pt, font=\scriptsize, align=left]{اشباع‌سازی};
+  \draw[decorate, decoration={brace, amplitude=5pt}, thick]
+     ($(s5.north east)+(0.5,0)$) -- ($(s6.south east)+(0.5,0)$)
+     node[midway, right=6pt, font=\scriptsize, align=left]{پخت /\\سردسازی};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,11 @@
+# Build tooling
+PyYAML>=6.0          # outline parsing for tools/gen_stubs.py
+pymupdf>=1.24        # crops LuaLaTeX figure PDFs to content + emits SVG (tools/build_diagrams.py)
+
+# Computational labs (used inside chapters/code; install as needed)
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+# pypulseq>=1.4      # pulse-sequence design labs (Vol II/V)
+# sigpy              # MRI reconstruction labs (Vol VI)
+# jupyter            # runnable notebooks

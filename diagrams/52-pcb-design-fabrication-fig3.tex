@@ -1,0 +1,80 @@
+% Decoupling capacitor connection: wrong (large loop, high L) vs right
+% (small loop, low L). Side-view conceptual schematic.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    ic/.style={draw, thick, fill=blue!10, minimum width=12mm, minimum height=7mm},
+    dcap/.style={draw, thick, fill=orange!18, minimum width=6mm, minimum height=7mm},
+    via/.style={circle, draw, fill=gray!55, inner sep=1.3pt}]
+
+  % ===================== WRONG =====================
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\bfseries] at (3.0,4.3) {نادرست \RL{(حلقهٔ بزرگ، $L$ بالا)}};
+
+    % GND plane
+    \draw[very thick, green!45!black] (-0.3,0) -- (6.3,0);
+    \node[anchor=west, font=\scriptsize, green!45!black] at (5.4,-0.3) {GND};
+
+    \node[ic] (ic1) at (0.7,2.4) {IC};
+    \node[dcap] (c1) at (5.3,2.4) {C};
+
+    % long trace between IC and C
+    \draw[very thick, red!75!black] (ic1.north) |- (3.0,3.3) -| (c1.north);
+    \node[red!75!black, font=\scriptsize] at (3.0,3.6) {ترک بلند};
+
+    % vias down to ground
+    \node[via] (vi1) at (0.7,0) {};
+    \node[via] (vc1) at (5.3,0) {};
+    \draw[very thick, red!75!black] (ic1.south) -- (vi1);
+    \draw[very thick, red!75!black] (c1.south) -- (vc1);
+
+    % loop area highlight
+    \fill[red!12] (ic1.north) |- (3.0,3.3) -| (c1.north) -- (c1.south) -- (5.3,0) -- (0.7,0) -- (ic1.south) -- cycle;
+    \draw[<->, thick] (1.5,1.2) -- (4.5,1.2);
+    \node[font=\scriptsize] at (3.0,0.9) {حلقهٔ جریان بزرگ};
+  \end{scope}
+
+  % ===================== RIGHT =====================
+  \begin{scope}[shift={(8.5,0)}]
+    \node[font=\bfseries] at (2.2,4.3) {درست \RL{(حلقهٔ کوچک، $L$ پایین)}};
+
+    % GND plane
+    \draw[very thick, green!45!black] (-0.3,0) -- (4.7,0);
+    \node[anchor=west, font=\scriptsize, green!45!black] at (3.8,-0.3) {GND};
+
+    \node[ic] (ic2) at (1.1,2.4) {IC};
+    \node[dcap] (c2) at (3.0,2.4) {C};
+
+    % short trace, side by side
+    \draw[very thick, blue!65!black] (ic2.east) -- (c2.west);
+
+    % direct vias
+    \node[via] (vi2) at (1.1,0) {};
+    \node[via] (vc2) at (3.0,0) {};
+    \draw[very thick, blue!65!black] (ic2.south) -- (vi2);
+    \draw[very thick, blue!65!black] (c2.south) -- (vc2);
+
+    % small loop highlight
+    \fill[blue!10] (ic2.south) -- (ic2.east) -- (c2.west) -- (c2.south) -- (3.0,0) -- (1.1,0) -- cycle;
+    \draw[<->, thick] (1.4,0.9) -- (2.7,0.9);
+    \node[font=\scriptsize] at (2.05,0.6) {حلقهٔ کوچک};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

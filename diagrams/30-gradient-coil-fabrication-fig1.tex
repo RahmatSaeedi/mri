@@ -1,0 +1,87 @@
+% Gradient coil winding patterns: axial G_z (Maxwell pair) and transverse
+% G_x (four saddle lobes / fingerprint). Schematic of conductor layout.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ============ (a) Axial gradient G_z : Maxwell-type ============
+  \node[font=\bfseries] at (3.0,3.7) {(الف) گرادیان محوری $G_z$ (جفت ماکسول)};
+
+  % cylinder body (longitudinal section)
+  \draw[thick, rounded corners=3pt] (-0.2,1.6) rectangle (6.2,3.1);
+  % centre line
+  \draw[dashed, gray] (-0.2,2.35) -- (6.2,2.35) node[right, black] {$z$};
+  \draw[gray] (3.0,1.5) -- (3.0,3.2);
+  \node[gray, font=\scriptsize] at (3.0,1.3) {مرکز};
+
+  % left bundle: current +phi  (out of page on top)
+  \foreach \x in {0.4,0.9,1.4,1.9} {
+     \draw[blue!70!black, thick] (\x,1.7) -- (\x,3.0);
+     \fill[blue!70!black] (\x,2.85) circle (1.3pt);          % dot = out of page (top)
+     \draw[blue!70!black] (\x,1.85) circle (1.6pt);
+     \draw[blue!70!black] (\x,1.85)++(-0.11,0)--++(0.22,0);  % cross
+     \draw[blue!70!black] (\x,1.85)++(0,-0.11)--++(0,0.22);
+  }
+  \node[blue!70!black] at (1.15,3.35) {$+\phi$};
+
+  % right bundle: current -phi
+  \foreach \x in {4.1,4.6,5.1,5.6} {
+     \draw[red!75!black, thick] (\x,1.7) -- (\x,3.0);
+     \draw[red!75!black] (\x,2.85) circle (1.6pt);            % cross = into page (top)
+     \draw[red!75!black] (\x,2.85)++(-0.11,0)--++(0.22,0);
+     \draw[red!75!black] (\x,2.85)++(0,-0.11)--++(0,0.22);
+     \fill[red!75!black] (\x,1.85) circle (1.3pt);
+  }
+  \node[red!75!black] at (4.85,3.35) {$-\phi$};
+
+  % resulting linear field
+  \draw[->, very thick, black!70] (0.4,0.95) -- (5.6,0.95)
+       node[midway,below=1pt]{$B_z$ خطی بر حسب $z$};
+  \node[font=\scriptsize] at (0.4,1.2) {$-$};
+  \node[font=\scriptsize] at (5.6,1.2) {$+$};
+
+  % ============ (b) Transverse gradient G_x : 4 saddle lobes ============
+  \begin{scope}[xshift=8.3cm]
+    \node[font=\bfseries] at (2.6,3.7) {(ب) گرادیان عرضی $G_x$ (زینی)};
+
+    % unrolled cylinder surface (phi horizontal, z vertical)
+    \draw[thick] (0,0.5) rectangle (5.2,3.1);
+    \node[font=\scriptsize] at (2.6,0.25) {سطح بازشده \RL{($\phi \rightarrow$)}};
+
+    % four saddle lobes
+    \def\lobe#1#2#3#4{
+      \draw[thick,#4] (#1,#2) ++(-0.7,0)
+        .. controls ++(0,0.55) and ++(-0.55,0) .. ++(0.7,0.55)
+        .. controls ++(0.55,0) and ++(0,0.55) .. ++(0.7,-0.55)
+        .. controls ++(0,-0.55) and ++(0.55,0) .. ++(-0.7,-0.55)
+        .. controls ++(-0.55,0) and ++(0,-0.55) .. ++(-0.7,0.55) -- cycle;
+      \node[#4] at (#1,#2) {$#3$};
+    }
+    \lobe{1.4}{2.35}{+}{blue!70!black}
+    \lobe{3.8}{2.35}{-}{red!75!black}
+    \lobe{1.4}{1.25}{-}{red!75!black}
+    \lobe{3.8}{1.25}{+}{blue!70!black}
+
+    \node[font=\scriptsize, anchor=west] at (5.3,2.35) {زین‌های بالا};
+    \node[font=\scriptsize, anchor=west] at (5.3,1.25) {پایین (آینه‌ای)};
+    \node[font=\scriptsize] at (2.6,-0.15) {($G_y$: همان، چرخیده $90^\circ$ حول $z$)};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

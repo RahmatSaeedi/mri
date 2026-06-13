@@ -1,0 +1,67 @@
+% Scan lifecycle finite-state machine: IDLE -> PRESCAN -> ARMED -> RUNNING,
+% with PAUSED and FAULT states; emergency_stop from any state -> SAFE -> FAULT.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    st/.style={draw, very thick, rounded corners=4pt, minimum width=2.2cm,
+               minimum height=1cm, align=center, font=\bfseries\small},
+    lbl/.style={font=\footnotesize, fill=white, inner sep=1pt}]
+
+  \node[st, fill=gray!12] (idle) {IDLE};
+  \node[st, fill=blue!10, below=2.2cm of idle] (prescan) {PRESCAN};
+  \node[st, fill=blue!10, right=3.2cm of prescan] (armed) {ARMED};
+  \node[st, fill=green!15, below=2.2cm of armed] (running) {RUNNING};
+  \node[st, fill=orange!18, left=3.2cm of running] (paused) {PAUSED};
+  \node[st, fill=red!18, below=2.2cm of paused] (fault) {FAULT};
+
+  % main forward transitions
+  \draw[->] (idle) -- node[lbl, left]{آماده‌سازی} (prescan);
+  \draw[->] (prescan) -- node[lbl, above]{calib\_done} (armed);
+  \draw[->] (armed) -- node[lbl, right]{تریگر} (running);
+
+  % running -> idle (done), routed around the right
+  \draw[->] (running.east) .. controls +(2.4,0) and +(2.4,0) ..
+        node[lbl, right]{پایان} (idle.east);
+
+  % pause / resume
+  \draw[->] (running) -- node[lbl, above]{مکث} (paused);
+  \draw[->] (paused.north) .. controls +(0,1.0) and +(-1.0,-0.4) ..
+        node[lbl, above]{ازسرگیری} (running.west);
+
+  % fault transitions
+  \draw[->] (prescan) -- node[lbl, left]{خطا} (fault);
+  \draw[->] (running) -- node[lbl, right, pos=0.6]{خطا} (fault);
+  \draw[->] (paused) -- node[lbl, left]{خطا} (fault);
+
+  % ack back to idle
+  \draw[->] (fault.west) .. controls +(-2.6,0) and +(-2.0,0) ..
+        node[lbl, left]{تأیید} (idle.west);
+
+  % reset self-entry into IDLE
+  \draw[->] ($(idle.north)+(-0.6,0.9)$) node[lbl, above]{بازنشانی} -- (idle.north);
+
+  % global emergency-stop note
+  \node[draw, dashed, rounded corners=2pt, fill=red!6, align=center,
+        font=\footnotesize, right=1.0cm of fault, text width=4.3cm] (estop)
+        {از هر حالتی:\\\texttt{emergency\_stop} $\to$ SAFE $\to$ FAULT};
+  \draw[->, dashed, red!70!black] (estop.north) |- (fault.east);
+
+\end{tikzpicture}}
+\end{document}

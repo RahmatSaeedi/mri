@@ -1,0 +1,64 @@
+% Controlled-document life cycle: Draft -> Review -> Approve -> Release (v1.0)
+% -> Controlled distribution -> Use; release logs to Master Document List;
+% change request triggers re-review -> v2.0, with v1.0 marked obsolete.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=6mm,
+  dstep/.style={draw, rounded corners=2pt, fill=blue!10, align=center,
+               text width=20mm, minimum height=10mm, font=\footnotesize}]
+
+  % Top row: linear life cycle
+  \node[dstep] (draft) {پیش‌نویس};
+  \node[dstep, right=of draft] (review) {بازنگری};
+  \node[dstep, right=of review] (approve) {تصویب};
+  \node[dstep, right=of approve, fill=green!12] (release) {انتشار\\\textbf{v1.0}};
+  \node[dstep, right=of release] (ctrl) {توزیع\\کنترل‌شده};
+  \node[dstep, right=of ctrl] (use) {استفاده};
+
+  \foreach \a/\b in {draft/review, review/approve, approve/release,
+                     release/ctrl, ctrl/use} {
+    \draw[->, very thick] (\a) -- (\b);
+  }
+
+  % Master Document List logged from release
+  \node[draw, rounded corners=2pt, fill=gray!10, align=center,
+        below=12mm of release, text width=30mm, font=\footnotesize] (mdl)
+        {فهرست اصلی مدارک\\(ثبت نسخهٔ جاری)};
+  \draw[->, thick] (release.south) -- (mdl.north);
+
+  % Change request from "Use"
+  \node[draw, diamond, aspect=2, fill=orange!12, align=center,
+        below=12mm of use, font=\scriptsize, inner sep=1pt,
+        text width=16mm] (cr) {درخواست تغییر؟};
+  \draw[->, thick] (use.south) -- (cr.north);
+
+  % Re-review path producing v2.0 and obsoleting v1.0
+  \node[dstep, below=12mm of mdl, fill=blue!10] (rev2) {بازنگری مجدد\\و تصویب};
+  \node[dstep, right=of rev2, fill=green!12] (v2) {انتشار\\\textbf{v2.0}};
+  \node[draw, rounded corners=2pt, fill=red!12, align=center,
+        right=of v2, text width=30mm, minimum height=10mm, font=\scriptsize] (obs)
+        {v1.0 \emph{منسوخ} شد\\ از نقاط استفاده برداشته و بایگانی شد};
+
+  \draw[->, thick] (cr.south) |- node[pos=0.25, left, font=\scriptsize]{بله} (rev2.west);
+  \draw[->, thick] (rev2) -- (v2);
+  \draw[->, thick] (v2) -- (obs);
+  \draw[->, thick, dashed, gray!55!black] (v2.north) -- (mdl.south);
+\end{tikzpicture}}
+\end{document}

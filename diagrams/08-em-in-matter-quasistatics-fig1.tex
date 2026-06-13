@@ -1,0 +1,103 @@
+% Conceptual schematic of the FEM/numerical lab (Chapter 8):
+%  (a) Step magnetic field B0 diffusing into a conductive slab of thickness 2d,
+%      with eddy currents (Lenz) and the dominant time constant tau0.
+%  (b) Skin-effect amplitude profile in the frequency domain, |E(x)| = E0 e^{-x/delta}.
+% Built to cropped PDF (print) and SVG (web/epub) by the Makefile in this directory.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % =====================================================================
+  % Panel (a): magnetic-field step diffusion into a conductive slab
+  % =====================================================================
+  \begin{scope}
+    % applied surface field step B0(t=0)
+    \node[align=center] at (3,3.55) {پلهٔ میدان سطحیِ اعمالی\\ $B_0$ در $t=0$};
+    \draw[->, thick] (3,3.05) -- (3,2.45);
+
+    % slab body: thickness 2d, gradient shading from edges (penetrated) to centre (empty)
+    \shade[left color=blue!55, right color=blue!55, middle color=blue!4]
+      (0.4,0.6) rectangle (5.6,2.3);
+    \draw[thick] (0.4,0.6) rectangle (5.6,2.3);
+
+    % edge labels x = -d and x = +d
+    \draw[<->] (0.4,2.55) -- (5.6,2.55);
+    \node[above] at (3,2.55) {تختهٔ رسانا، ضخامت $2d$};
+    \node[below] at (0.4,0.55) {$x=-d$};
+    \node[below] at (5.6,0.55) {$x=+d$};
+
+    % surface field arrows pushing in from both faces
+    \node[left=2pt] at (0.4,1.45) {$B_0$};
+    \node[right=2pt] at (5.6,1.45) {$B_0$};
+    \draw[->, blue!60!black, thick] (0.05,1.45) -- (0.6,1.45);
+    \draw[->, blue!60!black, thick] (5.95,1.45) -- (5.4,1.45);
+
+    % penetration annotation inside slab
+    \node[align=center, text=blue!50!black] at (3,1.75)
+      {نفوذِ نمایی};
+    \node[align=center] at (3,1.35)
+      {ضریب پخش $1/(\mu\sigma)$};
+    \node[align=center] at (3,0.95)
+      {مرکز دیرتر پر می‌شود $\;\rightarrow\;\tau_0=\frac{4\mu\sigma d^2}{\pi^2}$};
+
+    % eddy-current loop (Lenz) below the slab
+    \draw[->, red!70!black, thick]
+      (2.0,0.05) .. controls (2.0,-0.45) and (4.0,-0.45) .. (4.0,0.05)
+      .. controls (4.0,0.35) and (2.0,0.35) .. (2.0,0.05);
+    \node[red!70!black, align=center, below=1pt] at (3,-0.55)
+      {جریان گردابی $J=\sigma E$ (لنتس): با تغییر مخالفت می‌کند};
+
+    \node[font=\bfseries] at (0.4,3.05) {(a)};
+  \end{scope}
+
+  % =====================================================================
+  % Panel (b): skin-effect amplitude profile (frequency domain)
+  % =====================================================================
+  \begin{scope}[xshift=8.0cm, yshift=-0.7cm]
+    \begin{axis}[
+        width=7.4cm, height=5.4cm,
+        xlabel={عمق $x/\delta$},
+        ylabel={$|E(x)|/E_0$},
+        domain=0:4, samples=100,
+        xmin=0, xmax=4, ymin=0, ymax=1.05,
+        xtick={0,1,2,3,4},
+        ytick={0,0.2,0.368,0.6,0.8,1.0},
+        yticklabels={$0$,$0.2$,$0.37$,$0.6$,$0.8$,$1$},
+        axis lines=left,
+        title={(b) اثر پوستی: $|E(x)|=E_0\,e^{-x/\delta}$},
+        every axis title/.style={at={(0.5,1.06)}},
+      ]
+      % exponential decay envelope
+      \addplot[blue, very thick] {exp(-x)};
+      \addlegendentry{$e^{-x/\delta}$}
+      % marker at x = delta -> 1/e ~ 0.37
+      \addplot[only marks, mark=*, mark size=1.6pt, black] coordinates {(1,0.3679)};
+      \draw[densely dashed, gray] (axis cs:1,0) -- (axis cs:1,0.3679);
+      \draw[densely dashed, gray] (axis cs:0,0.3679) -- (axis cs:1,0.3679);
+      \node[anchor=south west, font=\footnotesize] at (axis cs:1.05,0.34)
+        {$x=\delta:\ 37\%$};
+      % marker at x = 3 delta -> ~5%
+      \addplot[only marks, mark=*, mark size=1.6pt, black] coordinates {(3,0.0498)};
+      \node[anchor=south west, font=\footnotesize] at (axis cs:3.05,0.07)
+        {$x=3\delta:\ \sim5\%$};
+    \end{axis}
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

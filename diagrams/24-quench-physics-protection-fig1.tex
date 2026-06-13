@@ -1,0 +1,72 @@
+% Normal-zone propagation in a winding (top view of one layer).
+% Three snapshots in time showing the fast longitudinal front (v_q) and the
+% slow transverse front (alpha v_q) converting superconducting (S) cells to
+% normal (N) cells. S = blue, N = red.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    Scell/.style={fill=blue!12, draw=gray!55},
+    Ncell/.style={fill=red!65!black, draw=gray!55}]
+
+  \def\s{0.5} % cell size
+
+  % ---- background grids (all S) for the three panels ----
+  \foreach \ox in {0, 4.2, 8.4} {
+    \foreach \c in {0,...,5} {
+      \foreach \r in {0,...,2} {
+        \path[Scell] (\ox+\c*\s, \r*\s) rectangle (\ox+\c*\s+\s, \r*\s+\s);
+      }
+    }
+  }
+
+  % ---- Panel 1: t = 0 (single seed normal cell) ----
+  % normal cells (column index 0..5, row index 0..2)
+  \path[Ncell] (0+2*\s,1*\s) rectangle (0+2*\s+\s,1*\s+\s);
+  \node at (1.5,1.85) {$t=0$};
+
+  % ---- Panel 2: t = dt (longitudinal spread + one transverse step) ----
+  \foreach \c/\r in {1/1, 2/1, 3/1, 2/0, 2/2} {
+    \path[Ncell] (4.2+\c*\s,\r*\s) rectangle (4.2+\c*\s+\s,\r*\s+\s);
+  }
+  \node at (5.7,1.85) {$t=\Delta t$};
+
+  % ---- Panel 3: t = 2 dt (long row fully normal + transverse growth) ----
+  \foreach \c/\r in {0/1,1/1,2/1,3/1,4/1,5/1, 1/0,2/0,3/0,4/0, 1/2,2/2,3/2,4/2} {
+    \path[Ncell] (8.4+\c*\s,\r*\s) rectangle (8.4+\c*\s+\s,\r*\s+\s);
+  }
+  \node at (9.9,1.85) {$t=2\Delta t$};
+
+  % ---- propagation arrows on panel 3 ----
+  \draw[->, very thick, red!70!black] (8.55,0.75) -- (11.55,0.75);
+  \node[font=\footnotesize, anchor=south] at (10.05,0.78) {طولی $v_q$ (سریع)};
+  \draw[->, thick, orange!85!black] (8.65,0.6) -- (8.65,1.4);
+  \node[font=\footnotesize, anchor=west, rotate=90] at (8.5,0.55) {عرضی $\alpha v_q$};
+
+  % ---- legend ----
+  \begin{scope}[shift={(0,-0.95)}]
+    \path[Scell] (0,0) rectangle (0.4,0.4);
+    \node[right] at (0.5,0.2) {S = ابررسانا};
+    \path[Ncell] (4.2,0) rectangle (4.6,0.4);
+    \node[right] at (4.7,0.2) {N = نرمال (مقاومتی)};
+  \end{scope}
+
+  \node[font=\footnotesize] at (5.7,2.7)
+    {رشد ناحیهٔ نرمال در یک لایهٔ سیم‌پیچی (نمای بالا)};
+\end{tikzpicture}}
+\end{document}

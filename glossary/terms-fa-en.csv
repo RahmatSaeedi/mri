@@ -1,0 +1,70 @@
+en,fa,notes
+Magnetic Resonance Imaging,تصویربرداری تشدید مغناطیسی,abbrev MRI; keep MRI in latin
+spin,اسپین,transliterated
+magnetization,مغناطش,
+precession,پیش‌نشست,
+Larmor frequency,بسامد لارمور,
+rotating frame,چارچوب چرخان,
+relaxation,واهلش,T1/T2/T2* keep latin symbols
+Bloch equations,معادلات بلاخ,
+gradient,گرادیان,
+slew rate,نرخ تغییر گرادیان,a.k.a. slew rate; keep latin in formulas
+k-space,فضای‑کی,keep k latin
+pulse sequence,توالی پالس,
+slice selection,انتخاب برش,
+flip angle,زاویهٔ چرخش,
+echo,اکو,
+spin echo,اکوی اسپینی,SE
+gradient echo,اکوی گرادیانی,GRE
+contrast,کنتراست,
+signal-to-noise ratio,نسبت سیگنال به نوفه,abbrev SNR
+noise,نوفه,
+sampling,نمونه‌برداری,
+Fourier transform,تبدیل فوریه,
+reconstruction,بازسازی,
+parallel imaging,تصویربرداری موازی,
+compressed sensing,حس‌گری فشرده,
+deep learning,یادگیری ژرف,
+superconductor,ابررسانا,
+quench,کوئنچ,transliterated; common in field
+cryostat,کرایوستات,
+cryogenics,برودت‌زایی,
+cryocooler,کرایوکولر,
+shimming,شیم‌بندی,
+homogeneity,یکنواختی,field homogeneity
+fringe field,میدان پراکنده,
+radiofrequency,رادیوفرکانس,abbrev RF; keep RF latin
+coil,سیم‌پیچ,
+birdcage coil,سیم‌پیچ بردکیج,
+receive array,آرایهٔ گیرنده,
+preamplifier,پیش‌تقویت‌کننده,
+power amplifier,تقویت‌کنندهٔ توان,
+impedance matching,تطبیق امپدانس,
+parallel transmit,ارسال موازی,pTx; keep pTx latin
+specific absorption rate,نرخ جذب ویژه,abbrev SAR; keep SAR latin
+eddy current,جریان گردابی,
+gradient power amplifier,تقویت‌کنندهٔ توان گرادیان,
+analog-to-digital converter,مبدل آنالوگ به دیجیتال,abbrev ADC
+console,کنسول,
+spectrometer,طیف‌سنج,
+firmware,میان‌افزار,
+real-time,بی‌درنگ,
+artifact,آرتیفکت,transliterated
+phantom,فانتوم,
+acceptance testing,آزمون پذیرش,
+quality assurance,تضمین کیفیت,abbrev QA
+risk management,مدیریت ریسک,ISO 14971
+interlock,اینترلاک,
+fail-safe,ایمن در خرابی,
+preventive maintenance,نگه‌داری پیشگیرانه,
+fault tree,درخت خطا,
+failure mode,حالت خرابی,
+predictive maintenance,نگه‌داری پیش‌بینانه,
+regulatory pathway,مسیر مقرراتی,
+quality management system,سامانهٔ مدیریت کیفیت,ISO 13485
+finite element method,روش اجزای محدود,abbrev FEM
+permanent magnet,آهنربای دائمی,
+Halbach array,آرایهٔ هالباخ,
+diffusion,دیفیوژن,DTI keep latin
+perfusion,پرفیوژن,
+spectroscopy,طیف‌نگاری,MRS

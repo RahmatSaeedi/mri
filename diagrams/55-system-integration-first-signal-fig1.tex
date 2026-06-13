@@ -1,0 +1,72 @@
+% System-level block diagram of an MRI scanner: console -> RFPA/GPA/T/R/receiver
+% -> gradient + RF coils inside the bore -> magnet/cryostat/shim/shielded room.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=10mm, inner sep=4pt, fill=blue!4},
+    wide/.style={draw, rounded corners=2pt, align=center, minimum height=10mm, inner sep=5pt},
+    lbl/.style={font=\scriptsize\itshape, text=black!70},
+  ]
+
+  % --- Console / spectrometer (top) ---
+  \node[wide, fill=blue!8, text width=112mm, minimum height=18mm] (con) at (0,0)
+    {\textbf{کنسول / طیف‌سنج}\\[2pt]
+     \begin{tabular}{@{}p{50mm}@{\hspace{4mm}}p{52mm}@{}}
+     \scriptsize PS (Linux): توالی، شبکه & \scriptsize PL (FPGA): زمان‌بندی قطعی\\
+     \scriptsize {\textbullet} ترجمهٔ Pulseq $\to$ رویدادها & \scriptsize {\textbullet} TX DDS/NCO\\
+     \scriptsize {\textbullet} بارگذاری/دریافت داده & \scriptsize {\textbullet} گیرندهٔ دیجیتال (DDC)\\
+     \scriptsize {\textbullet} DICOM / ذخیره‌سازی & \scriptsize {\textbullet} تریگر و گِیتینگ
+     \end{tabular}};
+
+  % --- Mid-tier subsystem blocks ---
+  \node[box, text width=20mm, below left=20mm and 30mm of con.south] (rfpa) {\textbf{RFPA}\\ردهٔ kW};
+  \node[box, text width=20mm, right=8mm of rfpa] (gpa) {\textbf{GPA $\times3$}\\صدها A};
+  \node[box, text width=20mm, right=8mm of gpa] (tr) {\textbf{کلید T/R}\\+ بایاس PIN};
+  \node[box, text width=20mm, right=8mm of tr] (rx) {\textbf{گیرنده}\\LNA $\to$ ADC};
+
+  % --- Coils block (inside bore) ---
+  \node[wide, fill=green!6, text width=112mm, below=30mm of con.south, minimum height=12mm] (coils)
+    {\textbf{سیم‌پیچ‌های گرادیان} \; + \; \textbf{سیم‌پیچ RF TX/RX}\\[2pt]\scriptsize (همه درون حفرهٔ آهنربا)};
+
+  % --- Magnet / cryostat / shielded room ---
+  \node[wide, fill=black!6, text width=112mm, below=12mm of coils, minimum height=11mm] (mag)
+    {\textbf{آهنربا + کرایوستات} \; $|$ \; \textbf{شیم} \; $|$ \; \textbf{اتاق محافظت‌شدهٔ RF}};
+
+  % --- Console -> subsystems signal lines with labels ---
+  \draw[->] (rfpa.north) -- ++(0,8mm) node[midway,lbl,left]{$RF_\mathrm{out}$} -| (con.south);
+  \draw[->] (con.south) ++(-12mm,0) |- ($(gpa.north)+(0,8mm)$) node[midway,lbl,above,pos=0.75]{گرادیان $x/y/z$} -- (gpa.north);
+  \draw[->] (con.south) ++(6mm,0) |- ($(tr.north)+(0,5mm)$) node[lbl,pos=0.7,above]{$TX_\mathrm{blank}$ / $RX_\mathrm{gate}$} -- (tr.north);
+  \draw[<-] (con.south) ++(18mm,0) |- ($(rx.north)+(0,5mm)$) node[lbl,pos=0.7,above]{$ADC_\mathrm{in}$} -- (rx.north);
+
+  % reference clock from console to receiver (right side)
+  \draw[->, densely dashed] (con.east) -- ++(8mm,0) |- (rx.east)
+        node[lbl, pos=0.25, right, align=left]{10\,MHz\\/ PPS\\مرجع};
+
+  % --- Subsystems -> coils ---
+  \draw[->] (rfpa.south) -- (coils.north -| rfpa) node[pos=0.45,lbl,left,inner sep=2pt]{توان RF};
+  \draw[->] (gpa.south) -- (coils.north -| gpa) node[pos=0.45,lbl,left,inner sep=2pt]{$I_\mathrm{grad}$};
+  \draw[<->] (tr.south) -- (coils.north -| tr) node[pos=0.45,lbl,right,inner sep=2pt]{TX$\leftrightarrow$coil$\leftrightarrow$RX};
+  \draw[<-] (rx.south) -- (coils.north -| rx) node[pos=0.45,lbl,right,inner sep=2pt]{سیگنال MR};
+
+  % --- Coils -> magnet ---
+  \draw[->] (coils.south) -- (mag.north);
+
+\end{tikzpicture}}
+\end{document}

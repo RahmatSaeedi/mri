@@ -1,0 +1,64 @@
+% Standalone TikZ figure: Zynq SoC console architecture.
+% PS (ARM/Linux) prepares "what"; PL (FPGA) decides "exactly when".
+% AXI/DMA bridges the two; PL drives gradient/RF DACs and RX ADC.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=7mm},
+    blk/.style={draw, align=left, font=\footnotesize, inner sep=3pt},
+    hw/.style={draw, fill=blue!8, rounded corners=2pt, align=center,
+               minimum height=9mm, minimum width=24mm}]
+
+  % ---------- PS (ARM) box ----------
+  \node[blk, fill=orange!10] (ps) at (0,0) {%
+    \textbf{PS (ARM Cortex-A9)}\\[1pt]
+    Linux\\ کارساز TCP\\ کامپایلر توالی\\ آماده‌سازی بازسازی};
+
+  % ---------- PL (FPGA) box ----------
+  \node[blk, fill=green!8, anchor=west] (pl) at (5.0,0) {%
+    \textbf{PL (FPGA)}\\[1pt]
+    موتور توالی\\ (FSM جدول‌رویداد)\\ DDS (مرجع RF + RX)\\ شکل‌موج گرادیان\\ کنترل ضبط ADC\\ دریچه‌بندی / تریگرها};
+
+  % ---------- Zynq SoC enclosing frame ----------
+  \begin{scope}[on background layer]
+    \node[draw, dashed, rounded corners=4pt, fill=gray!5,
+          fit=(ps)(pl), inner sep=10pt, label={above:\textbf{Zynq SoC}}] (soc) {};
+  \end{scope}
+
+  % ---------- AXI / DMA link between PS and PL ----------
+  \draw[<->, very thick] (ps.east) -- node[above, font=\footnotesize, align=center] {AXI}
+                                       node[below, font=\footnotesize] {(DMA)} (pl.west);
+
+  % ---------- Ethernet to host ----------
+  \draw[<->, thick] ($(soc.west)+(-1.5,0)$) -- node[above, font=\footnotesize] {Ethernet} (soc.west);
+
+  % ---------- Analog front-end blocks ----------
+  \node[hw] (gdac) at (3.0,-4.2) {DAC گرادیان\\ \RL{($\times$ ۳ محور)}};
+  \node[hw] (rdac) at (6.6,-4.2) {DAC رادیویی (TX)\\ + گیت RFPA};
+  \node[hw] (adc)  at (10.2,-4.2) {ADC گیرنده (RX)\\ + کلید T/R};
+
+  % ---------- LVDS / parallel fan-out from PL ----------
+  \coordinate (plb) at ($(pl.south)+(0,-0.1)$);
+  \draw[->, thick] (plb) |- (gdac.north -| gdac);
+  \draw[->, thick] (plb) -- (rdac.north);
+  \draw[->, thick] (plb) -| (adc.north);
+  \node[font=\footnotesize] at ($(pl.south)+(0.2,-0.75)$) {(LVDS / موازی)};
+
+\end{tikzpicture}}
+\end{document}

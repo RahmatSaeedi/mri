@@ -1,0 +1,80 @@
+% Single-task paradigm (ch. 47-49) vs foundation-model paradigm.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=8mm,
+    data/.style={rounded corners=2pt, draw=black!55, fill=black!4, align=center, inner sep=5pt, text width=4.2cm},
+    task/.style={draw=black!60, fill=blue!8, align=center, minimum width=1.5cm, minimum height=0.8cm, font=\footnotesize},
+    ftask/.style={draw=black!60, fill=green!10, align=center, minimum width=1.5cm, minimum height=0.8cm, font=\footnotesize},
+    rep/.style={rounded corners=2pt, draw=green!45!black, fill=green!8, align=center, inner sep=6pt, text width=4.6cm, font=\bfseries\footnotesize},
+    hdr/.style={font=\bfseries}]
+
+  % ================= LEFT: single-task =================
+  \node[hdr, align=center, text width=6cm] (lh) at (0,0)
+    {پارادایم تک‌وظیفه‌ای\\ \footnotesize(فصل‌های 47--49)};
+
+  \node[data, below=of lh] (ldata) {مجموعه‌دادهٔ بزرگِ \emph{برچسب‌دار}\\ برای \emph{هر} وظیفه};
+
+  \coordinate (lsplit) at ($(ldata.south)+(0,-0.55)$);
+  \draw[->] (ldata.south) -- (lsplit);
+
+  \node[task, below=1.55cm of ldata, xshift=-2.1cm] (t1) {بازسازی};
+  \node[task, below=1.55cm of ldata] (t2) {قطعه‌بندی};
+  \node[task, below=1.55cm of ldata, xshift=2.1cm] (t3) {آشکارسازی};
+
+  \draw[->] (lsplit) -| (t1.north);
+  \draw[->] (lsplit) -- (t2.north);
+  \draw[->] (lsplit) -| (t3.north);
+
+  \node[align=center, below=0.5cm of t2, text width=6cm, font=\footnotesize\itshape] (lnote)
+    {هر کدام جداگانه آموزش می‌بیند، شکننده،\\ نیازمند دادهٔ برچسب‌دار فراوان};
+
+  % ================= RIGHT: foundation model =================
+  \node[hdr, align=center, text width=6cm] (rh) at (9.5,0)
+    {پارادایم مدل پایه\\ \footnotesize(این فصل)};
+
+  \node[data, below=of rh, fill=green!6, draw=green!45!black] (rdata)
+    {دادهٔ عظیمِ \emph{بدون‌برچسب}\\ (پیش‌آموزش خودنظارتی)};
+
+  \node[rep, below=of rdata] (rep) {بازنمایی همه‌منظوره};
+  \draw[->] (rdata.south) -- (rep.north);
+
+  \node[align=center, below=0.35cm of rep, font=\footnotesize] (ft) {تنظیم‌دقیق با دادهٔ اندک};
+  \coordinate (rsplit) at ($(ft.south)+(0,-0.25)$);
+  \draw[->] (rep.south) -- (ft.north);
+
+  \node[ftask, below=1.45cm of rep, xshift=-3.45cm] (f1) {بازسازی};
+  \node[ftask, below=1.45cm of rep, xshift=-1.15cm] (f2) {قطعه‌بندی};
+  \node[ftask, below=1.45cm of rep, xshift=1.15cm]  (f3) {آشکارسازی};
+  \node[ftask, below=1.45cm of rep, xshift=3.45cm]  (f4) {گزارش};
+
+  \draw[->] (rsplit) -| (f1.north);
+  \draw[->] (rsplit) -| (f2.north);
+  \draw[->] (rsplit) -| (f3.north);
+  \draw[->] (rsplit) -| (f4.north);
+
+  \node[align=center, below=0.5cm of f2, xshift=1.15cm, text width=7cm, font=\footnotesize\itshape] (rnote)
+    {تعمیم‌پذیری بهتر، دادهٔ کمتر برای هر وظیفه};
+
+  % vertical divider
+  \draw[black!25, dashed] (4.75,0.7) -- (4.75,-5.6);
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,88 @@
+% Critical surface in (T, B, J) space for a type-II superconductor:
+% the superconducting region lies under the J_c(B,T) surface; MRI operating
+% point must sit safely inside it.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % --- oblique 3D axes: B (right), T (left-back), J (up) ---
+  \def\bx{5.4}   % B axis length (x)
+  \def\jy{5.0}   % J axis length (y, up)
+  \def\tdx{-2.3} % T axis projected dx
+  \def\tdy{-1.5} % T axis projected dy
+
+  % origin
+  \coordinate (O) at (0,0);
+  \coordinate (Bend) at (\bx,0);
+  \coordinate (Jend) at (0,\jy);
+  \coordinate (Tend) at (\tdx,\tdy);
+
+  % --- the critical surface (a smooth curved cap) drawn as a shaded patch ---
+  % corner points: Jc0 (J axis), Bc2 (B axis), Tc (T axis)
+  \coordinate (Jc0) at (0,4.4);
+  \coordinate (Bc2) at (5.0,0);
+  \coordinate (Tc)  at (-2.0,-1.3);
+
+  % filled surface bounded by three convex arcs meeting Jc0, Bc2, Tc
+  \begin{scope}
+    \fill[blue!12]
+      (Jc0)
+      .. controls (1.6,3.7) and (3.4,1.9) .. (Bc2)   % Jc0 -> Bc2 (front edge)
+      .. controls (2.1,-0.6) and (0.0,-1.0) .. (Tc)  % Bc2 -> Tc (right-back)
+      .. controls (-1.4,0.8) and (-1.1,2.6) .. (Jc0) % Tc -> Jc0 (left-back)
+      -- cycle;
+  \end{scope}
+
+  % grid-like guide curves on the surface (constant-T slices J_c vs B)
+  \draw[blue!55, thin]
+    (0,3.3) .. controls (1.4,2.7) and (3.0,1.2) .. (3.8,0);
+  \draw[blue!55, thin]
+    (0,2.2) .. controls (1.0,1.8) and (2.0,0.8) .. (2.6,0);
+  \draw[blue!40!black, thick]
+    (Jc0) .. controls (1.6,3.7) and (3.4,1.9) .. (Bc2);
+
+  % --- axes drawn on top ---
+  \draw[->, thick] (O) -- (0,\jy+0.2);
+  \draw[->, thick] (O) -- (\bx+0.2,0);
+  \draw[->, thick] (O) -- ($(Tend)+(-0.3,-0.2)$);
+
+  % axis labels
+  \node[above] at (0,\jy+0.2) {$J$ (چگالی جریان)};
+  \node[right] at (\bx+0.2,0) {$B$ (میدان)};
+  \node[below left] at ($(Tend)+(-0.3,-0.2)$) {$T$ (دما)};
+
+  % axis intercept markers
+  \fill (Jc0) circle (1.6pt) node[left=2pt] {$J_{c0}$};
+  \fill (Bc2) circle (1.6pt) node[below=2pt] {$B_{c2}$};
+  \fill (Tc)  circle (1.6pt) node[below left=1pt] {$T_c$};
+
+  % surface label
+  \node[blue!40!black, align=center] at (2.7,4.0)
+    {سطح بحرانی\\ $J_c(B,T)$};
+
+  % region label (under the surface)
+  \node[align=center] at (1.0,1.0) {ناحیهٔ ابررسانا\\(زیر سطح)};
+
+  % --- MRI operating point, safely inside ---
+  \coordinate (OP) at (1.7,1.55);
+  \fill[red] (OP) circle (2.2pt);
+  \draw[red, ->, thick] (4.0,2.35) -- (OP);
+  \node[red, align=center, anchor=west] at (3.95,2.7)
+    {نقطهٔ کاری MRI\\ (با حاشیه،\\ درون سطح)};
+\end{tikzpicture}}
+\end{document}

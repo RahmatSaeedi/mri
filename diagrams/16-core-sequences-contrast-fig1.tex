@@ -1,0 +1,101 @@
+% Generic pulse-sequence diagram (PSD): one TR repetition block of a
+% spin-echo style sequence showing RF, Gz, Gy, Gx and ADC channels
+% with the TR and TE timing intervals.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % ---- geometry ----
+  \def\xL{0}      % left of time axis
+  \def\xR{13}     % right of time axis
+  \def\rowsep{1.5}
+  % channel baseline y-positions (top to bottom)
+  \def\yRF{0}
+  \def\yGz{-\rowsep}
+  \def\yGy{-2*\rowsep}
+  \def\yGx{-3*\rowsep}
+  \def\yADC{-4*\rowsep}
+
+  % time landmarks
+  \def\tExc{1.2}     % excitation pulse center (t=0)
+  \def\tRef{5.0}     % 180 refocus pulse center
+  \def\tEcho{8.8}    % echo center = TE
+  \def\tEndTR{12.3}  % next excitation (= TR)
+
+  % ---- channel baselines + labels ----
+  \foreach \y/\name in {\yRF/RF, \yGz/$G_z$, \yGy/$G_y$, \yGx/$G_x$, \yADC/ADC}{
+    \draw[gray!55] (\xL,\y) -- (\xR,\y);
+    \node[left, font=\small\bfseries] at (\xL-0.15,\y) {\name};
+  }
+
+  % ---- TR / TE timing brackets (top) ----
+  \draw[<->, thick] (\tExc,2.55) -- node[above]{$\mathrm{TR}$} (\tEndTR,2.55);
+  \draw[thin, dotted] (\tExc,\yRF) -- (\tExc,2.7);
+  \draw[thin, dotted] (\tEndTR,\yRF) -- (\tEndTR,2.7);
+  \draw[<->, thick] (\tExc,1.95) -- node[above]{$\mathrm{TE}$} (\tEcho,1.95);
+  \draw[thin, dotted] (\tEcho,\yADC-0.6) -- (\tEcho,2.1);
+
+  % ---- RF channel: 90 (alpha), 180 refocus, next 90 ----
+  % excitation pulse (sinc-like bump)
+  \draw[blue!70!black, very thick]
+    (\tExc-0.55,\yRF) sin (\tExc-0.18,\yRF+0.18) cos (\tExc,\yRF+0.7)
+    sin (\tExc+0.18,\yRF+0.18) cos (\tExc+0.55,\yRF);
+  \node[blue!70!black, above] at (\tExc,\yRF+0.72) {$\alpha\,(90^\circ)$};
+  % refocusing 180 pulse (taller)
+  \draw[blue!70!black, very thick]
+    (\tRef-0.55,\yRF) sin (\tRef-0.18,\yRF+0.25) cos (\tRef,\yRF+1.0)
+    sin (\tRef+0.18,\yRF+0.25) cos (\tRef+0.55,\yRF);
+  \node[blue!70!black, above] at (\tRef,\yRF+1.0) {$180^\circ$};
+  % next excitation
+  \draw[blue!70!black, very thick]
+    (\tEndTR-0.55,\yRF) sin (\tEndTR-0.18,\yRF+0.18) cos (\tEndTR,\yRF+0.7)
+    sin (\tEndTR+0.18,\yRF+0.18) cos (\tEndTR+0.4,\yRF);
+
+  % ---- Gz: slice select (positive lobe) + rephase (negative) ----
+  \fill[orange!60] (\tExc-0.55,\yGz) rectangle (\tExc+0.55,\yGz+0.6);
+  \fill[orange!30] (\tExc+0.6,\yGz) rectangle (\tExc+1.0,\yGz-0.35);
+  % slice select around 180 too
+  \fill[orange!60] (\tRef-0.55,\yGz) rectangle (\tRef+0.55,\yGz+0.5);
+  \node[anchor=west, font=\scriptsize, gray!60!black] at (\xR-3.2,\yGz+0.45) {انتخاب برش $+$ بازفاز};
+
+  % ---- Gy: phase encode (stepped table) ----
+  \fill[green!55!black!70] (\tExc+1.2,\yGy) rectangle (\tExc+1.9,\yGy+0.55);
+  % phase-encode "ladder" hint
+  \foreach \dy in {0.12,0.24,0.40}{
+    \draw[green!45!black, thin] (\tExc+1.2,\yGy+\dy) -- (\tExc+1.9,\yGy+\dy);
+  }
+  \node[anchor=west, font=\scriptsize, gray!60!black] at (\xR-3.2,\yGy+0.45) {کدگذاری فازی (پلکانی)};
+
+  % ---- Gx: prephase (neg) then readout (pos) ----
+  \fill[red!30] (\tExc+2.2,\yGx) rectangle (\tExc+3.0,\yGx-0.4);   % prephase
+  \fill[red!60] (\tEcho-1.7,\yGx) rectangle (\tEcho+1.7,\yGx+0.55); % readout
+  \node[anchor=west, font=\scriptsize, gray!60!black] at (\xR-3.2,\yGx+0.45) {پیش‌فاز $+$ خوانش};
+
+  % ---- ADC sampling window centered at echo (TE) ----
+  \fill[purple!25] (\tEcho-1.55,\yADC) rectangle (\tEcho+1.55,\yADC+0.45);
+  \draw[purple!70!black, thick] (\tEcho-1.55,\yADC) rectangle (\tEcho+1.55,\yADC+0.45);
+  \node[purple!60!black, font=\scriptsize] at (\tEcho,\yADC+0.22) {نمونه‌برداری};
+
+  % echo shape on ADC line (gaussian-ish)
+  \node[font=\scriptsize, gray!60!black] at (\tEcho,\yADC-0.55) {مرکز پژواک $=\mathrm{TE}$};
+
+  % t=0 marker
+  \node[font=\scriptsize] at (\tExc,\yADC-0.55) {$t=0$};
+
+\end{tikzpicture}}
+\end{document}

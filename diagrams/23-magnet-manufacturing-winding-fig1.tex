@@ -1,0 +1,63 @@
+% Magnet manufacturing production line: 11 sequential stages with QC outputs.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    stage/.style={rectangle, rounded corners=2pt, draw=blue!55!black, very thick,
+      fill=blue!8, text width=5.4cm, minimum height=0.85cm, align=left, inner sep=4pt},
+    outl/.style={font=\footnotesize\itshape, text=black!70, anchor=west}]
+
+  \def\dy{1.18}
+  \node[stage] (s1) at (0,0)            {۱) پذیرش و مشخصه‌یابی سیم};
+  \node[stage] (s2) at (0,-1*\dy)       {۲) ماشین‌کاری قالب / بوبین};
+  \node[stage] (s3) at (0,-2*\dy)       {۳) سیم‌پیچی هر ماژول};
+  \node[stage] (s4) at (0,-3*\dy)       {۴) اتصال‌های ابررسانا};
+  \node[stage] (s5) at (0,-4*\dy)       {۵) نصب PCS و گرم‌کن‌ها};
+  \node[stage] (s6) at (0,-5*\dy)       {۶) آغشته‌سازی با رزین (VPI)};
+  \node[stage] (s7) at (0,-6*\dy)       {۷) مونتاژ روی تودهٔ سرد};
+  \node[stage] (s8) at (0,-7*\dy)       {۸) سردسازی تا $4\,$K};
+  \node[stage] (s9) at (0,-8*\dy)       {۹) تربیت \RL{(افزایش جریان $>$ $I_{\mathrm{op}}$)}};
+  \node[stage] (s10) at (0,-9*\dy)      {۱۰) شیم‌بندی و نقشه‌برداری $B_0$};
+  \node[stage] (s11) at (0,-10*\dy)     {۱۱) آزمون‌های پذیرش};
+
+  \foreach \i/\j in {1/2,2/3,3/4,4/5,5/6,6/7,7/8,8/9,9/10,10/11}{
+    \draw[->, very thick, blue!55!black] (s\i.south) -- (s\j.north);
+  }
+
+  % QC / output annotations on the right
+  \def\ox{3.0}
+  \node[outl] at (\ox, 0)        {$\to$ $I_c$، RRR، هندسه};
+  \node[outl] at (\ox,-1*\dy)    {$\to$ شیارها، اندازه‌شناسی};
+  \node[outl] at (\ox,-2*\dy)    {$\to$ کشش، شمار دورها};
+  \node[outl] at (\ox,-3*\dy)    {$\to$ اتصال NbTi، $R_j$};
+  \node[outl] at (\ox,-4*\dy)    {$\to$ سوییچ پایدار};
+  \node[outl] at (\ox,-5*\dy)    {$\to$ پرکردن حفره‌ها، پخت};
+  \node[outl] at (\ox,-6*\dy)    {$\to$ گیره، پیش‌بار};
+  \node[outl] at (\ox,-7*\dy)    {$\to$ پایش تنش};
+  \node[outl] at (\ox,-8*\dy)    {$\to$ افزایش جریان فراتر از $I_{\mathrm{op}}$};
+  \node[outl] at (\ox,-9*\dy)    {$\to$ غیرفعال / فعال};
+  \node[outl] at (\ox,-10*\dy)   {$\to$ یکنواختی، رانش، میدان پراکنده، He};
+
+  % irreversibility marker: after VPI the assembly is monolithic
+  \draw[->, thick, red!70!black, dashed] (s6.west) to[out=180,in=180]
+     node[left, font=\footnotesize, text=red!70!black, align=right]
+     {برگشت‌ناپذیر\\پس از این مرحله} (s11.west);
+
+\end{tikzpicture}}
+\end{document}

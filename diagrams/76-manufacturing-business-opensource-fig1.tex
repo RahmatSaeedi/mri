@@ -1,0 +1,95 @@
+% MRI supply-chain network: OEM -> subsystems -> components, with strategic
+% bottleneck (risk) annotations on critical / fragile parts.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    oem/.style={rectangle, rounded corners, draw=black, very thick,
+      fill=blue!12, align=center, minimum height=10mm, text width=78mm},
+    sub/.style={rectangle, rounded corners, draw=black!80, thick,
+      fill=teal!14, align=center, minimum height=10mm, minimum width=30mm},
+    part/.style={rectangle, draw=black!70, fill=gray!8, align=center,
+      minimum height=10mm, minimum width=18mm},
+    crit/.style={rectangle, draw=red!75!black, very thick, fill=red!10,
+      align=center, minimum height=10mm, minimum width=18mm},
+    risk/.style={red!75!black, font=\scriptsize\bfseries, align=center},
+    flow/.style={-{Stealth[length=2mm]}, black!70},
+    warn/.style={regular polygon, regular polygon sides=3, draw=red!75!black,
+      fill=red!75!black, inner sep=0pt, minimum size=3mm},
+  ]
+
+  % ---- Tier 0: OEM ----
+  \node[oem] (oem) {سازندهٔ اسکنر (OEM)\\\footnotesize مونتاژ نهایی، آزمون، یکپارچه‌سازی، نرم‌افزار};
+
+  % ---- Tier 1: subsystems ----
+  \node[sub] (mag)  [below left=14mm and 30mm of oem] {آهنربا};
+  \node[sub] (grad) [right=10mm of mag] {گرادیان};
+  \node[sub] (rf)   [right=10mm of grad] {RF};
+  \node[sub] (con)  [right=10mm of rf] {کنسول\\\footnotesize FPGA / ADC / PC};
+
+  \draw[flow] (oem.south) -- (mag.north);
+  \draw[flow] (oem.south) -- (grad.north);
+  \draw[flow] (oem.south) -- (rf.north);
+  \draw[flow] (oem.south) -- (con.north);
+
+  % ---- Tier 2: component suppliers ----
+  % Magnet
+  \node[crit] (nbti) [below left=14mm and 1mm of mag.south] {سیم\\\footnotesize NbTi};
+  \node[crit] (he)   [right=4mm of nbti] {هلیوم\\\footnotesize مایع};
+  % Gradient
+  \node[part] (cu)   [below=14mm of grad, xshift=-11mm] {سیم\\\footnotesize Cu};
+  \node[crit] (igbt) [right=4mm of cu] {ماژول\\\footnotesize IGBT};
+  % RF
+  \node[crit] (pa)   [below=14mm of rf, xshift=-11mm] {لامپ\\\footnotesize PA};
+  \node[part] (cx)   [right=4mm of pa] {کابل\\\footnotesize کواکسیال};
+  % Console
+  \node[crit] (fpga) [below=14mm of con, xshift=-11mm] {FPGA\\\footnotesize (Xilinx)};
+  \node[part] (adc)  [right=4mm of fpga] {ADC/DAC\\\footnotesize (TI/ADI)};
+
+  \draw[flow] (mag.south)  -- (nbti.north);
+  \draw[flow] (mag.south)  -- (he.north);
+  \draw[flow] (grad.south) -- (cu.north);
+  \draw[flow] (grad.south) -- (igbt.north);
+  \draw[flow] (rf.south)   -- (pa.north);
+  \draw[flow] (rf.south)   -- (cx.north);
+  \draw[flow] (con.south)  -- (fpga.north);
+  \draw[flow] (con.south)  -- (adc.north);
+
+  % ---- Risk annotations (strategic bottlenecks) ----
+  \node[warn] (w1) [below=4mm of nbti] {}; \node[risk] (rk1) [below=1mm of w1] {تک‌منبعی};
+  \node[warn] (w2) [below=4mm of he]   {}; \node[risk] (rk2) [below=1mm of w2] {بحران جهانی\\هلیوم};
+  \node[warn] (w3) [below=4mm of igbt] {}; \node[risk] (rk3) [below=1mm of w3] {زمان تدارک طولانی $L$};
+  \node[warn] (w4) [below=4mm of pa]   {}; \node[risk] (rk4) [below=1mm of w4] {تخصصی};
+  \node[warn] (w5) [below=4mm of fpga] {}; \node[risk] (rk5) [below=1mm of w5] {کمبود\\تراشه};
+
+  \draw[red!75!black, dotted] (nbti.south) -- (w1.north);
+  \draw[red!75!black, dotted] (he.south)   -- (w2.north);
+  \draw[red!75!black, dotted] (igbt.south) -- (w3.north);
+  \draw[red!75!black, dotted] (pa.south)   -- (w4.north);
+  \draw[red!75!black, dotted] (fpga.south) -- (w5.north);
+
+  % commodity note for Cu (low risk)
+  \node[black!55, font=\scriptsize, align=center] (rk0) [below=7mm of cu] {کالای انبوه\\(نوسان قیمت)};
+  \draw[black!45, dotted] (cu.south) -- (rk0.north);
+
+  % legend
+  \node[warn] (wl) at ($(oem.east)+(8mm,-2mm)$) {};
+  \node[risk, anchor=west] at (wl.east) {\, = گلوگاه راهبردی};
+\end{tikzpicture}}
+\end{document}

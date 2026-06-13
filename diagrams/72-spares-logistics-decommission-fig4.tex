@@ -1,0 +1,46 @@
+% Reverse-logistics decision flow for a defective exchange part.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=12mm and 20mm,
+    box/.style={draw, thick, rounded corners, minimum width=40mm, minimum height=9mm, align=center, fill=blue!8},
+    dec/.style={draw, thick, diamond, aspect=2.2, inner sep=1pt, align=center, fill=orange!16},
+    outc/.style={draw, thick, rounded corners, minimum width=44mm, minimum height=9mm, align=center, fill=green!12},
+    lbl/.style={font=\footnotesize, text=black!70}]
+
+  \node[box] (in) {قطعهٔ معیوب از محل};
+  \node[box, below=of in] (insp) {بازرسیِ ورودی};
+  \node[dec, below=14mm of insp] (dec) {قابل تعمیر؟};
+
+  % branch (a): repairable
+  \node[outc, right=of dec] (rep) {تعمیر در مرکز\\$\rightarrow$ بازگشت به موجودی (بازسازی‌شده)};
+
+  % branch (b): not repairable
+  \node[outc, below=14mm of dec] (scrap) {برداشتِ قطعاتِ سالم\\$\rightarrow$ اسقاط / بازیافتِ مسئولانه};
+
+  % branch (c): RCA feedback (always)
+  \node[outc, left=of dec, fill=red!10] (rca) {تحلیلِ ریشه‌ایِ علت (RCA)\\$\rightarrow$ به‌روزرسانی FMEA / KB};
+
+  \draw[->, very thick] (in) -- (insp);
+  \draw[->, very thick] (insp) -- (dec);
+  \draw[->, thick] (dec) -- node[above, lbl] {بله} (rep);
+  \draw[->, thick] (dec) -- node[right, lbl] {خیر} (scrap);
+  \draw[->, thick, dashed] (dec) -- node[above, lbl] {بازخورد} (rca);
+\end{tikzpicture}}
+\end{document}

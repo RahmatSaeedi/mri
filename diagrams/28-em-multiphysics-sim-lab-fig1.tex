@@ -1,0 +1,69 @@
+% Reference workflow for the open-source magnet simulation lab (FEMM/Gmsh/Elmer/GetDP).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[
+    >=Stealth, font=\small,
+    mbox/.style={rectangle, draw, thick, rounded corners=2pt, align=center,
+                inner sep=4pt, minimum height=10mm, fill=blue!6, text width=44mm},
+    sbox/.style={rectangle, draw, thick, dashed, rounded corners=2pt, align=center,
+                 inner sep=4pt, minimum height=10mm, fill=green!8, text width=40mm},
+    cbox/.style={rectangle, draw, thick, rounded corners=9pt, align=center,
+                inner sep=4pt, minimum height=9mm, fill=orange!12, text width=50mm},
+    wbox/.style={rectangle, draw, thick, rounded corners=2pt, align=center,
+                 inner sep=4pt, minimum height=11mm, fill=blue!6, text width=96mm},
+    lbl/.style={font=\footnotesize\itshape, text=black!65},
+  ]
+
+  % main vertical spine
+  \node[cbox] (design) {طراحی مفهومی\\\footnotesize(فصل‌های ۲۲، ۲۶، ۲۷): ابعاد سیم‌پیچ، جریان، ماده};
+  \node[mbox, below=11mm of design] (femm) {\textbf{FEMM} (متقارن محوری)\\\footnotesize اسکریپت‌نویسی Lua / pyFEMM};
+  \node[mbox, below=14mm of femm] (split) {نیاز به سه‌بعدی / چندفیزیکی\\یا شکستِ تقارن};
+  \node[wbox, below=24mm of split] (postbox)
+        {\textbf{پس‌پردازش:} ParaView / Gmsh / Python\\\footnotesize استخراج: ppm، خط 5\,G، $\Delta T$، تنش، تلفات};
+  \node[cbox, below=11mm of postbox] (valid)
+        {\textbf{صحه‌گذاری}\\\footnotesize در برابرِ تحلیلی + اندازه‌گیری + همگراییِ مش};
+
+  % side quick analytic estimate
+  \node[sbox, right=18mm of design] (analytic) {بررسیِ تحلیلیِ سریع\\\footnotesize magpylib / Biot--Savart};
+
+  % 3D branch (Gmsh -> Elmer/GetDP)
+  \node[sbox, left=20mm of split] (gmsh) {\textbf{Gmsh} (مشِ سه‌بعدی)\\\footnotesize geometry.geo};
+  \node[sbox, below=8mm of gmsh] (elmer) {\textbf{Elmer} یا \textbf{GetDP}\\\footnotesize مغناطیس + گرمایی + مکانیک};
+
+  % --- arrows on the spine ---
+  \draw[->, thick] (design) -- (femm)
+        node[midway, right=1pt, lbl] {گزینهٔ نخست};
+  \draw[->, thick] (femm) -- (split)
+        node[midway, right=1pt, lbl] {$B_0$، پراکنده، $L$، نیرو};
+  \draw[->, thick] (split.south) -- (postbox.north);
+  \draw[->, thick] (postbox) -- (valid);
+
+  % analytic estimate (order of magnitude)
+  \draw[->, thick, dashed] (design.east) -- (analytic.west)
+        node[midway, above, lbl] {مرتبهٔ بزرگی};
+
+  % 3D branch arrows
+  \draw[->, thick, dashed] (split.west) -| (gmsh.north)
+        node[pos=0.25, above, lbl] {در صورت نیاز};
+  \draw[->, thick] (gmsh) -- (elmer);
+  \draw[->, thick, dashed] (elmer.south) |- (postbox.west);
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,56 @@
+% Transverse magnetization M_xy as a rotating phasor whose tip traces an
+% inward (clockwise) spiral while its amplitude decays with T2.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, scale=1.5]
+  % axes
+  \draw[->, thick] (-2.4,0) -- (2.7,0) node[right] {$\mathrm{Re}\,(M_x)$};
+  \draw[->, thick] (0,-2.4) -- (0,2.7) node[above] {$\mathrm{Im}\,(M_y)$};
+
+  \coordinate (O) at (0,0);
+
+  % decaying clockwise spiral traced by the tip of the phasor:
+  % radius shrinks as exp(-t/T2); angle increases clockwise (sin negated)
+  \draw[thick, blue!65!black, dashed, samples=300, domain=0:540]
+    plot ({2*exp(-0.0022*\x)*cos(\x)}, {-2*exp(-0.0022*\x)*sin(\x)});
+
+  % full-amplitude phasor at t=0 (along +Re axis)
+  \draw[->, very thick, blue!70!black] (O) -- (2,0);
+  \fill[blue!70!black] (2,0) circle (1.3pt);
+  \node[blue!70!black, above] at (1.55,0.06) {$M_{xy}(0)$};
+  \node[blue!70!black, below right] at (2,0) {$t=0$};
+
+  % phasor after about one revolution, reduced amplitude (~ at t ~ T2)
+  \coordinate (T2) at ({2*exp(-0.0022*360)},0);
+  \draw[->, very thick, red!75!black] (O) -- (T2);
+  \fill[red!75!black] (T2) circle (1.3pt);
+  \node[red!70!black, below] at ({2*exp(-0.0022*360)},-0.1) {$t\sim T_2$};
+
+  % a representative intermediate phasor
+  \coordinate (TI) at ({2*exp(-0.0022*150)*cos(150)},{-2*exp(-0.0022*150)*sin(150)});
+  \draw[->, thick, red!55!black] (O) -- (TI);
+
+  % rotation sense (clockwise): arc on the upper right sweeping downward
+  \draw[->, thick] (1.0,1.9) arc (120:30:0.95);
+  \node[align=center] at (2.15,1.55) {ساعتگرد\\\RL{(برای $\omega_0 t$)}};
+
+  % decay annotation
+  \node[align=center, gray] at (-1.6,-1.6) {دامنه\\$\propto e^{-t/T_2}$};
+\end{tikzpicture}}
+\end{document}

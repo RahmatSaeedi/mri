@@ -1,0 +1,45 @@
+% DICOM information model hierarchy: Patient -> Study -> Series -> Instance, each with its UID key.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    lvl/.style={draw, rounded corners=2pt, align=left, minimum height=10mm, inner sep=3mm},
+    pat/.style={lvl, fill=blue!10},
+    stu/.style={lvl, fill=teal!10},
+    ser/.style={lvl, fill=green!9},
+    img/.style={lvl, fill=orange!12, font=\footnotesize}]
+
+  \node[pat] (patient) {\textbf{بیمار}\\\footnotesize PatientID (شخص یکتا)};
+  \node[stu, below=9mm of patient, xshift=8mm] (study) {\textbf{مطالعه}\\\footnotesize StudyInstanceUID (یک مراجعه)};
+  \node[ser, below=9mm of study, xshift=8mm] (series1) {\textbf{سری}\\\footnotesize SeriesInstanceUID (یک توالی)};
+  \node[img, below=8mm of series1, xshift=10mm] (i1) {نمونه / تصویر -- SOPInstanceUID};
+  \node[img, below=3mm of i1] (i2) {نمونه / تصویر};
+  \node[img, below=3mm of i2] (i3) {$\cdots$};
+
+  \node[ser, below=4mm of i3, xshift=-10mm] (series2) {\textbf{سری}\\\footnotesize مثلاً یک توالی T2 دیگر};
+
+  % elbow connectors (tree)
+  \draw[thick] (patient.south) ++(0,0) |- (study.west);
+  \draw[thick] (study.south) |- (series1.west);
+  \draw[thick] (study.south) |- (series2.west);
+  \draw[thick] (series1.south) |- (i1.west);
+  \draw[thick] (series1.south) |- (i2.west);
+  \draw[thick] (series1.south) |- (i3.west);
+
+\end{tikzpicture}}
+\end{document}

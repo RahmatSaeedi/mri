@@ -1,0 +1,64 @@
+% De-energize-to-trip safety interlock chain: series NC contacts -> safety relay.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    contact/.style={draw, rounded corners=2pt, fill=green!12, align=center,
+                    inner sep=4pt, minimum height=0.95cm, text width=1.9cm},
+    relay/.style={draw, rounded corners=2pt, fill=orange!16, align=center,
+                  inner sep=4pt, minimum height=1.5cm, text width=2.4cm},
+    sink/.style={draw, rounded corners=2pt, align=center, inner sep=4pt,
+                 minimum height=1.1cm, text width=3.2cm},
+  ]
+
+  % +V source
+  \node[draw, circle, fill=blue!10, inner sep=2pt, minimum size=0.9cm] (v) at (0,0) {$+V$};
+
+  % series NC contacts
+  \node[contact, right=0.7cm of v]        (estop) {توقف اضطراری\\\footnotesize (NC)};
+  \node[contact, right=0.55cm of estop]   (door)  {درِ اتاق\\\footnotesize (NC)};
+  \node[contact, right=0.55cm of door]    (temp)  {پایش‌گر دما\\\footnotesize (NC)};
+  \node[contact, right=0.55cm of temp]    (o2)    {پایش‌گر O$_2$\\\footnotesize (NC)};
+
+  % wiring (series)
+  \draw[thick] (v) -- (estop);
+  \draw[thick] (estop) -- (door);
+  \draw[thick] (door) -- (temp);
+  \draw[thick] (temp) -- (o2);
+
+  % safety relay
+  \node[relay, right=0.8cm of o2] (relay)
+    {رلهٔ ایمنی\\[1pt]\footnotesize تنها زمانی برق‌دار است که\\\footnotesize همهٔ تماس‌ها بسته باشند};
+  \draw[thick] (o2) -- (relay);
+
+  % outputs from relay
+  \node[sink, fill=green!8, below left=1.6cm and -1.0cm of relay] (permit)
+    {«مجوز» توان به\\ RF PA و گرادیان};
+  \node[sink, fill=red!10, below right=1.6cm and -1.6cm of relay] (trip)
+    {اگر رله رها شود\\ $\rightarrow$ قطع کل توان\\ (حالت امن)};
+
+  \draw[->, thick] (relay.south) -- ++(0,-0.35) -| (permit.north);
+  \draw[->, thick, red!60!black] (relay.south) -- ++(0,-0.35) -| (trip.north);
+
+  % annotation
+  \node[align=center, font=\footnotesize, text=gray!60!black, below=0.25cm of v, yshift=-0.1cm]
+    {\textbf{قطع‌با‌برق‌برداشتن:} هر تماس باز،\\ سیم پاره، یا قطع توان $\Rightarrow$ حالت امن};
+
+\end{tikzpicture}}
+\end{document}

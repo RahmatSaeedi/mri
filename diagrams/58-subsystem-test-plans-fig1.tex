@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % ---- Stray-field map (top view): 5 Gauss contour, design vs measured ----
+  \begin{scope}
+    % grid
+    \draw[step=1cm, gray!25, very thin] (-3.2,-3.2) grid (3.2,3.2);
+    % axes
+    \draw[->] (-3.4,0) -- (3.6,0) node[right] {$x$ (m)};
+    \draw[->] (0,-3.4) -- (0,3.6) node[above] {$y$ (m)};
+    \foreach \t in {-3,-2,-1,1,2,3}{
+      \draw (\t,-0.06) -- (\t,0.06) node[below=2pt] {\scriptsize \t};
+      \draw (-0.06,\t) -- (0.06,\t) node[left=2pt] {\scriptsize \t};
+    }
+
+    % isocenter / magnet bore
+    \draw[fill=blue!10, draw=blue!60] (0,0) circle (0.55);
+    \node[blue!60!black] at (0,0) {$B_0$};
+
+    % design (target) 5 G contour -- nominal ellipse
+    \draw[thick, dashed, red!75!black] (0,0) ellipse (2.45 and 1.85);
+    % measured 5 G contour -- slightly larger / asymmetric
+    \draw[very thick, blue!70!black]
+      plot[smooth cycle, tension=0.85]
+      coordinates {(2.7,0) (1.9,1.3) (0,2.05) (-1.9,1.35) (-2.65,0)
+                   (-1.9,-1.35) (0,-2.0) (1.9,-1.3)};
+
+    % deviation arrow at +x
+    \draw[->, thick] (2.45,0.25) -- (2.7,0.25);
+    \node[anchor=west, font=\scriptsize] at (2.72,0.45) {$\Delta \le 0.2$ m};
+
+    % controlled-area boundary (room wall)
+    \draw[thick, black!55, dash pattern=on 4pt off 2pt]
+      (-3.15,-3.0) rectangle (3.15,3.0);
+    \node[black!55, font=\scriptsize, anchor=south west] at (-3.1,-2.95)
+      {ناحیهٔ کنترل‌شده};
+  \end{scope}
+
+  % ---- legend ----
+  \begin{scope}[shift={(4.4,2.3)}]
+    \draw[thick, dashed, red!75!black] (0,0) -- (0.7,0);
+    \node[anchor=west, font=\scriptsize] at (0.8,0) {کانتورِ طراحیِ 5\,G};
+    \draw[very thick, blue!70!black] (0,-0.55) -- (0.7,-0.55);
+    \node[anchor=west, font=\scriptsize] at (0.8,-0.55) {اندازه‌گیریِ 5\,G $(=0.5\ \mathrm{mT})$};
+    \draw[fill=blue!10, draw=blue!60] (0.35,-1.1) circle (0.12);
+    \node[anchor=west, font=\scriptsize] at (0.8,-1.1) {مرکزِ تصویر / حفره};
+    \draw[black!55, dash pattern=on 4pt off 2pt] (0,-1.65) -- (0.7,-1.65);
+    \node[anchor=west, font=\scriptsize] at (0.8,-1.65) {مرزِ اتاق};
+  \end{scope}
+\end{tikzpicture}}
+\end{document}

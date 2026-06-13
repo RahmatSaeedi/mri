@@ -1,0 +1,115 @@
+% Aligned pulse-sequence (PSD) timing for a single-line GRE block, emphasising
+% that every transition is produced by a discrete, clock-cycle-resolved event.
+% Rows: clock, RF (NCO amp/phase), TX gate, Unblank, Gz (slice + rewind),
+% Gy (phase table), Gx (prephase + readout), ADC window. TE marks echo centre.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, x=1cm, y=1cm]
+
+  \def\xL{0}
+  \def\xR{13}
+  \def\h{0.55}
+
+  % row y-centres
+  \def\yClk{8.4}
+  \def\yRF{7.2}
+  \def\yTX{6.2}
+  \def\yUB{5.2}
+  \def\yGz{4.1}
+  \def\yGy{3.0}
+  \def\yGx{1.9}
+  \def\yADC{0.7}
+
+  % row labels
+  \foreach \y/\t in {\yClk/کلاک,\yRF/RF,\yTX/گِیت TX,\yUB/رفع‌انسداد,
+                     \yGz/$G_z$,\yGy/$G_y$,\yGx/$G_x$,\yADC/ADC}{
+    \node[anchor=east] at (\xL-0.2,\y) {\t};
+    \draw[gray!35] (\xL,\y) -- (\xR,\y);
+  }
+
+  % --- clock ticks ---
+  \foreach \x in {0,0.22,...,12.9}{
+    \draw[gray!70, very thin] (\x,\yClk-0.18) -- (\x,\yClk+0.18);
+  }
+
+  % key x positions
+  \def\xrf{1.3}    % RF centre region start
+  \def\xrfc{2.0}   % RF centre
+  \def\xrfe{2.7}   % RF end
+  \def\xte{8.3}    % echo centre = TE
+  \def\xtr{12.6}   % TR end
+
+  % --- TR / TE spans ---
+  \draw[<->, thin] (0.6,9.0) -- (\xtr,9.0) node[midway, above, font=\footnotesize]{$TR$};
+  \draw[<->, thin] (0.6,8.7) -- (\xte,8.7) node[pos=0.42, below, font=\footnotesize]{$TE$};
+
+  % --- RF: sinc-like envelope ---
+  \draw[very thick, orange!80!black] (\xL,\yRF) -- (\xrf,\yRF)
+    plot[domain=-3:3, samples=60, variable=\t]
+      ({\xrfc + \t*0.23},{\yRF + \h*( (abs(\t)<0.001) ? 1 : sin(deg(\t))/(\t) )})
+    -- (\xrfe,\yRF) -- (\xR,\yRF);
+  \node[font=\footnotesize, orange!60!black, anchor=west] at (\xrfe+0.1,\yRF+0.35) {دامنه/فاز NCO};
+
+  % --- TX gate ---
+  \draw[very thick, blue!70!black]
+    (\xL,\yTX) -- (1.05,\yTX) -- (1.05,\yTX+\h) -- (2.95,\yTX+\h) -- (2.95,\yTX) -- (\xR,\yTX);
+
+  % --- Unblank ---
+  \draw[very thick, red!70!black]
+    (\xL,\yUB) -- (6.3,\yUB) -- (6.3,\yUB+\h) -- (11.0,\yUB+\h) -- (11.0,\yUB) -- (\xR,\yUB);
+
+  % --- Gz: slice-select (pos) then rewind (neg) ---
+  \fill[teal!30] (1.0,\yGz) rectangle (3.0,\yGz+\h);
+  \draw[very thick, teal!60!black] (\xL,\yGz) -- (1.0,\yGz) -- (1.0,\yGz+\h)
+    -- (3.0,\yGz+\h) -- (3.0,\yGz) -- (3.4,\yGz) -- (3.4,\yGz-\h*0.7)
+    -- (4.0,\yGz-\h*0.7) -- (4.0,\yGz) -- (\xR,\yGz);
+  \node[font=\footnotesize, teal!50!black, anchor=west] at (4.1,\yGz+0.32) {برش $+$ بازگشت};
+
+  % --- Gy: phase-encode table (multiple amplitudes) ---
+  \fill[purple!22] (3.4,\yGy) rectangle (4.4,\yGy+\h);
+  \draw[very thick, purple!70!black] (\xL,\yGy) -- (3.4,\yGy) -- (3.4,\yGy+\h)
+    -- (4.4,\yGy+\h) -- (4.4,\yGy) -- (\xR,\yGy);
+  \foreach \k in {0.16,0.30,0.44}{
+    \draw[purple!50!black, thin] (3.4,\yGy+\k) -- (4.4,\yGy+\k);
+  }
+  \node[font=\footnotesize, purple!55!black, anchor=west] at (4.5,\yGy+0.30) {جدول فاز};
+
+  % --- Gx: prephase (neg) then readout (pos) ---
+  \fill[blue!18] (3.4,\yGx-\h*0.8) rectangle (4.4,\yGx);
+  \draw[very thick, blue!70!black] (\xL,\yGx) -- (3.4,\yGx) -- (3.4,\yGx-\h*0.8)
+    -- (4.4,\yGx-\h*0.8) -- (4.4,\yGx) -- (6.5,\yGx);
+  \fill[blue!22] (6.5,\yGx) rectangle (10.6,\yGx+\h);
+  \draw[very thick, blue!70!black] (6.5,\yGx) -- (6.5,\yGx+\h)
+    -- (10.6,\yGx+\h) -- (10.6,\yGx) -- (\xR,\yGx);
+  \node[font=\footnotesize, blue!55!black, anchor=west] at (10.7,\yGx+0.30) {پیش‌فاز $+$ خوانش};
+
+  % --- ADC window ---
+  \fill[green!55!black, opacity=0.20] (6.6,\yADC) rectangle (10.5,\yADC+\h);
+  \draw[very thick, green!55!black]
+    (\xL,\yADC) -- (6.6,\yADC) -- (6.6,\yADC+\h) -- (10.5,\yADC+\h) -- (10.5,\yADC) -- (\xR,\yADC);
+  \node[font=\footnotesize, green!45!black, anchor=west] at (10.6,\yADC+0.30) {adc\_on};
+  % (adc_on signal name kept verbatim)
+
+  % --- TE / echo vertical guide ---
+  \draw[gray!60, dashed] (\xte,\yADC-0.2) -- (\xte,8.7);
+  \node[font=\footnotesize, anchor=north] at (\xrfc,\yADC-0.35) {مرکز RF};
+  \node[font=\footnotesize, anchor=north] at (\xte,\yADC-0.35) {مرکز اکو $= TE$};
+
+\end{tikzpicture}}
+\end{document}

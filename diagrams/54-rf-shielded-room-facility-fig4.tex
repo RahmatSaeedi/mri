@@ -1,0 +1,81 @@
+% Standalone TikZ figure: passive magnetic shielding by flux shunting.
+% The magnet's fringe field (flux lines) is captured and routed through a
+% high-mu steel wall, reducing the field beyond it. Constraint: B_steel < B_sat.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ---------- steel walls (high mu_r) ----------
+  \fill[gray!35] (-5,-3) rectangle (-4.4,3);
+  \fill[gray!35] ( 4.4,-3) rectangle (5,3);
+  \draw[very thick] (-5,-3) rectangle (-4.4,3);
+  \draw[very thick] ( 4.4,-3) rectangle (5,3);
+  \node[align=center, anchor=south] at (-4.7,3.05) {دیوارهٔ فولادی\\ \RL{($\mu_r \gg 1$)}};
+  \node[align=center, anchor=south] at ( 4.7,3.05) {دیوارهٔ فولادی\\ \RL{($\mu_r \gg 1$)}};
+
+  % ---------- magnet at centre ----------
+  \draw[very thick, fill=blue!12] (-1.3,-0.9) rectangle (1.3,0.9);
+  \node at (0,0) {آهنربا $B_0$};
+  \node[font=\large] at (0,-1.35) {$\otimes$};
+
+  % ---------- fringe field flux lines (curving from magnet to steel) ----------
+  % upper-right family routed into the right steel wall
+  \foreach \k in {1,2,3}{
+    \draw[->, blue!60!black, thick]
+      (1.3,{0.3*\k}) .. controls ({1.3+1.0*\k},{0.3*\k+0.4}) and ({3.6},{0.6*\k})
+      .. (4.4,{0.4*\k});
+  }
+  % lower-right family
+  \foreach \k in {1,2,3}{
+    \draw[->, blue!60!black, thick]
+      (1.3,{-0.3*\k}) .. controls ({1.3+1.0*\k},{-0.3*\k-0.4}) and ({3.6},{-0.6*\k})
+      .. (4.4,{-0.4*\k});
+  }
+  % upper-left family
+  \foreach \k in {1,2,3}{
+    \draw[->, blue!60!black, thick]
+      (-1.3,{0.3*\k}) .. controls ({-1.3-1.0*\k},{0.3*\k+0.4}) and ({-3.6},{0.6*\k})
+      .. (-4.4,{0.4*\k});
+  }
+  % lower-left family
+  \foreach \k in {1,2,3}{
+    \draw[->, blue!60!black, thick]
+      (-1.3,{-0.3*\k}) .. controls ({-1.3-1.0*\k},{-0.3*\k-0.4}) and ({-3.6},{-0.6*\k})
+      .. (-4.4,{-0.4*\k});
+  }
+  \node[blue!60!black, align=center] at (2.7,2.1) {خطوط شارِ\\ میدان پراکنده};
+
+  % ---------- flux guided inside steel (vertical arrows) ----------
+  \draw[->, orange!70!black, line width=1.5pt] (4.7,1.4) -- (4.7,2.6);
+  \draw[->, orange!70!black, line width=1.5pt] (4.7,-1.4) -- (4.7,-2.6);
+  \draw[->, orange!70!black, line width=1.5pt] (-4.7,1.4) -- (-4.7,2.6);
+  \draw[->, orange!70!black, line width=1.5pt] (-4.7,-1.4) -- (-4.7,-2.6);
+
+  % ---------- reduced field beyond wall ----------
+  \node[align=center] at (6.6,0) {میدانِ آن‌سوی\\ دیوار کاهش‌یافته};
+  \draw[->, gray, thick] (5,0.4) -- (5.7,0.5);
+  \draw[->, gray, thick] (5,-0.4) -- (5.7,-0.5);
+
+  % ---------- saturation caveat ----------
+  \node[draw, rounded corners, fill=yellow!15, align=center] at (0,-3.4)
+        {قید: $B_{\mathrm{steel}} < B_{\mathrm{sat}}$
+         \RL{($\approx 1.5$--$2\,\mathrm{T}$)}، وگرنه اشباع};
+
+\end{tikzpicture}}
+\end{document}

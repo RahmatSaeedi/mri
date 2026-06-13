@@ -1,0 +1,72 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  port/.style={draw, rounded corners=2pt, minimum width=20mm, minimum height=8mm, align=center, fill=blue!6},
+  wire/.style={thick}]
+
+  % RFPA source (top)
+  \node[port, fill=orange!15] (rfpa) at (0,4) {فرستنده\\(RFPA)};
+
+  % Series PIN diode D1
+  \node[draw, isosceles triangle, isosceles triangle apex angle=60, shape border rotate=270,
+        minimum width=7mm, fill=yellow!25] (d1) at (0,2.6) {};
+  \node[right=1mm of d1] {\scriptsize دیود PIN سری (D1)};
+  \draw[wire] (rfpa.south) -- (d1.north);
+  % bar of diode D1
+  \draw[very thick] ($(d1.south)+(-2.2mm,0)$) -- ($(d1.south)+(2.2mm,0)$);
+
+  % Main node (coil node)
+  \coordinate (node) at (0,1.4);
+  \draw[wire] (d1.south) -- (node);
+  \filldraw (node) circle (1.0pt);
+
+  % Coil to the left
+  \node[port, fill=green!12] (coil) at (-3.3,1.4) {سیم‌پیچ Tx/Rx};
+  \draw[wire] (node) -- (coil.east);
+
+  % lambda/4 line going right then down to D2
+  \coordinate (q1) at (2.6,1.4);
+  \draw[wire] (node) -- node[above]{\scriptsize خط $\lambda/4$ \RL{($Z_0$)}} (q1);
+  \coordinate (q2) at (2.6,-0.2);
+  \draw[wire] (q1) -- (q2);
+  \filldraw (q2) circle (1.0pt);
+
+  % Shunt PIN diode D2 to ground
+  \node[draw, isosceles triangle, isosceles triangle apex angle=60, shape border rotate=270,
+        minimum width=7mm, fill=yellow!25] (d2) at (2.6,-1.2) {};
+  \node[right=1mm of d2, align=left] {\scriptsize دیود PIN\\\scriptsize موازی (D2)};
+  \draw[wire] (q2) -- (d2.north);
+  \draw[very thick] ($(d2.south)+(-2.2mm,0)$) -- ($(d2.south)+(2.2mm,0)$);
+  % ground symbol
+  \coordinate (g) at (2.6,-2.0);
+  \draw[wire] (d2.south) -- (g);
+  \draw[wire] ($(g)+(-3mm,0)$) -- ($(g)+(3mm,0)$);
+  \draw[wire] ($(g)+(-2mm,-1.2mm)$) -- ($(g)+(2mm,-1.2mm)$);
+  \draw[wire] ($(g)+(-1mm,-2.4mm)$) -- ($(g)+(1mm,-2.4mm)$);
+
+  % Receiver branch tapped off node q2
+  \node[port, fill=cyan!12] (lna) at (5.6,-0.2) {مسیر\\گیرنده (LNA)};
+  \draw[wire] (q2) -- (lna.west);
+
+  % Annotation box
+  \node[draw, dashed, rounded corners=2pt, align=right, fill=gray!5, font=\scriptsize]
+        at (-2.0,-1.4) {TX: بایاس مستقیم D1، D2\\$\rightarrow$ اتصال‌کوتاه D2، $\lambda/4$\\در گره سیم‌پیچ مدار باز می‌شود \RL{($Z_{\mathrm{in}}=Z_0^2/Z_L$)}\\RX: دیودها خاموش $\rightarrow$ 50\,$\Omega$ به LNA};
+
+\end{tikzpicture}}
+\end{document}

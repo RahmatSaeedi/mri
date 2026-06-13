@@ -1,0 +1,63 @@
+% MaRCoS execution architecture: the Python control computer (flocra-pulseq
+% interpreter -> tx/grad/rx dicts -> experiment.run) talks over a Gbit network
+% to the Red Pitaya Zynq SoC (ARM marcos_server + 122.88 MHz FPGA waveform
+% generator). Raw rx data flows back to the host for k-space reorder + recon.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, fill=blue!4,
+                inner sep=3pt, minimum height=7mm, minimum width=34mm},
+    hw/.style={draw, rounded corners=2pt, align=center, fill=orange!8,
+               inner sep=3pt, minimum height=7mm, minimum width=42mm},
+    grp/.style={draw, dashed, rounded corners=4pt, inner sep=9pt},
+    flow/.style={-{Stealth[length=2.4mm]}, thick}]
+
+  %================= LEFT: control computer (Python) =================
+  \node[box] (seqf)  at (0,6.4) {\texttt{gre\_lowfield.seq}};
+  \node[box] (interp) at (0,5.0) {\texttt{flocra-pulseq}\\(مفسّر)};
+  \node[box] (dicts) at (0,3.6) {دیکشنری‌های \texttt{tx} / \texttt{grad} / \texttt{rx}};
+  \node[box] (recon) at (0,1.4) {بازچینش $k$-space\\بازسازی + ISMRMRD};
+
+  \draw[flow] (seqf) -- (interp);
+  \draw[flow] (interp) -- (dicts);
+
+  \node[grp, fit=(seqf)(interp)(dicts)(recon)] (hostgrp) {};
+  \node[font=\bfseries, align=center] at (0,7.4) {رایانهٔ کنترل (Python)};
+
+  %================= RIGHT: Red Pitaya (Zynq SoC) =================
+  \node[hw] (server) at (9,6.0) {ARM: \texttt{marcos\_server}\\صف رویداد};
+  \node[hw] (fpga)   at (9,4.4) {FPGA: تولید شکل‌موج\\122.88\,MHz};
+  \node[hw] (chans)  at (9,2.8) {TX DAC / GRAD SPI-DAC / RX\\ADC 125\,MHz $\to$ کاهش‌نرخ};
+
+  \draw[flow] (server) -- (fpga);
+  \draw[flow] (fpga) -- (chans);
+
+  \node[grp, fit=(server)(fpga)(chans)] (rpgrp) {};
+  \node[font=\bfseries, align=center] at (9,7.4) {Red Pitaya (Zynq SoC)};
+  % node title kept verbatim: hardware product/platform name
+
+  %================= NETWORK LINKS (Gbit) =================
+  \draw[flow] (dicts.east) -- node[above, font=\footnotesize, align=center]{بسته‌های\\فرمان}
+       ($(rpgrp.west)+(0,0.9)$);
+  \node[font=\itshape\footnotesize, align=center, rotate=90] at (4.5,4.4) {شبکهٔ Gbit};
+
+  \draw[flow] ($(rpgrp.west)+(0,-1.2)$) -| node[pos=0.25, above, font=\footnotesize]{دادهٔ خام rx} (recon.north);
+
+\end{tikzpicture}}
+\end{document}

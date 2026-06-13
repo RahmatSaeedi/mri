@@ -1,0 +1,57 @@
+% Simplified fault tree for electric shock: top event behind an AND gate,
+% with an OR gate over MOP1/MOP2 failures, plus the independent-barrier controls.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    ev/.style={draw, rounded corners=2pt, align=center, inner sep=4pt, minimum height=9mm},
+    top/.style={ev, fill=red!14},
+    inter/.style={ev, fill=orange!14},
+    basic/.style={ev, fill=blue!8},
+    gate/.style={draw, fill=gray!15, font=\footnotesize\bfseries, inner sep=2pt}]
+
+  % Top event
+  \node[top, text width=44mm] (top) {رویداد بالا: عبور جریان خطرناک از بدن};
+  \node[gate, below=4mm of top] (gAND) {AND};
+  \draw[thick] (top) -- (gAND);
+
+  % Two children of AND
+  \node[inter, below=12mm of gAND, xshift=-32mm, text width=36mm] (volt) {ولتاژ خطرناک به سطحی قابل‌لمس می‌رسد};
+  \node[inter, below=12mm of gAND, xshift=32mm, text width=36mm] (path) {تماس شخص و وجود مسیر به زمین (محیطی)};
+  \draw[thick] (gAND.south) -- (volt.north);
+  \draw[thick] (gAND.south) -- (path.north);
+
+  % OR gate under "voltage reaches surface"
+  \node[gate, below=4mm of volt] (gOR) {OR};
+  \draw[thick] (volt) -- (gOR);
+  \node[basic, below=11mm of gOR, xshift=-22mm, text width=30mm] (mop1) {خرابی عایق پایه (MOP1) -- $p_1$};
+  \node[basic, below=11mm of gOR, xshift=22mm, text width=30mm] (mop2) {خرابی عایق دوم / PE (MOP2) -- $p_2$};
+  \draw[thick] (gOR.south) -- (mop1.north);
+  \draw[thick] (gOR.south) -- (mop2.north);
+
+  % Controls box
+  \node[draw, rounded corners=3pt, fill=green!6, align=left, below=14mm of path, xshift=4mm, text width=58mm] (ctrl)
+    {\textbf{کنترل‌ها (هر یک یک شاخه را قطع می‌کند):}\\
+     $\bullet$ دو MOP مستقل $\Rightarrow$ نیاز به خرابی هم‌زمان\\
+     $\bullet$ اتصال PE $\Rightarrow$ ولتاژ لمسی را پایین نگه می‌دارد\\
+     $\bullet$ RCD 30\,mA $\Rightarrow$ جریان $\times$ زمان را محدود می‌کند\\
+     $\bullet$ LOTO هنگام سرویس $\Rightarrow$ انرژی صفر پیش از تماس};
+
+\end{tikzpicture}}
+\end{document}

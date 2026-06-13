@@ -1,0 +1,70 @@
+% Standalone TikZ figure: End-to-End VarNet architecture. Raw undersampled
+% multi-coil k-space feeds (1) a learned sensitivity-map estimation (SME)
+% module and (2) a chain of T cascades (DC + CNN) operating in k-space,
+% combined via RSS/SENSE into the final image.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    io/.style={draw, fill=gray!12, rounded corners=2pt, thick, align=center},
+    mod/.style={draw, rounded corners=2pt, thick, align=center, fill=orange!12},
+    casc/.style={draw, rounded corners=2pt, thick, align=center, fill=blue!6,
+                 minimum width=20mm, minimum height=12mm}]
+
+  % Input
+  \node[io] (k) {فضای‑کیِ خامِ\\ چندکاناله $\tilde{\mathbf{k}}$\\[-1pt]\footnotesize(زیرنمونه‌برداری‌شده)};
+
+  % SME module
+  \node[mod, right=16mm of k, yshift=14mm] (sme) {ماژولِ SME\\ (شبکه)};
+  \node[io, right=14mm of sme] (smaps) {نقشه‌های\\ حساسیت $\hat{S}$};
+
+  \draw[->, thick] (k.east) |- (sme.west);
+  \draw[->, thick] (sme) -- (smaps);
+
+  % Cascade chain container
+  \node[casc, right=16mm of k, yshift=-10mm] (c1) {DC\,+\,CNN\\\footnotesize آبشار ۱};
+  \node[casc, right=8mm of c1] (c2) {DC\,+\,CNN\\\footnotesize آبشار ۲};
+  \node[right=6mm of c2] (cdots) {$\cdots$};
+  \node[casc, right=6mm of cdots] (cT) {DC\,+\,CNN\\\footnotesize آبشار $T$};
+
+  \draw[->, thick] (k.east) |- (c1.west);
+  \draw[->, thick] (c1) -- (c2);
+  \draw[->, thick] (c2) -- (cdots);
+  \draw[->, thick] (cdots) -- (cT);
+
+  % sensitivity maps fed into the cascades
+  \draw[->, thick, orange!70!black, dashed]
+        (smaps.south) .. controls +(0,-10mm) and +(0,12mm) .. (cT.north);
+
+  % background box around cascades with caption
+  \begin{scope}[on background layer]
+    \node[fit=(c1)(c2)(cdots)(cT), draw, rounded corners=3pt, inner sep=5mm,
+          fill=blue!2] (chain) {};
+  \end{scope}
+  \node[below=1mm of chain, font=\footnotesize, align=center]
+        {وزن‌های مستقل در هر آبشار؛ همگی در حوزهٔ فضای‑کی};
+
+  % Combination + final image
+  \node[mod, right=14mm of cT, fill=green!10] (comb) {ترکیبِ\\ RSS / SENSE};
+  \node[io, right=12mm of comb, fill=green!14] (img) {تصویرِ نهایی\\ $\hat{\mathbf{m}}$};
+  \draw[->, thick] (cT) -- (comb);
+  \draw[->, thick] (comb) -- (img);
+  \draw[->, thick, orange!70!black, dashed] (smaps.east) -- ++(6mm,0) |- (comb.north);
+
+\end{tikzpicture}}
+\end{document}

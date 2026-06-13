@@ -1,0 +1,60 @@
+% EU MDR conformity-assessment route for a Class IIb MRI (Annex IX, QMS +
+% technical-documentation assessment): the seven steps from building a QMS to
+% affixing the CE mark and registering in EUDAMED.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  stp/.style={draw, rounded corners=2pt, fill=blue!8, align=center,
+               text width=58mm, minimum height=11mm, font=\footnotesize},
+  nb/.style={fill=orange!14},
+  mfr/.style={fill=green!12},
+  num/.style={circle, draw, fill=white, font=\footnotesize\bfseries, inner sep=1.2pt, minimum size=5mm},
+  node distance=8mm]
+
+  \node[stp, mfr] (s1) {استقرار QMS مطابق ISO 13485 (فصل ۵۶)};
+  \node[stp, mfr, below=of s1] (s2) {تدوین مستندات فنی\\ (پیوست II / III) $+$ گزارش ارزیابی بالینی CER};
+  \node[stp, below=of s2] (s3) {انتخاب و عقد قرارداد با نهاد مطلع (NB)};
+  \node[stp, nb, below=of s3] (s4) {ممیزی QMS توسط NB $+$ بررسی\\ نمونه‌ای از پرونده‌های فنی (IIb)};
+  \node[stp, nb, below=of s4] (s5) {صدور گواهی توسط NB};
+  \node[stp, mfr, below=of s5] (s6) {صدور اظهارنامهٔ انطباق\\ (DoC) توسط سازنده};
+  \node[stp, below=of s6] (s7) {الصاق نشان CE $+$ ثبت در EUDAMED};
+
+  % stp numbers
+  \foreach \n/\s in {1/s1,2/s2,3/s3,4/s4,5/s5,6/s6,7/s7}
+    \node[num] at (\s.west) {\n};
+
+  % connecting arrows
+  \foreach \a/\b in {s1/s2,s2/s3,s3/s4,s4/s5,s5/s6,s6/s7}
+    \draw[->, thick] (\a) -- (\b);
+
+  % ongoing NB surveillance loop (periodic / unannounced audits)
+  \draw[->, dashed, orange!60!black]
+     (s7.east) -- ++(12mm,0) |- node[pos=0.25, right, font=\scriptsize, align=right]
+     {ممیزی‌های\\ دوره‌ای و\\ بدون اعلان NB؛\\ گواهی\\ باید\\ تمدید شود} (s4.east);
+
+  % role legend
+  \begin{scope}[font=\scriptsize]
+    \node[stp, mfr, text width=24mm, minimum height=5mm, anchor=north west] (lm)
+          at ($(s1.north east)+(20mm,0)$) {سازنده};
+    \node[stp, nb, text width=24mm, minimum height=5mm, below=2mm of lm] (ln)
+          {نهاد مطلع (NB)};
+  \end{scope}
+\end{tikzpicture}}
+\end{document}

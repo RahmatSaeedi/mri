@@ -1,0 +1,51 @@
+% NCO structure: frequency tuning word feeds an N-bit phase accumulator (mod 2^N)
+% with feedback; the upper P bits address a sine LUT producing cos and sin.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    block/.style={draw, rounded corners=2pt, minimum height=14mm, minimum width=20mm, align=center, fill=blue!6},
+    add/.style={draw, circle, minimum size=7mm, inner sep=0pt, fill=orange!15}]
+
+  % FTW input
+  \node[align=center] (ftw) {کلمهٔ تنظیم بسامد (FTW)\\$N$ بیت};
+
+  % phase accumulator (adder + register)
+  \node[add, below=10mm of ftw] (sum) {$+$};
+  \node[block, below=8mm of sum] (acc) {انباشتگر\\فاز\\(ثبات، $N$ بیت)\\$\bmod\,2^N$};
+
+  \draw[->, thick] (ftw) -- (sum);
+  \draw[->, thick] (sum) -- (acc);
+
+  % feedback loop: acc output back to adder
+  \draw[->, thick] (acc.west) -- ++(-12mm,0) node[left, align=center, midway, yshift=4mm] {} |- (sum.west);
+  \node[align=center, font=\scriptsize] at ($(acc.west)+(-12mm,8mm)$) {پسخور\\\RL{(هر ساعت $+$FTW)}};
+
+  % truncation block
+  \node[block, right=18mm of acc] (trunc) {برش\\فاز};
+  \node[block, right=14mm of trunc] (lut) {جدول جستجوی سینوس\\\RL{($2^P$ درایه، دامنهٔ $D$ بیتی)}};
+
+  \draw[->, thick] (acc.east) -- node[above, align=center, font=\scriptsize] {فاز انباشته\\($N$ بیت)} (trunc.west);
+  \draw[->, thick] (trunc.east) -- node[above, align=center, font=\scriptsize] {$P$ بیت بالایی\\(نشانی جدول)} (lut.west);
+
+  % outputs cos / sin
+  \draw[->, thick] (lut.east) ++(0,3mm) -- ++(14mm,0) node[right] {$\cos$};
+  \draw[->, thick] (lut.east) ++(0,-3mm) -- ++(14mm,0) node[right] {$\sin$};
+
+\end{tikzpicture}}
+\end{document}

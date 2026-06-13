@@ -1,0 +1,65 @@
+% Discrete Halbach ring (cross-section, k=2 pattern): N blocks around a bore,
+% each magnetization arrow at angle 2*phi -> uniform transverse B0 inside,
+% ~0 outside (self-shielded).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  \def\Rring{3.2}      % radius of block centres
+  \def\bs{0.78}        % block side length
+  \def\Nblk{8}         % number of blocks
+
+  % bore (inner region)
+  \fill[blue!8] (0,0) circle (\Rring-0.55);
+  \draw[blue!50!black, dashed] (0,0) circle (\Rring-0.55);
+  \node[font=\footnotesize, align=center] at (0,0.7) {مجرا\\(سر بیمار)};
+
+  % uniform transverse B0 field inside the bore (pointing +x)
+  \foreach \yy in {-0.9,-0.45,0,0.45,0.9}{
+    \draw[->, red, thick] (-1.4,\yy) -- (1.4,\yy);
+  }
+  \node[red, font=\footnotesize] at (0,-0.95) {$B_0$ (یکنواخت)};
+
+  % N blocks placed at phi_j = 360*j/N, magnetization arrow at angle 2*phi_j
+  \foreach \j in {0,...,7}{
+    \pgfmathsetmacro\phi{360*\j/\Nblk}
+    \pgfmathsetmacro\mang{2*\phi}
+    \pgfmathsetmacro\bx{\Rring*cos(\phi)}
+    \pgfmathsetmacro\by{\Rring*sin(\phi)}
+    % block (square rotated to face the centre for a tidy ring look)
+    \begin{scope}[shift={(\bx,\by)}, rotate=\phi]
+      \fill[gray!20, draw=black] (-\bs/2,-\bs/2) rectangle (\bs/2,\bs/2);
+    \end{scope}
+    % magnetization arrow inside the block, at angle 2*phi
+    \draw[->, very thick, blue!70!black]
+       ({\bx-0.3*cos(\mang)},{\by-0.3*sin(\mang)}) --
+       ({\bx+0.3*cos(\mang)},{\by+0.3*sin(\mang)});
+  }
+
+  % outside field ~ 0
+  \node[font=\footnotesize, align=center] at (0,4.55)
+    {$B\approx 0$ در بیرون (خودپوشش)};
+  \draw[->, gray] (0,4.2) -- (0,\Rring+0.6);
+
+  % caption-ish note about the rotation rule
+  \node[font=\footnotesize, align=center, blue!70!black] at (0,-4.6)
+    {زاویهٔ مغناطش بلوک در $\phi$ \,=\, $2\phi$ (در هر دور، دو بار می‌چرخد)};
+
+\end{tikzpicture}}
+\end{document}

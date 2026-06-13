@@ -1,0 +1,93 @@
+% Full-bridge (H-bridge) four-quadrant gradient power amplifier topology.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    sw/.style={draw, thick, fill=blue!8, minimum width=12mm, minimum height=8mm, rounded corners=1pt},
+    rail/.style={very thick}]
+
+  % ---- DC-link rails ----
+  \coordinate (TL) at (0,4.6);
+  \coordinate (TR) at (7,4.6);
+  \coordinate (BL) at (0,-0.6);
+  \coordinate (BR) at (7,-0.6);
+
+  % top rail (+Vbus)
+  \draw[rail, red!70!black] (TL) -- (TR);
+  \node[above] at ($(TL)!0.5!(TR)$) {$+V_{\mathrm{bus}}$ \ (پیوند DC)};
+  % bottom rail (GND)
+  \draw[rail, black] (BL) -- (BR);
+  \node[below] at ($(BL)!0.5!(BR)$) {GND \ (0\,V)};
+  % (GND/0 V kept verbatim: acronym + value)
+
+  % rail nodes
+  \fill (TL) circle (1.6pt); \fill (TR) circle (1.6pt);
+  \fill (BL) circle (1.6pt); \fill (BR) circle (1.6pt);
+
+  % ---- left leg : Q1 (top), Q2 (bottom) ----
+  \node[sw] (Q1) at (0,3.1) {$Q_1$};
+  \node[sw] (Q2) at (0,0.9) {$Q_2$};
+  \draw[thick] (TL) -- (Q1.north);
+  \draw[thick] (Q1.south) -- (Q2.north);
+  \draw[thick] (Q2.south) -- (BL);
+  \coordinate (A) at (0,2.0); % midpoint left leg
+
+  % ---- right leg : Q3 (top), Q4 (bottom) ----
+  \node[sw] (Q3) at (7,3.1) {$Q_3$};
+  \node[sw] (Q4) at (7,0.9) {$Q_4$};
+  \draw[thick] (TR) -- (Q3.north);
+  \draw[thick] (Q3.south) -- (Q4.north);
+  \draw[thick] (Q4.south) -- (BR);
+  \coordinate (B) at (7,2.0); % midpoint right leg
+
+  % ---- gradient coil load (L, R) between A and B ----
+  % wire from A
+  \draw[thick] (A) -- (1.4,2.0);
+  % inductor (coil)
+  \draw[thick, decoration={coil, aspect=0.6, segment length=3.2mm, amplitude=2.2mm}, decorate]
+        (1.4,2.0) -- (3.3,2.0);
+  % resistor (zig-zag) -> use simple rectangle
+  \draw[thick] (3.3,2.0) -- (3.55,2.0);
+  \draw[thick, fill=white] (3.55,1.78) rectangle (4.65,2.22);
+  \draw[thick] (4.65,2.0) -- (5.6,2.0) -- (B);
+  % labels for load
+  \node at (2.35,2.55) {$L$};
+  \node at (4.10,2.0) {$R$};
+  \node[align=center, draw, dashed, rounded corners, fill=blue!4, inner sep=2pt]
+        at (3.5,3.55) {سیم‌پیچ گرادیان (A--B)};
+
+  % node A and B markers
+  \fill (A) circle (1.6pt); \node[left=1pt] at (A) {A};
+  \fill (B) circle (1.6pt); \node[right=1pt] at (B) {B};
+
+  % current direction i_g
+  \draw[->, very thick, green!50!black] (1.7,1.55) -- (3.0,1.55)
+        node[midway, below] {$i_g$};
+
+  % ---- diagonal switching annotation ----
+  \node[align=left, font=\footnotesize, anchor=west] at (8.2,3.6)
+    {$Q_1,Q_4$ روشن $\Rightarrow +V_{\mathrm{bus}}$};
+  \node[align=left, font=\footnotesize, anchor=west] at (8.2,2.9)
+    {$Q_3,Q_2$ روشن $\Rightarrow -V_{\mathrm{bus}}$};
+  \node[align=left, font=\footnotesize, anchor=west] at (8.2,2.2)
+    {$Q_1,Q_3$ / $Q_2,Q_4$ روشن $\Rightarrow 0$ (چرخش آزاد)};
+  \node[align=left, font=\footnotesize, anchor=west, text=red!60!black] at (8.2,1.4)
+    {چهارربعی: $\pm v,\ \pm i$};
+
+\end{tikzpicture}}
+\end{document}

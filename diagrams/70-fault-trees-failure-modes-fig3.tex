@@ -1,0 +1,65 @@
+% Fault tree: TOP event "Incorrect spatial encoding / gradient artifact",
+% decomposed via OR into amplitude/gain error, transient response, calibration error.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={rectangle, draw=black!75, very thick, fill=red!14,
+      text width=5.0cm, align=center, inner sep=5pt, minimum height=1.0cm},
+    inter/.style={rectangle, draw=black!70, thick, fill=blue!10,
+      text width=2.8cm, align=center, inner sep=4pt, minimum height=1.1cm},
+    basic/.style={circle, draw=black!70, thick, fill=yellow!22,
+      align=center, inner sep=1pt, minimum size=1.4cm, font=\scriptsize},
+    gate/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt},
+    line/.style={-, thick, black!60}]
+
+  \node[top] (top) {رویداد بالا (TOP):\\ \emph{کدگذاری مکانی نادرست / آرتیفکت}};
+  \node[gate, below=0.30cm of top] (g0) {OR};
+
+  \node[inter] (amp) at (-5.2,-2.4) {خطای دامنه / بهرهٔ گرادیان};
+  \node[inter] (tr)  at ( 0.0,-2.4) {پاسخ گذرای نادرست (جریان گردابی / گرمایش)};
+  \node[inter] (cal) at ( 5.2,-2.4) {خطای کالیبراسیون (هندسه / خطی‌بودن)};
+
+  \draw[line] (top) -- (g0);
+  \draw[line] (g0) -- (amp);
+  \draw[line] (g0) -- (tr);
+  \draw[line] (g0) -- (cal);
+
+  \node[gate, below=0.25cm of amp] (g1) {OR};
+  \node[basic] (gpa) at (-6.3,-4.9) {خطای GPA};
+  \node[basic] (cab) at (-4.1,-4.9) {کابل / رابط};
+  \draw[line] (amp) -- (g1);
+  \draw[line] (g1) -- (gpa);
+  \draw[line] (g1) -- (cab);
+
+  \node[gate, below=0.25cm of tr] (g2) {OR};
+  \node[basic] (pre) at (-1.1,-4.9) {پیش‌جبران گردابی نادرست};
+  \node[basic] (drift) at (1.1,-4.9) {رانش گرمایی $R$};
+  \draw[line] (tr) -- (g2);
+  \draw[line] (g2) -- (pre);
+  \draw[line] (g2) -- (drift);
+
+  \node[gate, below=0.25cm of cal] (g3) {OR};
+  \node[basic] (map) at (4.1,-4.9) {نقشهٔ گرادیان منسوخ};
+  \node[basic] (lin) at (6.3,-4.9) {افت خطی‌بودن میدان};
+  \draw[line] (cal) -- (g3);
+  \draw[line] (g3) -- (map);
+  \draw[line] (g3) -- (lin);
+\end{tikzpicture}}
+\end{document}

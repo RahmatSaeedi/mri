@@ -1,0 +1,72 @@
+% Standalone TikZ figure: four reconstruction paradigms branching from
+% undersampled k-space data d: classic (Ch.46), image-domain post-processing,
+% unrolled/variational (VarNet/MoDL), and generative/diffusion.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum width=30mm,
+                minimum height=20mm, thick, fill=blue!4},
+    note/.style={align=center, font=\footnotesize\itshape, text width=32mm}]
+
+  % Source node
+  \node[draw, fill=gray!12, rounded corners=2pt, thick, minimum width=46mm]
+        (src) {دادهٔ فضای‑کیِ زیرنمونه‌برداری‌شده $\mathbf{d}$};
+
+  % Four columns
+  \def\colsep{40mm}
+  \node[box, below=18mm of src, xshift=-1.5*\colsep] (c1)
+        {\textbf{کلاسیک (فصل\,۴۶)}\\[2pt]
+         $\mathcal{R}(\mathbf{m})=\|\Psi\mathbf{m}\|_1$\\
+         حلِ تکراری\\ ISTA / ADMM};
+  \node[box, below=18mm of src, xshift=-0.5*\colsep] (c2)
+        {\textbf{حوزهٔ تصویر}\\[2pt]
+         $\mathbf{m}_0 = E^{H}\mathbf{d}$\\
+         $\mathbf{m}=\mathrm{CNN}(\mathbf{m}_0)$\\ بدون مدل فیزیکی};
+  \node[box, below=18mm of src, xshift=0.5*\colsep] (c3)
+        {\textbf{بازشده / تغییراتی}\\[2pt]
+         VarNet / MoDL\\
+         تکرار:\\ DC $\leftrightarrow$ CNN$_{\mathrm{prior}}$};
+  \node[box, below=18mm of src, xshift=1.5*\colsep] (c4)
+        {\textbf{انتشار / مولد}\\[2pt]
+         $p(\mathbf{m})$ِ آموخته‌شده\\
+         نمونه‌برداری از\\ پسین $p(\mathbf{m}\!\mid\!\mathbf{d})$};
+
+  % Branch routing
+  \coordinate (bus) at ($(src.south)+(0,-9mm)$);
+  \draw[thick] (src.south) -- (bus);
+  \draw[thick] (c1.north |- bus) -- (c4.north |- bus);
+  \foreach \c in {c1,c2,c3,c4}{
+    \draw[->, thick] (\c.north |- bus) -- (\c.north);
+  }
+
+  % Bottom notes
+  \node[note, below=4mm of c1] {منظم‌سازِ دست‌ساز};
+  \node[note, below=4mm of c2, text=red!70!black] {سریع، پرخطر (توهم ساختار)};
+  \node[note, below=4mm of c3, text=green!45!black] {دقیق، پایدار؛ استانداردِ صنعت};
+  \node[note, below=4mm of c4] {منعطف، عدم‌قطعیت، اما کند};
+
+  % Physics emphasis underline on c3/c4
+  \begin{scope}[on background layer]
+    \node[fit=(c3)(c4), draw=green!55!black, dashed, rounded corners=3pt,
+          inner sep=4pt, label={[green!45!black, font=\footnotesize]above:فیزیک در معماری}] {};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,77 @@
+% QMS top-level map: ISO 13485 / QMSR breaks into five pillars, each with
+% its clause, sub-activities, and output records. Risk management underlies all.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+  pillar/.style={draw, rounded corners=2pt, align=center, fill=blue!8,
+                 minimum height=10mm, text width=24mm, font=\footnotesize},
+  outrec/.style={draw, rounded corners=2pt, align=center, fill=green!8,
+              text width=24mm, font=\scriptsize\sffamily, minimum height=11mm},
+  act/.style={align=center, font=\scriptsize, text width=24mm}]
+
+  % Top QMS box
+  \node[draw, rounded corners=3pt, fill=blue!18, very thick, align=center,
+        text width=92mm, minimum height=12mm] (qms)
+        {\textbf{سامانهٔ مدیریت کیفیت (QMS)}\\[1pt]
+         بر پایهٔ ISO 13485:2016 / QMSR};
+
+  % Five pillars
+  \node[pillar, below=15mm of qms, xshift=-50mm] (p1) {کنترل\\مدارک\\(بند 4.2)};
+  \node[pillar, right=4mm of p1] (p2) {کنترل\\طراحی\\(بند 7.3)};
+  \node[pillar, right=4mm of p2] (p3) {صحه‌گذاری\\فرایند\\(بند 7.5.6)};
+  \node[pillar, right=4mm of p3] (p4) {کنترل\\تأمین‌کننده\\(بند 7.4)};
+  \node[pillar, right=4mm of p4] (p5) {پایش\\و بهبود\\(بند 8)};
+
+  % Trunk + branches from QMS to pillars
+  \coordinate (bus) at ($(qms.south)+(0,-7mm)$);
+  \draw[thick] (qms.south) -- (bus);
+  \foreach \p in {p1,p2,p3,p4,p5} {
+    \draw[thick] (bus -| \p.north) -- (\p.north);
+  }
+  \draw[thick] (bus -| p1.north) -- (bus -| p5.north);
+
+  % Activities under each pillar
+  \node[act, below=2mm of p1] (a1) {نسخه‌بندی،\\تصویب،\\توزیع کنترل‌شده};
+  \node[act, below=2mm of p2] (a2) {input$\to$output$\to$\\verify$\to$validate\\$\to$transfer};
+  \node[act, below=2mm of p3] (a3) {IQ / OQ / PQ\\$C_p$ / $C_{pk}$};
+  \node[act, below=2mm of p4] (a4) {ارزیابی، تصویب،\\ممیزی، توافق‌نامهٔ\\کیفیت};
+  \node[act, below=2mm of p5] (a5) {ممیزی داخلی،\\NCR، CAPA،\\بازنگری مدیریت};
+
+  % Outputs (records)
+  \node[outrec, below=2mm of a1] (o1) {SOPها،\\سوابق};
+  \node[outrec, below=2mm of a2] (o2) {DHF / DMR /\\DHR};
+  \node[outrec, below=2mm of a3] (o3) {پروتکل‌ها و\\گزارش‌های\\صحه‌گذاری};
+  \node[outrec, below=2mm of a4] (o4) {فهرست تأمین‌کنندگانِ\\تأییدشده\\(ASL)};
+  \node[outrec, below=2mm of a5] (o5) {PMS، مراقبت،\\گزارش‌های رخداد};
+
+  \foreach \a/\o in {a1/o1,a2/o2,a3/o3,a4/o4,a5/o5} {
+    \draw[->, thick] (\a) -- (\o);
+  }
+
+  % Risk management underlies everything
+  \node[draw, rounded corners=3pt, fill=orange!18, align=center, very thick,
+        below=8mm of o3, text width=70mm, minimum height=10mm] (risk)
+        {\textbf{مدیریت ریسک در سراسر چرخهٔ عمر}\\
+         {\footnotesize ISO 14971 (فصل 62)}};
+  \draw[->, thick, orange!60!black] (risk.north) -- (o3.south);
+  \draw[->, dashed, orange!60!black] (risk.west) -- ++(-1.2,0) |- (o1.south);
+  \draw[->, dashed, orange!60!black] (risk.east) -- ++(1.2,0) |- (o5.south);
+\end{tikzpicture}}
+\end{document}

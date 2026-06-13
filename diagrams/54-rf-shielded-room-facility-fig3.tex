@@ -1,0 +1,79 @@
+% Standalone TikZ figure: complete RF shielded room (Faraday cage) layout.
+% Continuous conductive shell with a finger-stock door, fine-mesh / ITO window,
+% a penetration panel (pi filter for power, waveguide for water, optical fibre
+% via waveguide), and a single-point ground.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ---------- continuous conductive shell ----------
+  \draw[line width=2pt, orange!70!black, rounded corners=3pt]
+        (0,0) rectangle (12,7);
+  \node[align=center, anchor=north] at (6,7.55)
+        {پوستهٔ رسانای پیوسته (Cu / فولاد)};
+
+  % ---------- door (finger-stock) ----------
+  \node[draw, rounded corners, fill=blue!8, align=center, minimum width=2.6cm,
+        minimum height=1.2cm] (door) at (2.4,5.2)
+        {درِ با\\ تماس فنری};
+  % finger-stock contact teeth at the jamb
+  \foreach \y in {4.7,4.85,...,5.7}{
+    \draw[orange!70!black, line width=1pt] (1.05,\y) -- (1.25,\y);
+  }
+
+  % ---------- window (mesh / ITO) ----------
+  \node[draw, rounded corners, fill=cyan!8, align=center, minimum width=3.0cm,
+        minimum height=1.2cm] (win) at (8.0,5.2)
+        {پنجرهٔ دید\\ توری ریز / ITO};
+  % mesh hatch
+  \draw[pattern=crosshatch, pattern color=cyan!50!black]
+        (6.6,4.65) rectangle (9.4,4.85);
+
+  % ---------- penetration panel ----------
+  \node[anchor=west, font=\bfseries] at (0.6,3.4) {پانل عبور:};
+
+  % power via pi filter
+  \draw[->, very thick, red!70!black] (0,2.6) -- (2.0,2.6);
+  \node[draw, fill=red!8, font=\footnotesize] (pif) at (3.0,2.6) {صافیِ $\pi$};
+  \draw[->, very thick, red!70!black] (pif.east) -- (4.6,2.6);
+  \node[left] at (0,2.6) {برق};
+  \node[right] at (4.6,2.6) {درون};
+
+  % water via waveguide
+  \draw[->, very thick, blue!60!cyan] (12,2.6) -- (10.0,2.6);
+  \node[draw, fill=blue!8, font=\footnotesize, align=center] (wg) at (8.7,2.6)
+        {موجبر\\ زیر فرکانس قطع};
+  \draw[->, very thick, blue!60!cyan] (wg.west) -- (7.0,2.6);
+  \node[right] at (12,2.6) {آب};
+
+  % optical fibre via waveguide
+  \draw[->, very thick, teal!70!black] (0,1.5) -- (2.0,1.5);
+  \node[draw, fill=teal!8, font=\footnotesize] (wg2) at (3.0,1.5) {موجبر};
+  \draw[->, very thick, teal!70!black] (wg2.east) -- (4.6,1.5);
+  \node[left] at (0,1.5) {فیبر نوری};
+
+  % ---------- single-point ground ----------
+  \draw[line width=1.4pt] (6,0) -- (6,-0.6);
+  \draw[line width=1.4pt] (5.6,-0.6) -- (6.4,-0.6);
+  \draw[line width=1.2pt] (5.75,-0.8) -- (6.25,-0.8);
+  \draw[line width=1.0pt] (5.9,-1.0) -- (6.1,-1.0);
+  \node[anchor=west] at (6.5,-0.7) {اتصال زمینِ تک‌نقطه};
+
+\end{tikzpicture}}
+\end{document}

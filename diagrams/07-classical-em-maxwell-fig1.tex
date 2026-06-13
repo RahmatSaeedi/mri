@@ -1,0 +1,78 @@
+% Standalone TikZ figure: feedback structure of Maxwell's equations and
+% their mapping onto MRI subsystems. Built to cropped PDF (print) and SVG
+% (web/epub) by the Makefile in this directory.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    eq/.style={rectangle, rounded corners=2pt, draw=black!70, thick,
+               align=center, inner sep=5pt, minimum width=44mm, fill=#1},
+    src/.style={circle, draw=black!60, thick, inner sep=2pt, fill=black!4,
+                minimum size=8mm},
+    map/.style={anchor=west, font=\footnotesize}]
+
+  % ---- The four Maxwell equations as a vertical stack ----------------------
+  \node[eq=blue!7]  (gaussE) {$\nabla\!\cdot\!\mathbf{E}=\rho/\varepsilon_0$\\[1pt]\footnotesize گاؤس (الکتریکی)};
+  \node[eq=red!7, below=14mm of gaussE] (ampere)
+        {$\nabla\!\times\!\mathbf{B}=\mu_0\mathbf{J}+\mu_0\varepsilon_0\,\partial_t\mathbf{E}$\\[1pt]\footnotesize Amp\`ere--Maxwell};
+  \node[eq=red!7, below=14mm of ampere] (faraday)
+        {$\nabla\!\times\!\mathbf{E}=-\,\partial_t\mathbf{B}$\\[1pt]\footnotesize Faraday};
+  \node[eq=blue!7, below=14mm of faraday] (gaussB)
+        {$\nabla\!\cdot\!\mathbf{B}=0$\\[1pt]\footnotesize نبود تک‌قطبی مغناطیسی};
+
+  % ---- Source feeds --------------------------------------------------------
+  \node[src, left=12mm of gaussE]  (rho) {$\rho$};
+  \node[src, left=12mm of ampere]  (J)   {$\mathbf{J}$};
+  \draw[->, thick] (rho) -- (gaussE);
+  \draw[->, thick] (J)   -- (ampere);
+
+  % ---- Feedback coupling between Ampere-Maxwell and Faraday ----------------
+  % E changing -> B  (Ampere-Maxwell)   and   B changing -> E  (Faraday)
+  \draw[->, very thick, red!70!black]
+        ($(faraday.east)+(0,1mm)$) to[out=20,in=-20]
+        node[right=1pt, align=left, font=\footnotesize\itshape]
+            {$\partial_t\mathbf{B}$\\ می‌سازد $\mathbf{E}$}
+        ($(ampere.east)+(0,-1mm)$);
+  \draw[->, very thick, blue!60!black]
+        ($(ampere.west)+(8mm,-7mm)$) to[out=-110,in=110]
+        node[left=1pt, align=right, font=\footnotesize\itshape]
+            {$\partial_t\mathbf{E}$\\ می‌سازد $\mathbf{B}$}
+        ($(faraday.west)+(8mm,7mm)$);
+
+  % brace label for the coupled pair
+  \node[right=30mm of ampere, font=\footnotesize, align=center, text=black!55]
+        (loop) {موج EM\\ خودپایدار};
+  \draw[->, dotted, black!55] (loop.west) -- ++(-3mm,0);
+
+  % ---- Title --------------------------------------------------------------
+  \node[above=4mm of gaussE, font=\bfseries] {معادلات ماکسول};
+
+  % ---- MRI mapping panel ---------------------------------------------------
+  \node[draw=black!40, dashed, rounded corners, inner sep=6pt,
+        below=12mm of gaussB, align=left, minimum width=90mm,
+        text width=90mm] (panel) {
+    \textbf{نگاشت بر MRI}\\[3pt]
+    $\nabla\!\cdot\!\mathbf{B}=0$ \quad میدان پراکندهٔ آهنربا\\
+    $\nabla\!\times\!\mathbf{B}=\mu_0\mathbf{J}$ \quad ساخت $B_0$ و گرادیان‌ها از جریان\\
+    $\nabla\!\times\!\mathbf{E}=-\partial_t\mathbf{B}$ \quad سیگنال القایی + جریان‌های گردابی\\
+    Amp\`ere--Maxwell \quad انتشار موج RF و تشدید سیم‌پیچ\\
+    $\mathbf{F}=q\,\mathbf{v}\!\times\!\mathbf{B}$ \quad نیروی لورنتس $\rightarrow$ نوفهٔ صوتی};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,60 @@
+% Passive shimming procedure during magnet installation: an iterative
+% workflow from initial field mapping through harmonic analysis, sensitivity
+% matrix, NNLS optimization, steel placement, re-mapping, and acceptance.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=6mm and 14mm]
+  \tikzset{
+    pstep/.style={rectangle, rounded corners=2pt, draw=blue!55!black, thick,
+      fill=blue!6, text width=46mm, align=left, inner sep=4pt, minimum height=11mm},
+    dec/.style={diamond, aspect=2.4, draw=orange!70!black, thick, fill=orange!10,
+      align=center, inner sep=1pt, text width=30mm},
+    term/.style={rectangle, rounded corners=6pt, draw=green!50!black, thick,
+      fill=green!10, text width=46mm, align=center, inner sep=4pt, minimum height=10mm}
+  }
+
+  % Steps (top to bottom)
+  \node[pstep] (s1) {\textbf{۱. نقشهٔ میدان} روی DSV\\(پلاترِ هال / دوربین NMR،\\$\sim$۲۴ صفحهٔ نصف‌النهاری)};
+  \node[pstep, below=of s1] (s2) {\textbf{۲. تحلیل هارمونیک}\\ضرایب $(\alpha_{nm},\beta_{nm})$؛\\گزارش RMS و دامنهٔ پیک‌تاپیک [ppm]};
+  \node[pstep, below=of s2] (s3) {\textbf{۳. ماتریس حساسیت} $\mathbf{S}$\\از هندسهٔ سینیِ شیم};
+  \node[pstep, below=of s3] (s4) {\textbf{۴. حلّ NNLS}\\$\Rightarrow$ توزیع بهینهٔ جرمِ فولاد\\$\mathbf{w}\ge 0$};
+  \node[pstep, below=of s4] (s5) {\textbf{۵. گردکردن} به اندازه‌های گسستهٔ ورق؛\\قراردادن قطعات در سینی‌ها؛\\واردکردن سینی‌ها به بور};
+  \node[dec, below=8mm of s5] (d6) {\textbf{۶.} نقشه‌برداری مجدد.\\ناهمگنی\\$\le$ هدف؟};
+  \node[term, below=9mm of d6] (s7) {\textbf{۷. ثبت} چیدمان نهاییِ فولاد\\و نقشهٔ میدان\\(سند پذیرش)};
+
+  % Vertical arrows
+  \draw[->, thick] (s1) -- (s2);
+  \draw[->, thick] (s2) -- (s3);
+  \draw[->, thick] (s3) -- (s4);
+  \draw[->, thick] (s4) -- (s5);
+  \draw[->, thick] (s5) -- (d6);
+  \draw[->, thick] (d6) -- node[right, pos=0.4] {بله} (s7);
+
+  % Feedback loop: no -> back to step 2
+  \draw[->, thick, red!70!black] (d6.east) -- ++(2.6,0)
+    node[midway, above, font=\footnotesize] {خیر}
+    |- node[pos=0.25, right, align=left, font=\footnotesize]
+       {بهینه‌سازی مجددِ\\باقی‌مانده\\(۳ تا ۵ حلقه)} (s2.east);
+
+  % Acceptance criterion note
+  \node[below=5mm of s7, text width=52mm, align=center, font=\footnotesize, gray!60!black]
+    {معیار نمونه: RMS کمتر از $1$--$2$\,ppm\\روی DSV با قطر ۴۵\,cm در ۱٫۵ تا ۳\,T};
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,64 @@
+% Active shim system architecture (axial view of the bore): nested concentric
+% layers from cryostat/yoke inward to high-order shim coils, gradient coil
+% (carrying linear X,Y,Z shim as DC), and the DSV / patient at the center.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % Concentric rounded rectangles (axial cross-section of the bore)
+  \tikzset{layer/.style={rounded corners=4pt, very thick}}
+
+  % Outermost: cryostat / yoke
+  \draw[layer, draw=gray!60!black, fill=gray!12]
+    (-5.0,-3.6) rectangle (5.0,3.6);
+  % High-order shim coils
+  \draw[layer, draw=purple!60!black, fill=purple!8]
+    (-4.1,-3.0) rectangle (4.1,3.0);
+  % Gradient coil (+ linear shim as DC)
+  \draw[layer, draw=blue!60!black, fill=blue!8]
+    (-3.0,-2.2) rectangle (3.0,2.2);
+  % DSV / patient
+  \draw[layer, draw=red!60!black, fill=red!10]
+    (-1.6,-1.2) rectangle (1.6,1.2);
+
+  % Center labels
+  \node[align=center, red!55!black] at (0,0)
+    {\textbf{DSV / بیمار}\\\footnotesize حجمِ هدفِ یکنواختی};
+  \node[align=center, blue!55!black] at (0,1.7)
+    {\footnotesize سیم‌پیچ گرادیان\\\footnotesize \RL{($+$ شیمِ خطیِ $X,Y,Z$ به‌صورت DC)}};
+  \node[align=center, purple!55!black] at (0,2.6)
+    {\footnotesize سیم‌پیچ‌های شیمِ مرتبه‌بالا:\ $Z^2,\ ZX,\ ZY,\ X^2{-}Y^2,\ XY,\ \dots$};
+
+  % Outer labels with leader lines on the right
+  \node[anchor=west, gray!60!black, font=\footnotesize] (lcryo) at (5.4,3.2) {کرایوستات / یوغ};
+  \draw[->, gray!60!black] (lcryo.west) -- (5.0,3.2);
+
+  \node[anchor=west, purple!55!black, font=\footnotesize] (lrad) at (5.4,2.0)
+    {روی استوانه‌ای به شعاع $a$};
+  \draw[->, purple!55!black] (lrad.west) -- (4.1,2.0);
+
+  % Radius annotation arrow inside
+  \draw[<->, thick, purple!55!black] (0,-3.0) -- (0,-2.2)
+    node[midway, fill=white, inner sep=1pt, font=\footnotesize] {$a$};
+
+  % Per-channel current drive note (bottom)
+  \node[align=center, font=\footnotesize, draw=black!40, rounded corners,
+        fill=yellow!12, inner sep=4pt] at (0,-4.4)
+    {هر کانال شیم $\to$ تقویت‌کنندهٔ جریانِ مستقل $\to I_{nm}$};
+\end{tikzpicture}}
+\end{document}

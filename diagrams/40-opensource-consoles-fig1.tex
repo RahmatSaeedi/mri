@@ -1,0 +1,68 @@
+% Standalone TikZ figure: Red Pitaya Zynq-7010/7020 PS/PL task division
+% as an MRI spectrometer. PS (ARM/Linux) handles soft real-time tasks,
+% PL (FPGA) handles hard deterministic timing; ADC/DAC and GPIO at edges.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    block/.style={draw, rounded corners=2pt, align=left, inner sep=4pt},
+    io/.style={font=\footnotesize\ttfamily}]
+
+  % ---- PS block ----
+  \node[block, fill=blue!8, minimum width=6.6cm, minimum height=2.4cm,
+        anchor=north west] (ps) at (0,0)
+        {\textbf{PS} -- ARM Cortex-A9، Linux\\[1pt]
+         \footnotesize $\bullet$ کارساز marcos\_server / ocra\\
+         \footnotesize $\bullet$ TCP، بارگذاری توالی، بارگذاری LUT\\
+         \footnotesize $\bullet$ آرایهٔ رویداد $\rightarrow$ حافظهٔ مشترک};
+
+  % ---- PL block ----
+  \node[block, fill=orange!10, minimum width=6.6cm, minimum height=2.7cm,
+        anchor=north west] (pl) at (0,-3.3)
+        {\textbf{PL} -- منطق برنامه‌پذیر FPGA\\[1pt]
+         \footnotesize $\bullet$ توالی‌ساز رویدادمحور (زمان‌بندی قطعی)\\
+         \footnotesize $\bullet$ TX: DDS/NCO $\rightarrow$ interp $\rightarrow$ DAC\\
+         \footnotesize $\bullet$ RX: ADC $\rightarrow$ mixer/NCO $\rightarrow$ CIC/FIR $\rightarrow$ decimate};
+
+  % ---- AXI / shared memory link between PS and PL ----
+  \draw[<->, thick] ($(ps.south)+(-0.6,0)$) -- ($(pl.north)+(-0.6,0)$);
+  \node[font=\footnotesize, anchor=west] at ($(ps.south)!0.5!(pl.north)+(-0.45,0)$)
+       {AXI / حافظهٔ مشترک};
+  \node[font=\footnotesize, anchor=east, align=center] at ($(ps.south)!0.5!(pl.north)+(3.0,0)$)
+       {دادهٔ خام RX $\uparrow$\\ آرایهٔ رویداد $\downarrow$};
+
+  % ---- Zynq SoC bounding box ----
+  \begin{scope}[on background layer]
+    \node[draw, thick, rounded corners=4pt, fill=gray!6,
+          fit=(ps)(pl), inner sep=10pt, label={[font=\bfseries]above:Zynq-7010/7020}] (soc) {};
+  \end{scope}
+
+  % ---- Left-side inputs ----
+  \draw[->] (-3.0, -0.3) node[io, left] {Ethernet} -- ($(soc.west)+(0,-0.3)$);
+  \draw[->] (-3.0, -1.5) node[io, left] {SD card}  -- ($(soc.west)+(0,-1.5)$);
+
+  % ---- Right-side outputs, drawn from the SoC east edge near the PL block ----
+  \coordinate (re) at (soc.east |- pl.center);
+  \draw[<-] ($(re)+(0, 1.0)$) -- ++(2.0,0) node[io, right] {DAC ch1 (RF, $\approx f_0$)};
+  \draw[<-] ($(re)+(0, 0.5)$) -- ++(2.0,0) node[io, right] {DAC ch2 (grad/ctrl)};
+  \draw[->] ($(re)+(0, 0.0)$) -- ++(2.0,0) node[io, right] {ADC ch1 (MR / LNA)};
+  \draw[->] ($(re)+(0,-0.5)$) -- ++(2.0,0) node[io, right] {ADC ch2 (ref/monitor)};
+  \draw[<->] ($(re)+(0,-1.0)$) -- ++(2.0,0) node[io, right] {GPIO/E1: TX\_blank, RX\_gate, grad trig};
+
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,65 @@
+% Fault tree: TOP event "Loss of cooling capacity (potential common-cause failure)",
+% decomposed via OR into water flow/pressure, heat exchange, coolant leak/loss.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={rectangle, draw=black!75, very thick, fill=red!14,
+      text width=5.4cm, align=center, inner sep=5pt, minimum height=1.0cm},
+    inter/.style={rectangle, draw=black!70, thick, fill=cyan!12,
+      text width=2.8cm, align=center, inner sep=4pt, minimum height=1.1cm},
+    basic/.style={circle, draw=black!70, thick, fill=yellow!22,
+      align=center, inner sep=1pt, minimum size=1.4cm, font=\scriptsize},
+    gate/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt},
+    line/.style={-, thick, black!60}]
+
+  \node[top] (top) {رویداد بالا (TOP):\\ \emph{از دست رفتن ظرفیت خنک‌کاری (CCF بالقوه)}};
+  \node[gate, below=0.30cm of top] (g0) {OR};
+
+  \node[inter] (flow) at (-5.2,-2.4) {افت جریان / فشار مدار آب};
+  \node[inter] (heat) at ( 0.0,-2.4) {افت تبادل گرما (چیلر)};
+  \node[inter] (leak) at ( 5.2,-2.4) {نشت / افت مبرّد};
+
+  \draw[line] (top) -- (g0);
+  \draw[line] (g0) -- (flow);
+  \draw[line] (g0) -- (heat);
+  \draw[line] (g0) -- (leak);
+
+  \node[gate, below=0.25cm of flow] (g1) {OR};
+  \node[basic] (pump) at (-6.3,-4.9) {خطای پمپ};
+  \node[basic] (clog) at (-4.1,-4.9) {گرفتگی فیلتر / خط};
+  \draw[line] (flow) -- (g1);
+  \draw[line] (g1) -- (pump);
+  \draw[line] (g1) -- (clog);
+
+  \node[gate, below=0.25cm of heat] (g2) {OR};
+  \node[basic] (comp) at (-1.1,-4.9) {کمپرسور چیلر};
+  \node[basic] (cond) at (1.1,-4.9) {فن / کندانسور کثیف};
+  \draw[line] (heat) -- (g2);
+  \draw[line] (g2) -- (comp);
+  \draw[line] (g2) -- (cond);
+
+  \node[gate, below=0.25cm of leak] (g3) {OR};
+  \node[basic] (hose) at (4.1,-4.9) {نشت شیلنگ / رابط};
+  \node[basic] (tank) at (6.3,-4.9) {افت سطح مخزن};
+  \draw[line] (leak) -- (g3);
+  \draw[line] (g3) -- (hose);
+  \draw[line] (g3) -- (tank);
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,53 @@
+% Magnet training curve: quench current rises with each quench toward a plateau.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=12cm, height=8cm,
+      axis lines=left,
+      xlabel={شمارهٔ کوئنچ}, ylabel={جریان کوئنچ $I_q$},
+      xmin=0, xmax=9, ymin=0, ymax=1.18,
+      xtick={1,2,3,4,5,6,7,8},
+      ytick={1.0}, yticklabels={اسمی},
+      clip=false,
+      every axis x label/.style={at={(ticklabel* cs:1.0)}, anchor=west},
+      every axis y label/.style={at={(ticklabel* cs:1.0)}, anchor=south},
+    ]
+    % target operating current line
+    \addplot[densely dashed, red!70!black, thick, domain=0:9, samples=2] {0.78};
+    \node[red!70!black, anchor=west, font=\footnotesize] at (axis cs:0.1,0.70)
+      {$I_{\mathrm{op}}$ (هدف)};
+
+    % nominal plateau line
+    \addplot[dotted, black!55, domain=0:9, samples=2] {1.0};
+
+    % training data: rising quench currents reaching a plateau
+    \addplot[only marks, mark=*, mark size=2.4pt, blue!65!black] coordinates {
+      (1,0.40) (2,0.55) (3,0.67) (4,0.78) (5,0.88) (6,0.97) (7,1.00) (8,1.00)
+    };
+    % connecting trend line
+    \addplot[blue!65!black, thick] coordinates {
+      (1,0.40) (2,0.55) (3,0.67) (4,0.78) (5,0.88) (6,0.97) (7,1.00) (8,1.00)
+    };
+
+    \node[blue!65!black, anchor=west, font=\footnotesize] at (axis cs:6.6,1.08)
+      {فلات (رسیدن به مقدار اسمی)};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

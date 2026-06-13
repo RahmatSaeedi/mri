@@ -1,0 +1,57 @@
+% Chapter 20 - Fig 1: The four pillars of MRI magnet specification.
+% Each pillar (field strength, homogeneity, temporal stability, fringe field)
+% lists its unit and the imaging/engineering consequences it drives.
+% Built to cropped PDF (print) and SVG (web/epub) by the Makefile in this directory.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    pillar/.style={rounded corners=3pt, draw=blue!55!black, thick,
+      fill=blue!8, text width=3.5cm, align=center, minimum height=1.9cm,
+      inner sep=4pt},
+    cons/.style={rounded corners=3pt, draw=gray!60, fill=gray!6,
+      text width=4.5cm, align=left, minimum height=1.9cm, inner sep=5pt},
+  ]
+
+  % Title banner
+  \node[draw=black, thick, fill=blue!18, rounded corners=3pt,
+        minimum width=14.6cm, minimum height=0.85cm, font=\bfseries] (title)
+        at (4.9,6.7) {مشخصات سامانهٔ آهنربای MRI};
+
+  % --- Four pillars (left column) ---
+  \node[pillar] (p1) at (0,5.0) {\textbf{(۱) استحکام میدان}\\[2pt] $B_0$\\[2pt] یکا: T};
+  \node[pillar] (p2) at (0,2.7) {\textbf{(۲) یکنواختی}\\[2pt] مکانی\\[2pt] یکا: ppm / DSV};
+  \node[pillar] (p3) at (0,0.4) {\textbf{(۳) پایداری زمانی}\\[2pt] رانش و لرزش\\[2pt] یکا: ppm/h, ppm};
+  \node[pillar] (p4) at (0,-1.9) {\textbf{(۴) میدان پراکنده}\\[2pt] میدان نشتی\\[2pt] یکا: G, m};
+
+  % --- Consequences (right column) ---
+  \node[cons] (c1) at (6.2,5.0) {SNR، کنتراست،\\ جابه‌جایی شیمیایی،\\ $T_1/T_2$، SAR، هزینه};
+  \node[cons] (c2) at (6.2,2.7) {اعوجاج هندسی،\\ سرکوب چربی، EPI، MRS،\\ پهنای خط طیفی};
+  \node[cons] (c3) at (6.2,0.4) {رانش فاز، شبح‌زدگی،\\ خطای کمّی‌سازی};
+  \node[cons] (c4) at (6.2,-1.9) {ایمنی، جایابی،\\ پوشش‌بندی، EMI،\\ تداخل با تجهیزات};
+
+  % Arrows pillar -> consequence
+  \foreach \a/\b in {p1/c1, p2/c2, p3/c3, p4/c4}
+    \draw[->, thick, blue!55!black] (\a.east) -- (\b.west);
+
+  % Connect title to pillars
+  \draw[->, gray!70] (title.south) -- (0,6.0);
+
+\end{tikzpicture}}
+\end{document}

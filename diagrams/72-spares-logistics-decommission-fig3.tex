@@ -1,0 +1,53 @@
+% Field-service workflow modeled as a state machine (service-call lifecycle).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    node distance=8mm and 16mm,
+    state/.style={draw, thick, rounded corners, minimum width=42mm, minimum height=9mm, align=center, fill=blue!8},
+    term/.style={draw, thick, ellipse, minimum width=30mm, align=center, fill=green!12},
+    lbl/.style={font=\footnotesize, text=black!70}]
+
+  \node[state] (det) {شناسایی / گزارش};
+  \node[state, below=of det] (tri) {غربالگری و عیب‌یابیِ از راه دور};
+  \node[state, below=of tri] (plan) {برنامه‌ریزیِ اعزام\\\footnotesize بررسی موجودی، زمان‌بندی، صدور قطعه};
+  \node[state, below=of plan] (site) {در محل:\\\footnotesize عیب‌یابی $\rightarrow$ تعمیر $\rightarrow$ تعویض FRU};
+  \node[state, below=of site] (ver) {راستی‌آزماییِ پس از تعمیر (QA)};
+  \node[state, below=of ver] (ret) {بازگشت به سرویس};
+  \node[state, below=of ret] (close) {بستن دستور کار + به‌روزرسانی KB};
+  \node[term, below=of close] (rev) {لجستیک معکوس:\\\footnotesize قطعهٔ معیوب $\rightarrow$ تعمیر / اسقاط};
+
+  % main vertical flow
+  \draw[->, very thick] (det) -- (tri);
+  \draw[->, very thick] (tri) -- node[right, lbl] {نیازمند مراجعه} (plan);
+  \draw[->, very thick] (plan) -- (site);
+  \draw[->, very thick] (site) -- (ver);
+  \draw[->, very thick] (ver) -- node[right, lbl] {قبول} (ret);
+  \draw[->, very thick] (ret) -- (close);
+  \draw[->, very thick] (close) -- (rev);
+
+  % remote-resolved branch
+  \node[term, right=22mm of tri] (resolved) {رفعِ از راه دور\\$\rightarrow$ بسته‌شده};
+  \draw[->, thick] (tri.east) -- node[above, lbl] {رفع از راه دور} (resolved.west);
+
+  % verification failure loop back to repair
+  \draw[->, thick, red!70!black]
+      (ver.east) -- ++(36mm,0) node[midway, above, lbl] {رد}
+      |- (site.east);
+\end{tikzpicture}}
+\end{document}

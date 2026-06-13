@@ -1,0 +1,52 @@
+% Overlap (critical-overlap) decoupling: two square loops overlapped so the net
+% mutual flux cancels and M12 = 0.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % --- Loop 1 ---
+  \draw[very thick, blue!60!black] (0,0) rectangle (3.2,3.2);
+  \node[blue!60!black] at (1.0,2.7) {حلقهٔ ۱};
+
+  % --- Loop 2, shifted right and down so it overlaps loop 1 ---
+  \draw[very thick, red!70!black] (2.4,-1.0) rectangle (5.6,2.2);
+  \node[red!70!black] at (4.6,-0.5) {حلقهٔ ۲};
+
+  % --- Overlap region (hatched) ---
+  \begin{scope}
+    \clip (0,0) rectangle (3.2,3.2);
+    \fill[pattern=north east lines, pattern color=black!45] (2.4,-1.0) rectangle (5.6,2.2);
+  \end{scope}
+  \draw[thick, black!55] (2.4,0) rectangle (3.2,2.2);
+
+  % --- Flux annotations ---
+  \node[align=center] at (1.3,1.2) {ناحیهٔ\\بدونِ هم‌پوشانی\\$+\Phi$};
+  \node[align=center, font=\footnotesize] at (2.8,1.1) {هم‌پوشانی\\$-\Phi$};
+  \node[align=center] at (4.4,0.9) {ناحیهٔ\\بدونِ هم‌پوشانی\\$+\Phi$};
+
+  % --- overlap width marker delta ---
+  \draw[<->] (2.4,-1.35) -- (3.2,-1.35) node[midway, below] {$\delta$};
+
+  % --- Result box ---
+  \node[draw, rounded corners=2pt, align=center, fill=green!6, font=\small]
+       at (3.0,3.9) {در $\delta$ بحرانی:\quad $\Phi_{\text{total}}=0 \;\Rightarrow\; M_{12}=0$};
+
+\end{tikzpicture}}
+\end{document}

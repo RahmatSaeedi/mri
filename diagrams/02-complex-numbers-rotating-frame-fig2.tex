@@ -1,0 +1,47 @@
+% Multiplication by e^{i theta} rotates a complex number through the angle
+% theta (counter-clockwise for theta > 0) without changing its length.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, scale=1.5]
+  % axes
+  \draw[->, thick] (-2.2,0) -- (2.4,0) node[right] {$\mathrm{Re}$};
+  \draw[->, thick] (0,-0.5) -- (0,2.4) node[above] {$\mathrm{Im}$};
+
+  \coordinate (O) at (0,0);
+  % z1 at 20 degrees, radius 2
+  \coordinate (Z1) at (20:2);
+  % z2 = e^{i theta} z1, rotated by theta=60 -> at 80 degrees, same radius
+  \coordinate (Z2) at (80:2);
+
+  % unit-radius reference arc to show equal length is preserved
+  \draw[dashed, gray] (20:2) arc (20:80:2);
+
+  % original vector z1
+  \draw[->, very thick, blue!70!black] (O) -- (Z1) node[right] {$z_1 = r\,e^{i\theta_1}$};
+  % rotated vector z2
+  \draw[->, very thick, red!75!black] (O) -- (Z2) node[above right] {$z_2 = e^{i\theta}\,z_1$};
+
+  % rotation angle theta between them
+  \draw[->, thick] (50:0.95) arc (20:80:0.95);
+  \node at (50:1.3) {$\theta$};
+
+  % note equal magnitudes
+  \node[align=center, gray] at (1.7,-0.42) {طول یکسان $r$\\(فقط چرخش)};
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,64 @@
+% Standalone TikZ figure: parallel sequence-engine architecture.
+% A shared always-on global time counter broadcasts time_cnt to
+% per-channel event decoders (+ player/DDS/capture/GPIO), which drive
+% the gradient/RF DACs, ADC strobe, and trigger output.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    dec/.style={draw, rounded corners=2pt, align=center, fill=green!8,
+                minimum height=14mm, minimum width=24mm, font=\footnotesize},
+    outp/.style={draw, rounded corners=2pt, align=center, fill=orange!12,
+                minimum height=7mm, minimum width=22mm, font=\footnotesize}]
+
+  % ---------- Global time counter ----------
+  \node[draw, rounded corners=3pt, fill=blue!10, align=center,
+        minimum height=10mm, minimum width=46mm] (gtc) at (0,0)
+        {شمارندهٔ زمان سراسری (۳۲)\\ \footnotesize همیشه‌روشن};
+
+  % start input + single sysclk
+  \draw[->, thick] (-5.0,0) node[left] {شروع} -- (gtc.west);
+  \draw[->, thick] (5.0,0) node[right] {تک sysclk} -- (gtc.east);
+
+  % ---------- Channel decoders ----------
+  \node[dec] (gx)  at (-5.4,-2.8) {رمزگشای رویداد\\ Gx\\ + پخش‌کننده};
+  \node[dec] (rf)  at (-1.8,-2.8) {رمزگشای رویداد\\ RF\\ + DDS};
+  \node[font=\large] (dots) at (0.6,-2.8) {$\cdots$};
+  \node[dec] (adc) at (2.6,-2.8) {رمزگشای رویداد\\ ADC\\ + ضبط};
+  \node[dec] (trig) at (6.2,-2.8) {رمزگشای رویداد\\ تریگر\\ + GPIO};
+
+  % broadcast time_cnt to all decoders
+  \coordinate (bus) at (0,-1.4);
+  \draw[thick] (gtc.south) -- (bus);
+  \node[font=\footnotesize, right] at (0.1,-1.2) {time\_cnt (پخش همگانی)};
+  \draw[thick] (-5.4,-1.4) -- (6.2,-1.4);
+  \foreach \n in {gx,rf,adc,trig} {
+    \draw[->, thick] (\n.north |- bus) -- (\n.north);
+  }
+
+  % ---------- Outputs ----------
+  \node[outp] (gxo)  at (-5.4,-5.0) {DAC گرادیان Gx};
+  \node[outp] (rfo)  at (-1.8,-5.0) {DAC رادیویی RF};
+  \node[outp] (adco) at (2.6,-5.0) {استروب ADC};
+  \node[outp] (trigo) at (6.2,-5.0) {خروجی تریگر};
+  \foreach \a/\b in {gx/gxo, rf/rfo, adc/adco, trig/trigo} {
+    \draw[->, thick] (\a.south) -- (\b.north);
+  }
+
+\end{tikzpicture}}
+\end{document}

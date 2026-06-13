@@ -1,0 +1,68 @@
+% Direct-RF-sampling MR receiver chain: from LNA output through bandpass filter,
+% IF/RF amp, anti-alias filter, AAF, ADC, then digital down-converter (DDC).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    block/.style={draw, rounded corners=2pt, minimum height=10mm, minimum width=15mm, align=center, fill=blue!6},
+    adc/.style={draw, minimum height=11mm, minimum width=16mm, align=center, fill=orange!12},
+    ddcblk/.style={draw, rounded corners=2pt, minimum height=9mm, minimum width=15mm, align=center, fill=green!8},
+    every node/.style={font=\small}]
+
+  % --- RF analog front-end row ---
+  \node[block] (bpf) {فیلتر\\میان‌گذر\\(RF)};
+  \node[block, right=8mm of bpf] (amp) {تقویت‌کنندهٔ\\IF/RF};
+  \node[block, right=8mm of amp] (aaf1) {فیلتر\\ضدتاخوردگی};
+  \node[block, right=8mm of aaf1] (aaf2) {AAF};
+  \node[adc, right=8mm of aaf2] (adc) {ADC\\\RL{($n$ bit)}};
+
+  % input arrow from LNA
+  \draw[->, thick] ($(bpf.west)+(-13mm,0)$) node[left, align=center] {از LNA\\(RF)} -- (bpf.west);
+  \draw[->, thick] (bpf) -- (amp);
+  \draw[->, thick] (amp) -- (aaf1);
+  \draw[->, thick] (aaf1) -- (aaf2);
+  \draw[->, thick] (aaf2) -- (adc);
+
+  % sample clock into ADC
+  \node[above=10mm of adc, align=center] (clk) {ساعت نمونه‌برداری $f_s$};
+  \draw[->, thick] (clk) -- (adc);
+
+  % --- DDC container ---
+  \node[draw, dashed, rounded corners=3pt, fill=green!3,
+        minimum width=72mm, minimum height=30mm,
+        below=20mm of adc, anchor=north] (ddcbox) {};
+  \node[anchor=north] at ($(ddcbox.north)+(0,-1mm)$) {\textbf{پایین‌تبدیل دیجیتال (DDC)}};
+
+  % real sample path from ADC into DDC
+  \draw[->, thick] (adc.south) -- node[right, align=left] {نمونه‌های حقیقی\\با نرخ $f_s$} (adc.south |- ddcbox.north);
+
+  % DDC inner blocks
+  \node[ddcblk] (mixer) at ($(ddcbox.center)+(-22mm,-3mm)$) {آمیزگر\\مختلط};
+  \node[ddcblk, right=9mm of mixer] (nco) {NCO/DDS\\$(\cos,\sin)$};
+  \node[ddcblk, right=9mm of nco] (dec) {فیلتر\\کاهش‌نرخ\\CIC+FIR};
+
+  \draw[->, thick] (nco) -- (mixer);
+  \draw[->, thick] (mixer.south) |- ($(mixer.south)+(0,-5mm)$) -| (dec.south);
+
+  % output of DDC
+  \draw[->, thick] (dec.north) |- ($(dec.north)+(0,5mm)$);
+  \draw[->, thick] (ddcbox.south) -- node[right, align=left] {$I+jQ$\\نرخ کاهش‌یافته} ($(ddcbox.south)+(0,-12mm)$)
+        node[below, align=center] {به حافظهٔ فضای‑کی / DMA};
+
+\end{tikzpicture}}
+\end{document}

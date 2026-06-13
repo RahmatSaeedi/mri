@@ -1,0 +1,107 @@
+% EPI timing diagram: oscillating readout gradient (Gx), small phase-encode
+% blips (Gy) and ADC sampling, together with the boustrophedon (zig-zag)
+% k-space trajectory it produces.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % ============ LEFT: timing diagram ============
+  \begin{scope}
+    \def\xL{0}
+    \def\xR{8.6}
+    \def\rowsep{1.45}
+    \def\yRF{0}
+    \def\yGx{-\rowsep}
+    \def\yGy{-2*\rowsep}
+    \def\yADC{-3*\rowsep}
+
+    \foreach \y/\name in {\yRF/RF, \yGx/$G_x$, \yGy/$G_y$, \yADC/ADC}{
+      \draw[gray!55] (\xL,\y) -- (\xR,\y);
+      \node[left, font=\small\bfseries] at (\xL-0.1,\y) {\name};
+    }
+
+    % RF excitation
+    \draw[blue!70!black, very thick]
+      (0.7,\yRF) sin (1.0,\yRF+0.18) cos (1.2,\yRF+0.6)
+      sin (1.4,\yRF+0.18) cos (1.7,\yRF);
+    \node[blue!70!black, above, font=\scriptsize] at (1.5,\yRF+0.62) {$90^\circ$ (or $90^\circ\!-\!180^\circ$)};
+
+    % --- Gx oscillating readout: alternating + / - trapezoids ---
+    % step = lobe width (0.85) + gap (0.18) = 1.03 ; start at x=2.3
+    % positive lobes (even index): k = 0,2,4  -> xa = 2.30, 4.36, 6.42
+    \foreach \xa in {2.30, 4.36, 6.42}{
+      \fill[red!60] (\xa,\yGx) rectangle (\xa+0.85,\yGx+0.45);
+      \node[font=\scriptsize] at (\xa+0.425,\yGx+0.62) {$+$};
+    }
+    % negative lobes (odd index): k = 1,3,5 -> xa = 3.33, 5.39, 7.45
+    \foreach \xa in {3.33, 5.39, 7.45}{
+      \fill[red!30] (\xa,\yGx) rectangle (\xa+0.85,\yGx-0.45);
+      \node[font=\scriptsize] at (\xa+0.425,\yGx-0.62) {$-$};
+    }
+    \node[anchor=west, font=\scriptsize, gray!60!black] at (\xL+0.1,\yGx+0.95) {خوانش نوسانی \RL{($\pm$)}};
+
+    % --- Gy blips: short pulses at each polarity reversal (gap centers) ---
+    \foreach \xb in {3.24, 4.27, 5.30, 6.33, 7.36}{
+      \fill[green!55!black!70] (\xb-0.06,\yGy) rectangle (\xb+0.06,\yGy+0.45);
+    }
+    \node[anchor=west, font=\scriptsize, gray!60!black] at (\xL+0.1,\yGy+0.7) {بلیپ‌های کدگذاری فاز};
+
+    % --- ADC: sample during each readout lobe ---
+    \foreach \xa in {2.30, 3.33, 4.36, 5.39, 6.42, 7.45}{
+      \fill[purple!25] (\xa,\yADC) rectangle (\xa+0.85,\yADC+0.4);
+      \draw[purple!70!black, thin] (\xa,\yADC) rectangle (\xa+0.85,\yADC+0.4);
+    }
+    \node[anchor=west, font=\scriptsize, gray!60!black] at (\xL+0.1,\yADC-0.45) {نمونه‌برداری در هر گلبرگ};
+
+    \node[font=\small\bfseries] at (4.6,1.55) {قطار گرادیان و ADC در EPI};
+  \end{scope}
+
+  % ============ RIGHT: k-space boustrophedon trajectory ============
+  \begin{scope}[xshift=11cm, yshift=-2.2cm]
+    \def\Wk{3.4}   % width  (kx span)
+    \def\Hk{3.0}   % height (ky span)
+    % axes
+    \draw[->, thick] (-0.3,0) -- (\Wk+0.7,0) node[right]{$k_x$};
+    \draw[->, thick] (0,-0.3) -- (0,\Hk+0.5) node[above]{$k_y$};
+
+    % 6 horizontal lines, spacing dy = 3.0/5 = 0.6
+    % even index (0,2,4): left -> right ; odd index (1,3,5): right -> left
+    \foreach \yy in {0, 1.2, 2.4}{                 % even rows: L->R
+      \draw[->, very thick, blue!65!black] (0.15,\yy) -- (\Wk,\yy);
+    }
+    \foreach \yy in {0.6, 1.8, 3.0}{               % odd rows: R->L
+      \draw[->, very thick, blue!65!black] (\Wk,\yy) -- (0.15,\yy);
+    }
+    % connecting blips (vertical steps): right side after even rows 0,2 ; left side after odd rows 1,3
+    \foreach \yy in {0, 2.4}{
+      \draw[->, thick, green!45!black] (\Wk,\yy) -- (\Wk,\yy+0.6);
+    }
+    \foreach \yy in {1.2}{
+      \draw[->, thick, green!45!black] (\Wk,\yy) -- (\Wk,\yy+0.6);
+    }
+    \foreach \yy in {0.6, 1.8}{
+      \draw[->, thick, green!45!black] (0.15,\yy) -- (0.15,\yy+0.6);
+    }
+    \node[font=\scriptsize, blue!65!black, above right] at (0.5,0) {خط ۱};
+    \node[font=\scriptsize, green!45!black, right] at (\Wk+0.05,0.3) {بلیپ};
+    \node[font=\scriptsize, gray!60!black, below] at (\Wk/2,-0.45) {مسیر رفت‌وبرگشتی};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

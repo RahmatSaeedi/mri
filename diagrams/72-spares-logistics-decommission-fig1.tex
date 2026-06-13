@@ -1,0 +1,63 @@
+% Criticality x demand-pattern decision matrix for MRI spare-parts policy.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  % cell geometry
+  \def\w{5.0} % cell width
+  \def\h{2.6} % cell height
+
+  % four quadrant cells
+  \fill[red!18]    (0,\h) rectangle (\w,2*\h);          % high crit / low demand
+  \fill[orange!18] (\w,\h) rectangle (2*\w,2*\h);       % high crit / high demand
+  \fill[blue!10]   (0,0) rectangle (\w,\h);             % low crit / low demand
+  \fill[green!14]  (\w,0) rectangle (2*\w,\h);          % low crit / high demand
+
+  % grid lines
+  \draw[thick] (0,0) rectangle (2*\w,2*\h);
+  \draw[thick] (\w,0) -- (\w,2*\h);
+  \draw[thick] (0,\h) -- (2*\w,\h);
+
+  % cell content (top-left)
+  \node[align=center, font=\bfseries] at (\w/2,\h+0.95*\h) {قطعهٔ یدکی اضطراری حیاتی};
+  \node[align=center] at (\w/2,\h+0.45*\h) {نگه‌داری ۰ تا ۱ واحد\\(cold head، GPA)};
+
+  % top-right
+  \node[align=center, font=\bfseries] at (\w+\w/2,\h+0.95*\h) {ذخیرهٔ اطمینان بالا};
+  \node[align=center] at (\w+\w/2,\h+0.45*\h) {تأمین مجدد کمینه/بیشینه\\(فیلتر، فن، باتری)};
+
+  % bottom-left
+  \node[align=center, font=\bfseries] at (\w/2,0.55*\h) {سفارش بر حسب نیاز};
+  \node[align=center] at (\w/2,0.22*\h) {بدون نگه‌داری موجودی};
+
+  % bottom-right
+  \node[align=center, font=\bfseries] at (\w+\w/2,0.55*\h) {موجودی معمول};
+  \node[align=center] at (\w+\w/2,0.22*\h) {کنترل کمینه/بیشینه};
+
+  % axis labels
+  \draw[->, thick] (-0.5,2*\h+0.25) -- (-0.5,-0.25)
+      node[midway, left, align=center, rotate=90, anchor=south] {بحرانیت};
+  \node[left, align=right, font=\bfseries] at (-0.85,\h+\h/2) {بالا\\(توقف سامانه)};
+  \node[left, align=right, font=\bfseries] at (-0.85,\h/2) {پایین\\(بدون توقف)};
+
+  \draw[->, thick] (-0.25,-0.6) -- (2*\w+0.25,-0.6)
+      node[midway, below=22pt] {نرخ تقاضا / مصرف};
+  \node[below, font=\bfseries] at (\w/2,-0.75) {تقاضای کم};
+  \node[below, font=\bfseries] at (\w+\w/2,-0.75) {تقاضای زیاد};
+\end{tikzpicture}}
+\end{document}

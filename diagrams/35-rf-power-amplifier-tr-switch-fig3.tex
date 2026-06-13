@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, x=1cm, y=1cm]
+
+  % time axis parameters
+  \def\xmin{0}
+  \def\xmax{12}
+  % key time markers
+  \def\tub{2}    % unblank
+  \def\tzero{3.4}  % pulse start t0
+  \def\tone{6.6}   % pulse end t1
+  \def\tb{8}     % blank / switch to RX
+
+  % vertical guide lines
+  \foreach \x/\lab in {\tub/$t_{ub}$, \tzero/$t_0$, \tone/$t_1$, \tb/$t_b$} {
+    \draw[gray!40, dashed] (\x,-0.4) -- (\x,9.0);
+    \node[gray!70, font=\scriptsize] at (\x,9.3) {\lab};
+  }
+
+  % time axis arrow
+  \draw[->, thick] (\xmin,-0.6) -- (\xmax+0.3,-0.6) node[right]{\scriptsize زمان};
+
+  % helper: each lane has a baseline; high level = +0.55
+  \def\h{0.55}
+
+  % ----- Lane definitions: name, y baseline -----
+  % RFPA unblank  (high between tub and tb)
+  \def\ya{8.0}
+  \node[left, font=\scriptsize] at (-0.2,\ya+\h/2) {فعال‌سازی RFPA};
+  \draw[very thick, blue]
+    (\xmin,\ya) -- (\tub,\ya) -- (\tub,\ya+\h) -- (\tb,\ya+\h) -- (\tb,\ya) -- (\xmax,\ya);
+
+  % RF pulse (high t0..t1)
+  \def\yb{6.4}
+  \node[left, font=\scriptsize] at (-0.2,\yb+\h/2) {پالس RF \RL{($B_1$)}};
+  \draw[very thick, red]
+    (\xmin,\yb) -- (\tzero,\yb) -- (\tzero,\yb+\h) -- (\tone,\yb+\h) -- (\tone,\yb) -- (\xmax,\yb);
+
+  % T/R = TX (high t0..tb)
+  \def\yc{4.8}
+  \node[left, font=\scriptsize] at (-0.2,\yc+\h/2) {T/R = TX};
+  \draw[very thick, orange!85!black]
+    (\xmin,\yc) -- (\tzero,\yc) -- (\tzero,\yc+\h) -- (\tb,\yc+\h) -- (\tb,\yc) -- (\xmax,\yc);
+
+  % T/R = RX (high except t0..tb) -- complement
+  \def\yd{3.2}
+  \node[left, font=\scriptsize] at (-0.2,\yd+\h/2) {T/R = RX};
+  \draw[very thick, teal]
+    (\xmin,\yd+\h) -- (\tzero,\yd+\h) -- (\tzero,\yd) -- (\tb,\yd) -- (\tb,\yd+\h) -- (\xmax,\yd+\h);
+
+  % Preamp blank (high t0..tb)
+  \def\ye{1.6}
+  \node[left, font=\scriptsize] at (-0.2,\ye+\h/2) {بلانک پیش‌تقویت‌کننده};
+  \draw[very thick, violet]
+    (\xmin,\ye) -- (\tzero,\ye) -- (\tzero,\ye+\h) -- (\tb,\ye+\h) -- (\tb,\ye) -- (\xmax,\ye);
+
+  % ADC acquire (high after dead time = tb + delta)
+  \def\yf{0.0}
+  \def\tdead{9.0}
+  \node[left, font=\scriptsize] at (-0.2,\yf+\h/2) {اکتساب ADC};
+  \draw[very thick, black!70]
+    (\xmin,\yf) -- (\tdead,\yf) -- (\tdead,\yf+\h) -- (\xmax,\yf+\h);
+
+  % dead time bracket
+  \draw[<->, gray!70] (\tb,\yf+\h+0.15) -- (\tdead,\yf+\h+0.15)
+       node[midway, above, font=\scriptsize, gray!70]{زمان مرده};
+
+  % pre-unblank annotation
+  \draw[<->, gray!60] (\tub,\ya-0.2) -- (\tzero,\ya-0.2)
+       node[midway, below, font=\scriptsize, gray!60]{پیش‌فعال‌سازی $\sim$3--10 $\mu$s};
+
+\end{tikzpicture}}
+\end{document}

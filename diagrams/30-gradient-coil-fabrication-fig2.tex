@@ -1,0 +1,72 @@
+% Radial layer stack of a self-shielded gradient coil (inside -> outside):
+% primaries, cooling channels, optional shim, shields, all potted in resin.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+
+  % radius axis (increasing outward / upward)
+  \draw[->, thick] (-0.6,0) -- (-0.6,9.2) node[above] {$r$ (به‌سمت بیرون)};
+
+  \def\W{8}      % layer width
+  \def\H{0.72}   % layer height
+
+  % helper: a labelled layer band  #1=y bottom  #2=fill  #3=label
+  \newcommand{\layer}[3]{
+     \fill[#2] (0,#1) rectangle (\W,{#1+\H});
+     \draw[thick] (0,#1) rectangle (\W,{#1+\H});
+     \node at ({\W/2},{#1+\H/2}) {#3};
+  }
+
+  % from inside (bottom) to outside (top)
+  \node[anchor=west, font=\itshape] at (0,-0.35) {حفرهٔ بیمار / سیم‌پیچ بدنیِ RF (فصل\,۳۳)};
+
+  \layer{0.2}{blue!12}{$G_z$ اولیه (primary)}
+  \layer{0.95}{blue!12}{$G_x$ اولیه}
+  \layer{1.70}{blue!12}{$G_y$ اولیه}
+
+  % cooling channels band
+  \fill[cyan!20] (0,2.45) rectangle (\W,3.17);
+  \draw[thick] (0,2.45) rectangle (\W,3.17);
+  \foreach \x in {0.6,1.6,2.6,3.6,4.6,5.6,6.6} {
+     \draw[->, cyan!60!black, thick] (\x,2.81) -- (\x+0.5,2.81);
+  }
+  \node[fill=cyan!20, inner sep=1pt] at ({\W/2},2.81) {کانال‌های خنک‌کاری آبی};
+
+  \layer{3.20}{gray!18}{شیمِ مقاومتی / مرتبهٔ بالا (اختیاری، فصل\,۲۷)}
+  \layer{3.95}{red!12}{$G_y$ پوششی (shield)}
+  \layer{4.70}{red!12}{$G_x$ پوششی}
+  \layer{5.45}{red!12}{$G_z$ پوششی}
+
+  % potting / structural body
+  \fill[brown!18] (0,6.20) rectangle (\W,7.6);
+  \draw[thick] (0,6.20) rectangle (\W,7.6);
+  \node at ({\W/2},6.9) {آب‌بندیِ رزینی / بدنهٔ سازه‌ایِ فایبرگلاس};
+
+  \node[anchor=west, font=\itshape] at (0,8.0) {آهنربا / حفرهٔ سرد (فصل\,۲۵)};
+  \draw[thick, dashed] (0,7.75) -- (\W,7.75);
+
+  % radius callouts
+  \draw[<->] (\W+0.4,0.2) -- (\W+0.4,1.70) node[midway, right, font=\scriptsize] {لایه‌های اولیه};
+  \node[anchor=west, font=\scriptsize] at (\W+0.15,2.0) {$r \approx 340$\,mm};
+  \node[anchor=west, font=\scriptsize] at (\W+0.15,6.2) {$r \approx 470$\,mm};
+  \draw[<->] (\W+0.4,0.2) -- (\W+0.4,7.6)
+        node[midway, right=0.7cm, font=\scriptsize, align=left] {دیواره\\$60$--$130$\,mm};
+
+\end{tikzpicture}}
+\end{document}

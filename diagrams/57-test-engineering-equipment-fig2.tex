@@ -1,0 +1,56 @@
+% Swept-tuned (superheterodyne) spectrum analyzer block diagram:
+% RF input -> attenuator -> mixer -> RBW filter (IF) -> detector -> log display,
+% with a swept local oscillator driven by a sweep generator.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    block/.style={draw, rounded corners=2pt, minimum height=12mm, minimum width=18mm, align=center, fill=blue!6},
+    mix/.style={draw, circle, minimum size=11mm, align=center, fill=orange!14},
+    lo/.style={draw, rounded corners=2pt, minimum height=12mm, minimum width=22mm, align=center, fill=green!8},
+    disp/.style={draw, rounded corners=2pt, minimum height=12mm, minimum width=20mm, align=center, fill=gray!10}]
+
+  % --- main RF/IF chain row ---
+  \node[block] (att) {تضعیف‌گر};
+  \node[mix,   right=12mm of att] (mix) {$\times$};
+  \node[block, right=12mm of mix] (rbw) {فیلتر RBW\\(IF)};
+  \node[block, right=10mm of rbw] (det) {آشکارساز};
+  \node[disp,  right=10mm of det] (dsp) {نمایش\\(لگاریتمی)};
+
+  % input arrow
+  \draw[->, thick] ($(att.west)+(-15mm,0)$) node[left, align=center] {ورودی\\RF} -- (att.west);
+  \draw[->, thick] (att) -- (mix);
+  \draw[->, thick] (mix) -- node[above, font=\footnotesize] {IF} (rbw);
+  \draw[->, thick] (rbw) -- (det);
+  \draw[->, thick] (det) -- (dsp);
+
+  % mixer label
+  \node[font=\footnotesize, above=1mm of mix] {آمیزه‌گر};
+
+  % --- swept LO branch (below mixer) ---
+  \node[lo, below=12mm of mix] (lo) {LO جاروبی};
+  \node[lo, left=10mm of lo] (gen) {مولد\\جاروب};
+  \draw[->, thick] (gen) -- (lo);
+  \draw[->, thick] (lo) -- (mix);
+
+  % sweep ramp also drives the display horizontal axis
+  \draw[->, thick, dashed, gray] (gen.south) |- ($(gen.south)+(0,-8mm)$)
+        -| (dsp.south) node[pos=0.25, below, font=\footnotesize, black] {شیب جاروب $\to$ محور افقی};
+
+\end{tikzpicture}}
+\end{document}

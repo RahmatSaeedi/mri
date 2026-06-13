@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \def\xL{0}     % left k_x
+  \def\xR{8}     % right k_x
+  \def\dy{1.0}   % row spacing (delta k_y)
+  \def\NR{5}     % number of rows (0..NR-1)
+
+  % sampled support box (light)
+  \fill[blue!6] (\xL-0.15,-0.4) rectangle (\xR+0.15,{(\NR-1)*\dy+0.4});
+
+  % axes
+  \draw[->, thick] (\xL-0.6,0) -- (\xR+0.9,0) node[right] {$k_x$};
+  \draw[->, thick] (\xL,-0.6) -- (\xL,{(\NR-1)*\dy+1.0}) node[above] {$k_y$};
+
+  % boustrophedon readout lines (alternating direction) + blips
+  \foreach \i in {0,...,4} {
+     \pgfmathsetmacro{\yy}{\i*\dy}
+     \ifodd\i
+        % right -> left
+        \draw[->, very thick, teal!70!black] (\xR,\yy) -- (\xL,\yy);
+     \else
+        % left -> right
+        \draw[->, very thick, blue!70!black] (\xL,\yy) -- (\xR,\yy);
+     \fi
+     % sample dots along the line
+     \foreach \x in {0.5,1.5,...,7.5} {
+        \fill[black!55] (\x,\yy) circle (0.7pt);
+     }
+  }
+  % connecting phase blips (short vertical hops at the turning ends)
+  \foreach \i in {0,1,2,3} {
+     \pgfmathsetmacro{\yy}{\i*\dy}
+     \pgfmathsetmacro{\yn}{(\i+1)*\dy}
+     \ifodd\i
+        \draw[->, thick, orange!80!black] (\xL,\yy) -- (\xL,\yn);
+     \else
+        \draw[->, thick, orange!80!black] (\xR,\yy) -- (\xR,\yn);
+     \fi
+  }
+
+  % labels
+  \node[blue!70!black, font=\scriptsize, anchor=south] at (4,0) {خط ۱: چپ $\to$ راست};
+  \node[teal!70!black, font=\scriptsize, anchor=south] at (4,{1*\dy}) {خط ۲: راست $\to$ چپ};
+  \node[blue!70!black, font=\scriptsize, anchor=south] at (4,{2*\dy}) {خط ۳};
+  \node[teal!70!black, font=\scriptsize, anchor=south] at (4,{3*\dy}) {خط ۴};
+  \node[blue!70!black, font=\scriptsize, anchor=south] at (4,{4*\dy}) {خط ۵};
+
+  % blip annotation
+  \draw[<-, orange!80!black] (\xR+0.18,{0.5*\dy}) -- (\xR+1.6,{0.5*\dy})
+     node[anchor=west, align=left, font=\scriptsize] {بلیپ فاز\\$\Delta k_y$};
+
+  % delta k_y bracket on the left
+  \draw[<->, gray!70] (\xL-0.35,0) -- (\xL-0.35,\dy);
+  \node[gray!70, font=\scriptsize, anchor=east, rotate=90] at (\xL-0.5,{0.5*\dy}) {$\Delta k_y$};
+
+  % title
+  \node[align=center, font=\scriptsize, anchor=north]
+     at (4,-0.9) {EPI تک‌شات --- $k_y$ پله‌ای رو به بالا، $k_x$ پیمایش رفت‌وبرگشتی (بوستروفدون)};
+\end{tikzpicture}}
+\end{document}

@@ -1,0 +1,46 @@
+% qMRI causal chain: biological phenomenon -> spin effect -> signal model -> inversion -> quantitative biomarker.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, node distance=6mm and 9mm]
+  \tikzset{
+    stage/.style={rounded corners=2pt, draw=black, fill=blue!8, align=center,
+                  text width=24mm, minimum height=14mm, inner sep=2pt},
+    ex/.style={align=center, font=\footnotesize\itshape, text=black!60, text width=26mm}
+  }
+
+  \node[stage] (a) {پدیدهٔ زیستی / فیزیکی};
+  \node[stage, right=of a] (b) {اثر بر مغناطش / فاز اسپین};
+  \node[stage, right=of b] (c) {مدل سیگنال};
+  \node[stage, right=of c] (d) {وارون‌سازی (برازش)};
+  \node[stage, right=of d, fill=green!10] (e) {زیست‌نشانگر کمّی};
+
+  \foreach \i/\j in {a/b, b/c, c/d, d/e}
+    \draw[->, very thick] (\i) -- (\j);
+
+  % example row (diffusion)
+  \node[ex, below=5mm of a] {حرکت آب};
+  \node[ex, below=5mm of b] {افت دامنه / تغییر فاز};
+  \node[ex, below=5mm of c] {Stejskal--Tanner};
+  \node[ex, below=5mm of d] {کمترین مربعات};
+  \node[ex, below=5mm of e] {$\mathrm{ADC}\ [\mathrm{mm^2/s}]$};
+
+  \node[font=\footnotesize, text=black!60, below=15mm of c] {مثال: دیفیوژن};
+\end{tikzpicture}}
+\end{document}

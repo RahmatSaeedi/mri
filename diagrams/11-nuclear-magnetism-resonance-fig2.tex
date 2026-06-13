@@ -1,0 +1,57 @@
+% Effective field in the rotating frame: on-resonance vs off-resonance.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, line join=round]
+
+  % ===================== LEFT PANEL: on-resonance =====================
+  \begin{scope}[shift={(0,0)}]
+    \draw[->, thick] (0,-0.3) -- (0,3.2) node[above] {$z'$};
+    \draw[->, thick] (0,0) -- (3.2,0) node[right] {$x'$};
+    % B_eff = B1 along x' only
+    \draw[->, very thick, blue!70!black] (0,0) -- (2.4,0)
+          node[midway, above] {$B_1$};
+    \node[blue!70!black, right] at (2.45,0.32) {$\mathbf{B}_{\mathrm{eff}}$};
+    \node[align=center, font=\footnotesize] at (1.6,-1.0)
+         {$\omega=\omega_0$ (در تشدید):\\$\mathbf{B}_{\mathrm{eff}}=B_1\,\hat{x}'$};
+  \end{scope}
+
+  % ===================== RIGHT PANEL: off-resonance =====================
+  \begin{scope}[shift={(6.0,0)}]
+    \draw[->, thick] (0,-0.3) -- (0,3.2) node[above] {$z'$};
+    \draw[->, thick] (0,0) -- (3.2,0) node[right] {$x'$};
+    % components
+    \draw[->, thick, gray!70!black] (0,0) -- (0,2.4)
+          node[midway, left] {$\Delta B$};
+    \draw[->, thick, gray!70!black] (0,0) -- (2.0,0)
+          node[midway, below] {$B_1$};
+    % effective field (resultant)
+    \draw[->, very thick, blue!70!black] (0,0) -- (2.0,2.4)
+          node[above right] {$\mathbf{B}_{\mathrm{eff}}$};
+    % helper dashed lines forming the rectangle
+    \draw[dashed, gray] (2.0,0) -- (2.0,2.4);
+    \draw[dashed, gray] (0,2.4) -- (2.0,2.4);
+    % tilt angle theta from z'
+    \draw[->] (0,1.4) arc (90:50:1.4);
+    \node at (0.55,1.7) {$\theta$};
+    \node[align=center, font=\footnotesize] at (1.6,-1.0)
+         {$\omega\ne\omega_0$ (خارج‌تشدید):\\$\tan\theta=B_1/\Delta B$};
+  \end{scope}
+
+\end{tikzpicture}}
+\end{document}

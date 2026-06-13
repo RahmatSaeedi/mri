@@ -1,0 +1,92 @@
+% Balanced-bridge quench detector: the magnet is split into two halves L1, L2
+% with midpoint M; a matched resistive divider Rb1, Rb2 forms the reference
+% node C. The differential voltage V(M)-V(C) cancels the inductive term and
+% reveals the resistive quench signal R_q I.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    coil/.style={thick, decorate, decoration={coil, aspect=0.6, segment length=5pt, amplitude=4pt}},
+    res/.style={draw, thick, minimum width=1.1cm, minimum height=0.45cm, fill=orange!12}]
+
+  % ---- top rail: magnet split into L1 and L2 ----
+  \coordinate (A)  at (0,3);
+  \coordinate (M)  at (5,3);
+  \coordinate (B)  at (10,3);
+
+  \node[left] at (A) {$A$};
+  \node[right] at (B) {$B$};
+  \fill (A) circle (1.6pt);
+  \fill (B) circle (1.6pt);
+  \fill (M) circle (1.6pt);
+  \node[above, yshift=2pt] at (M) {$M$};
+
+  % L1 coil
+  \draw[thick] (A) -- (1.0,3);
+  \draw[coil] (1.0,3) -- (4.0,3);
+  \draw[thick] (4.0,3) -- (M);
+  \node[above, yshift=3pt] at (2.5,3) {$L_1$};
+
+  % L2 coil
+  \draw[thick] (M) -- (6.0,3);
+  \draw[coil] (6.0,3) -- (9.0,3);
+  \draw[thick] (9.0,3) -- (B);
+  \node[above, yshift=3pt] at (7.5,3) {$L_2$};
+
+  % ---- bottom rail: reference resistive divider Rb1, Rb2 ----
+  \coordinate (A2) at (0,0.6);
+  \coordinate (C)  at (5,0.6);
+  \coordinate (B2) at (10,0.6);
+
+  \fill (A2) circle (1.6pt);
+  \fill (B2) circle (1.6pt);
+  \fill (C)  circle (1.6pt);
+  \node[below, yshift=-2pt] at (C) {$C$};
+
+  % connect rails at A and B
+  \draw[thick] (A) -- (A2);
+  \draw[thick] (B) -- (B2);
+
+  % Rb1
+  \draw[thick] (A2) -- (1.7,0.6);
+  \node[res] (RB1) at (2.5,0.6) {$R_{b1}$};
+  \draw[thick] (3.3,0.6) -- (C);
+  % Rb2
+  \draw[thick] (C) -- (6.7,0.6);
+  \node[res] (RB2) at (7.5,0.6) {$R_{b2}$};
+  \draw[thick] (8.3,0.6) -- (B2);
+
+  \node[anchor=west, font=\footnotesize] at (10.25,0.6) {تقسیم‌کنندهٔ مرجع};
+
+  % ---- differential measurement M - C ----
+  \draw[->, very thick, blue!70!black] (M) -- (C);
+  \node[blue!70!black, anchor=west, align=left] at (5.25,1.8)
+    {$V_{bridge}=V(M)-V(C)$\\[1pt]\footnotesize $\rightarrow$ مقایسه‌گر};
+
+  % comparator block to the right of midpoint
+  \node[draw, thick, fill=gray!8, minimum height=0.9cm, minimum width=1.2cm,
+        anchor=west] (CMP) at (7.3,1.8) {$>V_{th}$?};
+  \draw[->, blue!70!black, thick] (5.25,1.55) .. controls (6.6,1.2) .. (CMP.west);
+
+  % ---- balance note ----
+  \node[font=\footnotesize, anchor=north, align=center] at (5,-0.35)
+    {متعادل: $\frac{R_{b1}}{R_{b1}+R_{b2}}=\frac{L_1+M_{12}}{L_1+L_2+2M_{12}}$
+     $\;\Rightarrow\;$ جملهٔ القایی حذف می‌شود و $R_q I$ می‌ماند};
+
+\end{tikzpicture}}
+\end{document}

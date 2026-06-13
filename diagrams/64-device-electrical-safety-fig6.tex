@@ -1,0 +1,39 @@
+% Multi-layer thermal protection for power amplifiers: escalating defence
+% layers, ending in an independent hardware cutoff (fail-safe last barrier).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    lay/.style={draw, rounded corners=3pt, align=left, text width=72mm, inner sep=5pt, minimum height=12mm},
+    tag/.style={draw, rounded corners=2pt, font=\footnotesize\bfseries, fill=white, inner sep=2pt}]
+
+  \node[lay, fill=green!10] (l1) {\textbf{لایهٔ ۱ -- کنترل حرارتی عادی:} فن / خنک‌کاری مایع، تنظیم نقطهٔ کار.};
+  \node[lay, fill=yellow!14, below=7mm of l1] (l2) {\textbf{لایهٔ ۲ -- هشدار نرم‌افزاری:} حسگر دما؛ کاهش توان در آستانهٔ ۱.};
+  \node[lay, fill=orange!16, below=7mm of l2] (l3) {\textbf{لایهٔ ۳ -- قطع نرم‌افزاری:} توقف اکتساب در آستانهٔ ۲.};
+  \node[lay, fill=red!16, below=7mm of l3, very thick] (l4) {\textbf{لایهٔ ۴ -- قطع سخت‌افزاری مستقل:} ترموستات / فیوز حرارتی، مستقل از CPU \textemdash{} آخرین سد ایمن در خرابی.};
+
+  \foreach \a/\b in {l1/l2,l2/l3,l3/l4} {
+    \draw[->, very thick] (\a) -- (\b);
+  }
+
+  % escalation arrow on the side
+  \draw[->, thick, gray] ($(l1.north west)+(-6mm,0)$) -- node[left, sloped, font=\footnotesize] {افزایش دما / تشدید شدت} ($(l4.south west)+(-6mm,0)$);
+
+\end{tikzpicture}}
+\end{document}

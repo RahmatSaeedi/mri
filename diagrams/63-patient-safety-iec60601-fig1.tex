@@ -1,0 +1,67 @@
+% Gradient safety logic: hierarchy of dB/dt thresholds vs pulse duration.
+% Cardiac stimulation threshold sits far above the PNS (perception) threshold;
+% Normal mode = 80% of PNS; the safe operating zone lies below.
+% Vertical axis is schematic (not to scale): the true PNS-to-cardiac margin is x20-40.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{axis}[
+      width=13cm, height=9cm,
+      axis lines=left,
+      xlabel={مدت پالس $t_s$ (ms)},
+      ylabel={آستانهٔ $dB/dt$ (T/s، مقیاس شماتیک)},
+      xmin=0, xmax=2.0, ymin=0, ymax=520,
+      ytick=\empty,
+      xtick={0.5,1.0,1.5},
+      clip=false,
+      every axis x label/.style={at={(ticklabel* cs:1.0)}, anchor=west},
+      every axis y label/.style={at={(ticklabel* cs:1.0)}, anchor=south east},
+    ]
+    % --- shade the safe operating region below the Normal-mode limit ---
+    \addplot[domain=0.12:2.0, samples=120, draw=none, fill=green!12]
+        {20*(1 + 0.36/x)*0.8} \closedcycle;
+
+    % --- Cardiac stimulation threshold (Weiss form, high rheobase) ---
+    \addplot[domain=0.12:2.0, samples=120, very thick, red!75!black]
+        {90*(1 + 0.36/x)};
+    \node[red!75!black, anchor=west, fill=white, inner sep=1pt]
+        at (axis cs:0.62,300) {آستانهٔ تحریک قلبی (خطرناک)};
+
+    % --- PNS / perception threshold = FLC limit (Weiss form) ---
+    \addplot[domain=0.12:2.0, samples=120, very thick, orange!85!black]
+        {20*(1 + 0.36/x)};
+    \node[orange!85!black, anchor=west, fill=white, inner sep=1pt]
+        at (axis cs:0.85,72) {آستانهٔ PNS (ادراک) = حد FLC};
+
+    % --- Normal-mode limit = 80% of PNS ---
+    \addplot[domain=0.12:2.0, samples=120, very thick, green!50!black, densely dashed]
+        {20*(1 + 0.36/x)*0.8};
+    \node[green!50!black, anchor=west, fill=white, inner sep=1pt]
+        at (axis cs:0.85,33) {حد حالت عادی \RL{($80\%$ از PNS)}};
+
+    % --- safe operating region label ---
+    \node[green!45!black] at (axis cs:1.35,12) {ناحیهٔ کار ایمن};
+
+    % --- large safety margin arrow between PNS and cardiac ---
+    \draw[<->, thick, gray] (axis cs:0.40,60) -- (axis cs:0.40,228)
+        node[midway, fill=white, inner sep=1.5pt, rotate=90, align=center]
+        {حاشیهٔ ایمنی بزرگ \RL{($\times20$--$40$)}};
+  \end{axis}
+\end{tikzpicture}}
+\end{document}

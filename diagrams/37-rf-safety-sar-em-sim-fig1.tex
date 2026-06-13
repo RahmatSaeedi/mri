@@ -1,0 +1,58 @@
+% RF design-to-patient-safety chain: from RFPA power through coil, fields,
+% SAR map, VOP matrix, real-time monitoring, IEC comparison to interlock.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=12mm,
+                minimum width=27mm, thick, fill=blue!6},
+    safe/.style={draw, rounded corners=2pt, align=center, minimum height=12mm,
+                minimum width=27mm, thick, fill=red!7},
+    every node/.style={font=\small}]
+
+  % ---- top row: design / physics chain ----
+  \node[box] (rfpa) {توان RFPA\\\footnotesize (kW، فصل ۳۵)};
+  \node[box, right=14mm of rfpa] (eff) {بازده سیم‌پیچ\\$\eta = B_1^+/\sqrt{P}$};
+  \node[box, right=14mm of eff] (field) {میدان $B_1^+$ / $E$\\\footnotesize (openEMS)};
+  \node[box, right=14mm of field] (sar) {نقشهٔ SAR\\\footnotesize موضعی / کل‌بدن};
+
+  \draw[->, very thick] (rfpa) -- (eff);
+  \draw[->, very thick] (eff) -- (field);
+  \draw[->, very thick] (field) -- (sar);
+
+  % ---- bottom row: safety / monitoring chain ----
+  \node[box, below=18mm of rfpa] (vop) {ماتریس VOP\\\footnotesize (pTx)};
+  \node[box, right=14mm of vop] (mon) {پایش بی‌درنگ SAR\\(کنسول)};
+  \node[safe, right=14mm of mon] (iec) {مقایسه با\\حدِ IEC};
+  \node[safe, right=14mm of iec] (lock) {اینترلاک:\\کندسازی / توقف};
+
+  \draw[->, very thick] (vop) -- (mon);
+  \draw[->, very thick] (mon) -- (iec);
+  \draw[->, very thick] (iec) -- (lock);
+
+  % ---- connector: SAR map feeds the VOP / monitoring row ----
+  \draw[->, very thick] (sar.south) |- ($(sar.south)+(0,-9mm)$) -| (vop.north);
+
+  % row captions
+  \node[anchor=west, font=\footnotesize\itshape, gray!60!black]
+        at ($(rfpa.north west)+(0,4mm)$) {طراحی RF و شبیه‌سازی EM};
+  \node[anchor=west, font=\footnotesize\itshape, gray!60!black]
+        at ($(vop.south west)+(0,-4mm)$) {نظارت ایمنیِ بی‌درنگ};
+
+\end{tikzpicture}}
+\end{document}

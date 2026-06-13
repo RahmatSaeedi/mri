@@ -1,0 +1,67 @@
+% Chapter 20 - Fig 3: Requirements flow-down.
+% Maps each clinical / imaging need (left) to the derived magnet specification
+% (right) with the governing relation noted on the arrow.
+% Built to cropped PDF (print) and SVG (web/epub) by the Makefile in this directory.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    need/.style={rounded corners=3pt, draw=teal!60!black, thick, fill=teal!8,
+      text width=4.2cm, align=left, minimum height=0.95cm, inner sep=4pt},
+    spec/.style={rounded corners=3pt, draw=orange!70!black, thick, fill=orange!10,
+      text width=5.2cm, align=left, minimum height=0.95cm, inner sep=4pt},
+  ]
+
+  % Column headers
+  \node[font=\bfseries, teal!50!black] at (-3.0,7.2) {نیاز بالینی / تصویربرداری};
+  \node[font=\bfseries, orange!60!black] at (4.7,7.2) {مشخصهٔ آهنربای استخراج‌شده};
+
+  % rows: y from top to bottom
+  \foreach \i/\y in {1/6.4, 2/5.2, 3/4.0, 4/2.8, 5/1.6, 6/0.4, 7/-0.8, 8/-2.0} {}
+
+  % --- needs (left) ---
+  \node[need] (n1) at (-3.0,6.4) {تفکیک‌پذیری 1 mm، SNR کافی};
+  \node[need] (n2) at (-3.0,5.2) {FOV تمام‌بدن 50 cm};
+  \node[need] (n3) at (-3.0,4.0) {EPI / fMRI / MRS، اعوجاج کم};
+  \node[need] (n4) at (-3.0,2.8) {fMRI طولانی، کمّی‌سازی};
+  \node[need] (n5) at (-3.0,1.6) {ایمنی محل، اتاق کوچک};
+  \node[need] (n6) at (-3.0,0.4) {سرکوب چربی مطمئن};
+  \node[need] (n7) at (-3.0,-0.8) {آسایش بیمار (تونل)};
+  \node[need] (n8) at (-3.0,-2.0) {بودجه و زیرساخت};
+
+  % --- specs (right) ---
+  \node[spec] (s1) at (4.7,6.4) {$B_0 = 1.5$ یا $3$ T};
+  \node[spec] (s2) at (4.7,5.2) {DSV $\ge 50$ cm};
+  \node[spec] (s3) at (4.7,4.0) {$\le 1$--$3$ ppm روی DSV (pk-pk)};
+  \node[spec] (s4) at (4.7,2.8) {رانش $\le 0.05$--$0.1$ ppm/h};
+  \node[spec] (s5) at (4.7,1.6) {5 G درون $2.5\times2.0$ m (پوشش فعال)};
+  \node[spec] (s6) at (4.7,0.4) {یکنواختی + پایداری بسامد مرکزی};
+  \node[spec] (s7) at (4.7,-0.8) {قطر تونل $\ge 60$ cm};
+  \node[spec] (s8) at (4.7,-2.0) {He / بدون He، وزن، خنک‌سازی};
+
+  % arrows with governing relation
+  \draw[->, thick, gray!70] (n1.east) -- node[above, font=\scriptsize, text=blue!55!black] {SNR $\propto B_0$} (s1.west);
+  \foreach \n/\s in {n2/s2, n3/s3, n4/s4, n5/s5, n6/s6, n7/s7, n8/s8}
+    \draw[->, thick, gray!70] (\n.east) -- (\s.west);
+
+  % note on tension for the bore row
+  \node[font=\scriptsize, text=red!60!black, align=center] at (1.0,-1.4) {(تنش با ppm)};
+
+\end{tikzpicture}}
+\end{document}

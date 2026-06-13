@@ -1,0 +1,52 @@
+% Standalone TikZ figure: clinical MRI examination workflow / lifecycle.
+% Referring physician -> radiologist (protocol) -> technologist (scan)
+% -> reconstruction -> interpretation -> structured report -> treatment.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=11mm,
+                 minimum width=27mm, fill=blue!6, thick},
+    role/.style={font=\footnotesize\itshape, text=black!60},
+    edgelbl/.style={font=\scriptsize, align=center, fill=white, inner sep=1pt}]
+
+  % --- top row: order, protocol selection, scan ---
+  \node[box] (order) at (0,0) {درخواست بالینی\\ (ارجاع‌دهنده)};
+  \node[box] (proto) at (5.4,0) {انتخاب/تطبیق\\ پروتکل (کتابخانه)};
+  \node[box] (scan)  at (10.8,0) {اجرای اسکن\\ (کنسول)};
+
+  \node[role, above=1mm of order] {پزشک ارجاع‌دهنده};
+  \node[role, above=1mm of proto] {رادیولوژیست / پروتکل‌نویس};
+  \node[role, above=1mm of scan]  {تکنولوژیست (بهره‌بردار)};
+
+  % --- bottom row: reconstruction, interpretation, report, treatment ---
+  \node[box] (recon)  at (10.8,-3.2) {بازسازی\\ (DICOM $\rightarrow$ PACS)};
+  \node[box] (interp) at (5.4,-3.2)  {تفسیر\\ (PACS)};
+  \node[box] (report) at (5.4,-6.0)  {گزارش رادیولوژی\\ (ساختاریافته)};
+  \node[box] (treat)  at (0,-6.0)    {درمان};
+
+  % --- arrows ---
+  \draw[->, thick] (order) -- node[edgelbl, above]{«MRI مغز\\ با ماده حاجب»} (proto);
+  \draw[->, thick] (proto) -- (scan);
+  \draw[->, thick] (scan)  -- node[edgelbl, right]{داده خام} (recon);
+  \draw[->, thick] (recon) -- (interp);
+  \draw[->, thick] (interp) -- (report);
+  \draw[->, thick] (report) -- node[edgelbl, above]{یافته‌ها} (treat);
+
+\end{tikzpicture}}
+\end{document}

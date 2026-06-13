@@ -1,0 +1,92 @@
+% T/R switch blanking timing. The TX gate enables the PA while RF is on; the
+% Unblank line protects the LNA and only opens the receive path after the
+% transmit pulse, with a guard time on each side. The ADC window opens last.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small, x=1cm, y=1cm]
+
+  % time axis reference points
+  % t0=0 .. t1 guard .. RF pulse .. guard .. RX window
+  \def\xL{0}     % left edge
+  \def\xR{12}    % right edge
+  \def\h{0.7}    % signal high amplitude
+
+  % row y-centres
+  \def\yTX{6}
+  \def\yUB{4.5}
+  \def\yRF{3}
+  \def\yADC{1.5}
+
+  % row labels
+  \node[anchor=east] at (\xL-0.2,\yTX) {گِیت TX};
+  \node[anchor=east] at (\xL-0.2,\yUB) {رفع‌انسداد (LNA)};
+  \node[anchor=east] at (\xL-0.2,\yRF) {پالس RF};
+  \node[anchor=east] at (\xL-0.2,\yADC){پنجرهٔ ADC};
+
+  % baselines (light)
+  \foreach \y in {\yTX,\yUB,\yRF,\yADC}{
+    \draw[gray!40] (\xL,\y) -- (\xR,\y);
+  }
+
+  % key x marks
+  \def\xa{2.0}  % TX gate rises
+  \def\xb{2.8}  % RF rises
+  \def\xc{5.2}  % RF falls
+  \def\xd{6.0}  % TX gate falls
+  \def\xe{6.7}  % Unblank rises (after guard)
+  \def\xf{11.0} % Unblank falls
+  \def\xg{7.6}  % ADC win starts
+  \def\xh{10.6} % ADC win ends
+
+  % TX gate (active during transmit)
+  \draw[very thick, blue!70!black]
+    (\xL,\yTX) -- (\xa,\yTX) -- (\xa,\yTX+\h) -- (\xd,\yTX+\h) -- (\xd,\yTX) -- (\xR,\yTX);
+
+  % Unblank (opens receive path after guard)
+  \draw[very thick, red!70!black]
+    (\xL,\yUB) -- (\xe,\yUB) -- (\xe,\yUB+\h) -- (\xf,\yUB+\h) -- (\xf,\yUB) -- (\xR,\yUB);
+
+  % RF pulse (rounded burst)
+  \draw[very thick, orange!80!black]
+    (\xL,\yRF) -- (\xb,\yRF)
+    .. controls (\xb+0.3,\yRF+\h) and (\xb+0.3,\yRF+\h) .. (\xb+0.7,\yRF+\h)
+    -- (\xc-0.7,\yRF+\h)
+    .. controls (\xc-0.3,\yRF+\h) and (\xc-0.3,\yRF) .. (\xc,\yRF)
+    -- (\xR,\yRF);
+  \node[font=\footnotesize, orange!60!black] at ({(\xb+\xc)/2},\yRF+\h+0.3) {پالس $B_1$};
+
+  % ADC window (hatched active region)
+  \draw[very thick, green!55!black]
+    (\xL,\yADC) -- (\xg,\yADC) -- (\xg,\yADC+\h) -- (\xh,\yADC+\h) -- (\xh,\yADC) -- (\xR,\yADC);
+  \fill[green!55!black, opacity=0.18] (\xg,\yADC) rectangle (\xh,\yADC+\h);
+  \node[font=\footnotesize, green!45!black] at ({(\xg+\xh)/2},\yADC+\h+0.28) {نمونه‌برداری};
+
+  % guard-time annotations
+  \draw[<->, thin] (\xd,\yUB+\h+0.45) -- (\xe,\yUB+\h+0.45)
+    node[midway, above, font=\footnotesize]{$t_{\mathrm{guard}}$};
+  \draw[<->, thin] (\xf,\yUB+\h+0.45) -- (12.0,\yUB+\h+0.45);
+  % left guard between TX gate rise and RF rise
+  \draw[<->, thin] (\xa,\yTX-0.45) -- (\xb,\yTX-0.45)
+    node[midway, below, font=\footnotesize]{$t_{\mathrm{guard}}$};
+
+  % vertical helper lines
+  \draw[gray!50, dashed] (\xc,\yRF) -- (\xc,\yADC);
+
+\end{tikzpicture}}
+\end{document}

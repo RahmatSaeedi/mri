@@ -1,0 +1,69 @@
+% Fault tree for top event "asphyxiation in scan room": AND/OR gates down to
+% basic faults (quench/leak, vent failure, sensor/power, unconsciousness, locked door).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={draw, very thick, rounded corners=2pt, fill=red!15,
+                align=center, minimum width=44mm, minimum height=11mm},
+    mid/.style={draw, thick, align=center, fill=orange!12,
+                minimum width=26mm, minimum height=11mm},
+    leaf/.style={draw, thick, align=center, fill=cyan!10, rounded corners=1pt,
+                 minimum width=20mm, minimum height=11mm, font=\footnotesize},
+    gate/.style={draw, thick, fill=yellow!25, font=\bfseries\footnotesize,
+                 inner sep=1.5pt},
+    line/.style={-, thick}]
+
+  % top event
+  \node[top] (TOP) {خفگی در\\ اتاق اسکن (TOP)};
+  \node[gate, below=2mm of TOP] (gTOP) {OR};
+
+  % three intermediate events
+  \node[mid, below left=16mm and 16mm of gTOP] (E1) {نشت گاز He\\ در اتاق};
+  \node[mid, below=16mm of gTOP]               (E2) {پایشگر O$_2$\\ هشدار نداد};
+  \node[mid, below right=16mm and 16mm of gTOP] (E3) {فرد نتوانست\\ خارج شود};
+
+  \draw[line] (gTOP) -- (E1);
+  \draw[line] (gTOP) -- (E2);
+  \draw[line] (gTOP) -- (E3);
+
+  % gates under each
+  \node[gate, below=2mm of E1] (g1) {AND};
+  \node[gate, below=2mm of E2] (g2) {OR};
+  \node[gate, below=2mm of E3] (g3) {OR};
+
+  % leaves under E1 (AND)
+  \node[leaf, below left=14mm and 4mm of g1] (L11) {بروز کوئنچ\\ یا نشت};
+  \node[leaf, below right=14mm and 4mm of g1] (L12) {خرابی تخلیه\\ (انسداد/دیسک)};
+  \draw[line] (g1) -- (L11);
+  \draw[line] (g1) -- (L12);
+
+  % leaves under E2 (OR)
+  \node[leaf, below left=14mm and 4mm of g2] (L21) {خرابی\\ حسگر};
+  \node[leaf, below right=14mm and 4mm of g2] (L22) {قطع برق،\\ بدون UPS};
+  \draw[line] (g2) -- (L21);
+  \draw[line] (g2) -- (L22);
+
+  % leaves under E3 (OR)
+  \node[leaf, below left=14mm and 4mm of g3] (L31) {از دست رفتنِ\\ سریع هوشیاری};
+  \node[leaf, below right=14mm and 4mm of g3] (L32) {درِ قفل‌شده /\\ مسدود};
+  \draw[line] (g3) -- (L31);
+  \draw[line] (g3) -- (L32);
+
+\end{tikzpicture}}
+\end{document}

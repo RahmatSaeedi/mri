@@ -1,0 +1,70 @@
+% Generic fault-tree anatomy: TOP event ("no image signal") decomposed via an OR
+% gate into intermediate events, then to basic events (RF path / encoding).
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\tikzset{every node/.append style={execute at begin node=\setRTL}}
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    top/.style={rectangle, draw=black!75, very thick, fill=red!14,
+      text width=3.6cm, align=center, inner sep=5pt, minimum height=1.0cm},
+    inter/.style={rectangle, draw=black!70, thick, fill=blue!10,
+      text width=2.7cm, align=center, inner sep=4pt, minimum height=0.9cm},
+    basic/.style={circle, draw=black!70, thick, fill=yellow!20,
+      align=center, inner sep=1.5pt, minimum size=1.4cm, font=\footnotesize},
+    undev/.style={diamond, draw=black!70, thick, fill=green!12,
+      align=center, inner sep=1pt, minimum width=2.3cm, font=\footnotesize},
+    gate/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt},
+    line/.style={-, thick, black!60}]
+
+  % TOP event
+  \node[top] (top) {رویداد بالا (TOP)\\ \emph{بدون سیگنال تصویر}};
+
+  % OR gate marker below TOP
+  \node[gate, below=0.35cm of top] (g0) {OR};
+
+  % Two intermediate events
+  \node[inter, below left=1.2cm and 0.6cm of g0]  (rf)  {خطای مسیر RF};
+  \node[inter, below right=1.2cm and 0.6cm of g0] (enc) {خطای کدگذاری};
+
+  \draw[line] (top) -- (g0);
+  \draw[line] (g0) -- (rf);
+  \draw[line] (g0) -- (enc);
+
+  % OR gate under RF-path fault
+  \node[gate, below=0.30cm of rf] (g1) {OR};
+  \node[basic, below left=1.1cm and 0.0cm of g1]  (tr)  {سوختن\\ TR amp};
+  \node[basic, below right=1.1cm and 0.0cm of g1] (lna) {از کارافتادن\\ LNA};
+  \draw[line] (rf) -- (g1);
+  \draw[line] (g1) -- (tr);
+  \draw[line] (g1) -- (lna);
+
+  % Undeveloped subtree under encoding fault
+  \node[undev, below=1.0cm of enc] (sub) {(زیردرخت)};
+  \draw[line] (enc) -- (sub);
+
+  % Legend
+  \begin{scope}[shift={($(enc.east)+(2.4,-0.2)$)}]
+    \node[basic, scale=0.62] (lb) at (0,0) {};
+    \node[right=0.15cm of lb, font=\footnotesize] {رویداد پایه};
+    \node[inter, scale=0.55, minimum height=0.5cm, text width=1.4cm] (li) at (0,-1.0) {};
+    \node[right=0.15cm of li, font=\footnotesize] {میانی};
+    \node[undev, scale=0.55, minimum width=1.6cm] (ld) at (0,-2.0) {};
+    \node[right=0.15cm of ld, font=\footnotesize] {توسعه‌نیافته};
+  \end{scope}
+\end{tikzpicture}}
+\end{document}

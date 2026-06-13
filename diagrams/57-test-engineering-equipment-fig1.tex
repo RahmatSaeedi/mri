@@ -1,0 +1,60 @@
+% Digital storage oscilloscope (DSO) signal chain: probe/coupling -> input amp
+% -> fast ADC -> deep acquisition memory -> display/processing, with the key
+% spec annotated under each stage.
+\documentclass{article}
+\usepackage[paperwidth=120cm,paperheight=120cm,margin=10mm]{geometry}
+\pagestyle{empty}
+\usepackage{fontspec}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import]{english}
+\babelprovide[main, import]{persian}
+\babelfont{rm}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\babelfont{sf}[Renderer=Node, Path=../fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold]{Vazirmatn}
+\providecommand{\setRTL}{}\providecommand{\setLTR}{}
+\providecommand{\RL}[1]{\foreignlanguage{persian}{#1}}
+\providecommand{\LR}[1]{\babelsublr{#1}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, fit, backgrounds, decorations.pathmorphing, patterns, angles, quotes}
+\begin{document}
+\setRTL
+\babelsublr{\begin{tikzpicture}[>=Stealth, font=\small,
+    block/.style={draw, rounded corners=2pt, minimum height=13mm, minimum width=20mm, align=center, fill=blue!6},
+    adc/.style={draw, minimum height=13mm, minimum width=20mm, align=center, fill=orange!14},
+    mem/.style={draw, rounded corners=2pt, minimum height=13mm, minimum width=22mm, align=center, fill=green!8},
+    disp/.style={draw, rounded corners=2pt, minimum height=13mm, minimum width=20mm, align=center, fill=gray!10},
+    spec/.style={font=\footnotesize\itshape, text=black!70, align=center}]
+
+  % --- main signal chain row ---
+  \node[block] (att) {تضعیف‌گر /\\جفت‌سازی};
+  \node[block, right=9mm of att] (amp) {تقویت‌کنندهٔ\\ورودی};
+  \node[adc,   right=9mm of amp] (adc) {ADC\\سریع};
+  \node[mem,   right=9mm of adc] (mem) {حافظهٔ\\اکتساب\\(عمیق)};
+  \node[disp,  right=9mm of mem] (dsp) {نمایش /\\پردازش};
+
+  % input arrow from probe
+  \draw[->, thick] ($(att.west)+(-15mm,0)$) node[left, align=center] {ورودی\\(پراب)} -- (att.west);
+  \draw[->, thick] (att) -- (amp);
+  \draw[->, thick] (amp) -- (adc);
+  \draw[->, thick] (adc) -- (mem);
+  \draw[->, thick] (mem) -- (dsp);
+
+  % --- per-stage key spec annotations ---
+  \node[spec, below=6mm of att] {AC / DC / GND};
+  \node[spec, below=6mm of amp] {پهنای‌باند\\آنالوگ $f_{BW}$};
+  \node[spec, below=6mm of adc] {نرخ نمونه‌برداری\\$f_s$};
+  \node[spec, below=6mm of mem] {عمق حافظه\\$M$ نمونه};
+  \node[spec, below=6mm of dsp] {تقلیل‌نرخ /\\رندرینگ};
+
+  % dotted ties from blocks to their spec labels
+  \foreach \b in {att,amp,adc,mem,dsp}{
+    \draw[gray, densely dotted] (\b.south) -- ($(\b.south)+(0,-3.5mm)$);
+  }
+
+  % capture-window relation
+  \node[spec, below=18mm of mem, text=blue!50!black]
+    {$T_{\mathrm{capture}} = M / f_s$};
+
+\end{tikzpicture}}
+\end{document}
