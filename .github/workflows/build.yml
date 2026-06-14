@@ -46,11 +46,17 @@ jobs:
       # on the install, so a genuine failure surfaces instead of being masked.
       - name: Install LaTeX packages
         run: |
-          tlmgr update --self || true
-          tlmgr install \
-            fontspec babel babel-persian luaotfload unicode-math \
-            geometry pgf pgfplots xcolor amsmath amsfonts mathtools \
-            fancyvrb fvextra framed pdfpages koma-script lm
+          PKGS="fontspec babel babel-persian luaotfload unicode-math geometry pgf pgfplots xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm"
+          # tlmgr often fails on CI because TinyTeX's bundled TeX Live is older
+          # than the default CTAN mirror ("cross-release updates not supported").
+          # Try the default repo first; if it fails, pin the version-matched
+          # historic repo and retry. (No `|| true` — a real failure must surface.)
+          if ! tlmgr install $PKGS; then
+            TLVER=$(tlmgr --version 2>/dev/null | sed -n 's/.*version \([0-9][0-9][0-9][0-9]\).*/\1/p' | head -1)
+            echo "Direct install failed; pinning historic repo for TeX Live ${TLVER:-unknown} and retrying"
+            tlmgr option repository "https://texlive.info/historic/systems/texlive/${TLVER}/tlnet-final"
+            tlmgr --repository "https://texlive.info/historic/systems/texlive/${TLVER}/tlnet-final" install $PKGS
+          fi
 
       - name: Verify the figure toolchain (fail fast with a clear message)
         run: |
