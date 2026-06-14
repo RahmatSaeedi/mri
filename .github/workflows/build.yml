@@ -61,24 +61,36 @@ jobs:
       # Figures compile with DIRECT lualatex (not through Quarto), so Quarto's
       # automatic missing-package install does NOT apply — every package the
       # figures load (fontspec/babel/... on EVERY figure) must be pre-installed.
-      # Most are already in TinyTeX base; this adds pgfplots + fvextra and harmlessly
-      # re-lists the rest. tlmgr name gotchas: amsfonts provides amssymb, pgf provides
-      # tikz, and there is NO `babel-persian` package — Persian is the `persian` locale
-      # that ships inside babel core (babel/locale/fa/babel-persian.tex). No `|| true`,
-      # so a genuine failure surfaces instead of being masked.
+      # Most are already in TinyTeX base; this adds the rest. tlmgr gotchas:
+      #  - amsfonts provides amssymb, pgf provides tikz.
+      #  - NO `babel-persian` package — Persian is the `persian` locale inside babel
+      #    core (babel/locale/fa/babel-persian.tex).
+      #  - luatexbase + ctablestack are babel's LuaTeX backend (babel -> luababel ->
+      #    luatexbase -> ctablestack); the MINIMAL TinyTeX on CI omits them even
+      #    though it ships babel.sty, so every figure fails with luatexbase.sty
+      #    "not found" unless they are installed explicitly.
+      # No `|| true`, so a genuine failure surfaces instead of being masked.
       - name: Install LaTeX packages
         run: |
-          tlmgr install fontspec babel luaotfload unicode-math geometry pgf pgfplots \
+          tlmgr install fontspec babel luatexbase ctablestack luaotfload unicode-math geometry pgf pgfplots \
             xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm
 
-      - name: Verify the figure toolchain (fail fast with a clear message)
+      # Compile ONE real figure as a canary. A hardcoded kpsewhich list gives false
+      # confidence (it once passed while luatexbase.sty was missing); a real compile
+      # with the figures' exact preamble + fonts surfaces ANY missing dependency here
+      # in ~5s, instead of after grinding through all 228 figures.
+      - name: Verify the figure toolchain (compile one real figure)
         run: |
           lualatex --version | head -1
           python -c "import fitz, numpy; print('PyMuPDF + numpy OK')"
-          for sty in fontspec babel tikz pgfplots geometry amsmath; do
-            kpsewhich "$sty.sty" >/dev/null && echo "  ok: $sty.sty" \
-              || { echo "MISSING: $sty.sty"; exit 1; }
-          done
+          cd diagrams
+          canary=01-calculus-vector-calculus-fig1
+          if ! lualatex -interaction=nonstopmode -halt-on-error "$canary.tex" >_canary.log 2>&1; then
+            echo "--- canary figure '$canary' failed to compile ---"
+            tail -n 30 _canary.log
+            exit 1
+          fi
+          test -f "$canary.pdf" && echo "canary OK: $canary.pdf produced"
 
       # Pass the pip-populated interpreter explicitly: `make` would otherwise use
       # whatever `python3` resolves to, which may lack PyMuPDF/numpy.
