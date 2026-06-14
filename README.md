@@ -95,11 +95,15 @@ $env:Path = "$env:APPDATA\TinyTeX\bin\windows;$env:Path"
 lualatex --version
 ```
 
-بسته‌های لازم: `babel`, `babel-persian`, `fontspec`, `tikz`/`pgf`, `pgfplots`, `geometry`,
-`koma-script`, `fancyvrb`, `framed`. روی TeX Live کامل همه موجودند؛ روی TinyTeX:
+بسته‌های لازم (نمودارها با لوآلاتکِ مستقیم ساخته می‌شوند، پس همه باید از پیش نصب باشند): `fontspec`,
+`babel`, `babel-persian`, `luaotfload`, `tikz`/`pgf`, `pgfplots`, `geometry`, `amsmath`, `amsfonts`,
+`mathtools`, `xcolor`, `unicode-math`, `koma-script`, `fancyvrb`, `fvextra`, `framed`, `pdfpages`, `lm`.
+روی TeX Live کامل همه موجودند؛ روی TinyTeX:
 
 ```bash
-tlmgr install geometry pgf pgfplots babel-persian koma-script fancyvrb framed
+tlmgr install fontspec babel babel-persian luaotfload unicode-math \
+  geometry pgf pgfplots xcolor amsmath amsfonts mathtools \
+  fancyvrb fvextra framed pdfpages koma-script lm
 ```
 
 > برشِ نمودارها به **PyMuPDF** (پایتون) نیاز دارد؛ `pip install -r requirements.txt`.

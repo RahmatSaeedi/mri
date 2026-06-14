@@ -39,13 +39,32 @@ jobs:
       - name: Install Python deps (PyMuPDF crops figures to SVG/PDF)
         run: pip install -r requirements.txt
 
-      - name: Install LaTeX packages for diagrams and PDF
+      # Figures compile with DIRECT lualatex (not through Quarto), so Quarto's
+      # automatic missing-package install does NOT apply — every package the
+      # figures load (fontspec/babel/... on EVERY figure) must be pre-installed.
+      # NOTE: tlmgr names — amsfonts (not amssymb), pgf (not tikz). No `|| true`
+      # on the install, so a genuine failure surfaces instead of being masked.
+      - name: Install LaTeX packages
         run: |
-          tlmgr install geometry pgf pgfplots babel-persian \
-            xcolor fancyvrb framed koma-script unicode-math || true
+          tlmgr update --self || true
+          tlmgr install \
+            fontspec babel babel-persian luaotfload unicode-math \
+            geometry pgf pgfplots xcolor amsmath amsfonts mathtools \
+            fancyvrb fvextra framed pdfpages koma-script lm
 
+      - name: Verify the figure toolchain (fail fast with a clear message)
+        run: |
+          lualatex --version | head -1
+          python -c "import fitz, numpy; print('PyMuPDF + numpy OK')"
+          for sty in fontspec babel tikz pgfplots geometry amsmath; do
+            kpsewhich "$sty.sty" >/dev/null && echo "  ok: $sty.sty" \
+              || { echo "MISSING: $sty.sty"; exit 1; }
+          done
+
+      # Pass the pip-populated interpreter explicitly: `make` would otherwise use
+      # whatever `python3` resolves to, which may lack PyMuPDF/numpy.
       - name: Build vector diagrams (LuaLaTeX -> PyMuPDF -> PDF + SVG)
-        run: make -C diagrams
+        run: make -C diagrams PYTHON="$(which python)"
 
       - name: Render book (HTML + PDF)
         run: quarto render

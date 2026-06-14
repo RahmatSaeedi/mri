@@ -38,10 +38,14 @@ if os.path.isdir(_tex):
 
 def build_one(base):
     """Compile base.tex, crop to content, write tight base.pdf + base.svg."""
-    subprocess.run(["lualatex", "-interaction=nonstopmode", "-halt-on-error", base + ".tex"],
-                   cwd=DIAG, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    r = subprocess.run(["lualatex", "-interaction=nonstopmode", "-halt-on-error", base + ".tex"],
+                       cwd=DIAG, capture_output=True, text=True, errors="replace")
     pdf = os.path.join(DIAG, base + ".pdf")
     if not os.path.exists(pdf):
+        # Surface the real LaTeX error (e.g. a missing package on a CI runner)
+        # instead of swallowing it — the last lines of lualatex's output say why.
+        tail = "\n".join((r.stdout or "").splitlines()[-25:])
+        print(f"--- lualatex FAILED for {base}.tex (exit {r.returncode}) ---\n{tail}\n--- end ---")
         return "PDF-FAIL"
     doc = fitz.open(pdf)
     page = doc[0]
