@@ -61,20 +61,15 @@ jobs:
       # Figures compile with DIRECT lualatex (not through Quarto), so Quarto's
       # automatic missing-package install does NOT apply — every package the
       # figures load (fontspec/babel/... on EVERY figure) must be pre-installed.
-      # NOTE: tlmgr names — amsfonts (not amssymb), pgf (not tikz). No `|| true`
-      # on the install, so a genuine failure surfaces instead of being masked.
+      # Most are already in TinyTeX base; this adds pgfplots + fvextra and harmlessly
+      # re-lists the rest. tlmgr name gotchas: amsfonts provides amssymb, pgf provides
+      # tikz, and there is NO `babel-persian` package — Persian is the `persian` locale
+      # that ships inside babel core (babel/locale/fa/babel-persian.tex). No `|| true`,
+      # so a genuine failure surfaces instead of being masked.
       - name: Install LaTeX packages
         run: |
-          PKGS="fontspec babel babel-persian luaotfload unicode-math geometry pgf pgfplots xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm"
-          # Fresh TinyTeX matches the current CTAN mirror, so this normally just
-          # works. The retry is insurance against a cross-release window (TinyTeX a
-          # TeX Live release behind the mirror), where tlmgr refuses and we pin the
-          # version-matched historic repo. (No `|| true`: a real failure must surface.)
-          if ! tlmgr install $PKGS; then
-            TLVER=$(tlmgr --version 2>/dev/null | sed -n 's/.*version \([0-9][0-9][0-9][0-9]\).*/\1/p' | head -1)
-            echo "Default install failed; retrying via historic repo for TeX Live ${TLVER:-unknown}"
-            tlmgr --repository "https://texlive.info/historic/systems/texlive/${TLVER}/tlnet-final" install $PKGS
-          fi
+          tlmgr install fontspec babel luaotfload unicode-math geometry pgf pgfplots \
+            xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm
 
       - name: Verify the figure toolchain (fail fast with a clear message)
         run: |

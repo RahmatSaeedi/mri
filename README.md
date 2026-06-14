@@ -96,12 +96,12 @@ lualatex --version
 ```
 
 بسته‌های لازم (نمودارها با لوآلاتکِ مستقیم ساخته می‌شوند، پس همه باید از پیش نصب باشند): `fontspec`,
-`babel`, `babel-persian`, `luaotfload`, `tikz`/`pgf`, `pgfplots`, `geometry`, `amsmath`, `amsfonts`,
+`babel` (locale فارسی درون خودِ babel است؛ بستهٔ جداگانهٔ `babel-persian` وجود ندارد)، `luaotfload`, `tikz`/`pgf`, `pgfplots`, `geometry`, `amsmath`, `amsfonts`,
 `mathtools`, `xcolor`, `unicode-math`, `koma-script`, `fancyvrb`, `fvextra`, `framed`, `pdfpages`, `lm`.
 روی TeX Live کامل همه موجودند؛ روی TinyTeX:
 
 ```bash
-tlmgr install fontspec babel babel-persian luaotfload unicode-math \
+tlmgr install fontspec babel luaotfload unicode-math \
   geometry pgf pgfplots xcolor amsmath amsfonts mathtools \
   fancyvrb fvextra framed pdfpages koma-script lm
 ```
