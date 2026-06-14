@@ -31,6 +31,25 @@ jobs:
         with:
           tinytex: true
 
+      # quarto-actions installs TinyTeX to ~/.TinyTeX, but its Linux branch only
+      # puts ~/bin on $GITHUB_PATH — the real binaries live in ~/.TinyTeX/bin/<arch>/.
+      # `quarto render` locates them by absolute path, but bare tlmgr/lualatex/kpsewhich
+      # in later run: steps (and the lualatex subprocess in build_diagrams.py) are NOT
+      # on PATH and fail with "command not found". Put the real bin dir on $GITHUB_PATH
+      # (GHA run: steps use bash --noprofile --norc, so PATH must go through that file).
+      # Must run AFTER Quarto setup and BEFORE the LaTeX-install and figure-build steps.
+      - name: Put TinyTeX's bin dir on PATH for later steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          TLMGR="$(find "$HOME/.TinyTeX/bin" -maxdepth 2 -name tlmgr 2>/dev/null | head -n1 || true)"
+          [ -n "$TLMGR" ] || TLMGR="$(find "$HOME/.TinyTeX" -name tlmgr 2>/dev/null | head -n1 || true)"
+          if [ -z "$TLMGR" ]; then echo "::error:: tlmgr not found under ~/.TinyTeX"; exit 1; fi
+          BIN_DIR="$(dirname "$TLMGR")"
+          echo "TinyTeX bin dir: $BIN_DIR"
+          "$BIN_DIR/tlmgr" --version >/dev/null
+          echo "$BIN_DIR" >> "$GITHUB_PATH"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -47,14 +66,13 @@ jobs:
       - name: Install LaTeX packages
         run: |
           PKGS="fontspec babel babel-persian luaotfload unicode-math geometry pgf pgfplots xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm"
-          # tlmgr often fails on CI because TinyTeX's bundled TeX Live is older
-          # than the default CTAN mirror ("cross-release updates not supported").
-          # Try the default repo first; if it fails, pin the version-matched
-          # historic repo and retry. (No `|| true` — a real failure must surface.)
+          # Fresh TinyTeX matches the current CTAN mirror, so this normally just
+          # works. The retry is insurance against a cross-release window (TinyTeX a
+          # TeX Live release behind the mirror), where tlmgr refuses and we pin the
+          # version-matched historic repo. (No `|| true`: a real failure must surface.)
           if ! tlmgr install $PKGS; then
             TLVER=$(tlmgr --version 2>/dev/null | sed -n 's/.*version \([0-9][0-9][0-9][0-9]\).*/\1/p' | head -1)
-            echo "Direct install failed; pinning historic repo for TeX Live ${TLVER:-unknown} and retrying"
-            tlmgr option repository "https://texlive.info/historic/systems/texlive/${TLVER}/tlnet-final"
+            echo "Default install failed; retrying via historic repo for TeX Live ${TLVER:-unknown}"
             tlmgr --repository "https://texlive.info/historic/systems/texlive/${TLVER}/tlnet-final" install $PKGS
           fi
 
