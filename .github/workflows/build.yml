@@ -69,11 +69,21 @@ jobs:
       #    luatexbase -> ctablestack); the MINIMAL TinyTeX on CI omits them even
       #    though it ships babel.sty, so every figure fails with luatexbase.sty
       #    "not found" unless they are installed explicitly.
-      # No `|| true`, so a genuine failure surfaces instead of being masked.
+      # The 2nd line group is for the BOOK PDF (quarto render), which loads more than
+      # the figures: tcolorbox (+ deps environ/tikzfill/pdfcol/trimspaces) for Quarto
+      # callouts, caption/booktabs/float for tables & figures, microtype/bookmark/
+      # upquote/lineno/lm-math/lualatex-math, etc. Pre-installing them means `quarto
+      # render` needs ZERO auto-installs — Quarto installs one package per LaTeX pass
+      # and gives up before a minimal TinyTeX catches up (that was the render failure).
+      # The full set was derived from a local render's index.log. No `|| true`, so a
+      # genuine failure surfaces instead of being masked. tlmgr also pulls any deps.
       - name: Install LaTeX packages
         run: |
-          tlmgr install fontspec babel luatexbase ctablestack luaotfload unicode-math geometry pgf pgfplots \
-            xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm
+          tlmgr install \
+            fontspec babel luatexbase ctablestack luaotfload unicode-math geometry pgf pgfplots \
+            xcolor amsmath amsfonts mathtools fancyvrb fvextra framed pdfpages koma-script lm lm-math \
+            bookmark booktabs caption environ eso-pic float fontawesome5 intcalc lineno lualatex-math \
+            mdwtools microtype pdfcol pdflscape tcolorbox tikzfill trimspaces upquote
 
       # Compile ONE real figure as a canary. A hardcoded kpsewhich list gives false
       # confidence (it once passed while luatexbase.sty was missing); a real compile
@@ -98,7 +108,19 @@ jobs:
         run: make -C diagrams PYTHON="$(which python)"
 
       - name: Render book (HTML + PDF)
-        run: quarto render
+        run: |
+          if ! quarto render; then
+            echo "::group::index.log (LaTeX error context)"
+            if [ -f index.log ]; then
+              grep -n -B2 -A4 -E '^(! |.*LaTeX Error|.*Fatal error|.*Emergency stop|.*not found)' index.log | tail -150 || true
+              echo "----- last 50 lines of index.log -----"
+              tail -n 50 index.log
+            else
+              echo "no index.log in $(pwd); .log files present:"; ls -la ./*.log 2>/dev/null || true
+            fi
+            echo "::endgroup::"
+            exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
