@@ -149,6 +149,13 @@ format:
     code-overflow: wrap
   pdf:
     pdf-engine: lualatex
+    # All LaTeX packages are pre-installed (locally per README; on CI by the
+    # workflow), so Quarto's auto-install is pure liability: babel's Persian locale
+    # requests a hyphenation file, and Quarto maps it to the obsolete package name
+    # `hyphen-persian`, which does not exist in current TeX Live -> tlmgr errors and
+    # the whole render fails even though the PDF compiled fine (Persian does not
+    # hyphenate, so the missing file is irrelevant). Turn auto-install off.
+    latex-auto-install: false
     documentclass: scrreport
     include-in-header: theme/preamble.tex
     toc: true
