@@ -85,6 +85,24 @@ jobs:
             bookmark booktabs caption environ eso-pic float fontawesome5 intcalc lineno lualatex-math \
             mdwtools microtype pdfcol pdflscape tcolorbox tikzfill trimspaces upquote
 
+      # The book loads several fonts BY NAME (Latin Modern Mono/Math, FontAwesome5)
+      # plus a luaotfload fallback for Persian-in-code. On a fresh CI TinyTeX the
+      # luaotfload name database is built lazily and can be incomplete right after a
+      # tlmgr font install — a by-name font then embeds with an EMPTY filename and
+      # crashes PDF finalization ("! error: (file ) (type 2): cannot find file ''").
+      # Build the database explicitly now, with every font already installed, so
+      # name resolution is complete and consistent before any render.
+      - name: Build the LuaTeX font database
+        run: |
+          luaotfload-tool --update
+          # Diagnostic: resolve the book's by-name fonts NOW (fast, before the figure
+          # build). If any resolves to "not found"/empty, that is the font that would
+          # embed with an empty filename and crash PDF finalization.
+          echo "=== by-name font resolution ==="
+          for f in "Latin Modern Mono" "Latin Modern Math" "FontAwesome5Free Solid" "Vazirmatn"; do
+            printf '  %-26s -> ' "$f"; luaotfload-tool --find="$f" || echo "(resolve FAILED)"
+          done
+
       # Compile ONE real figure as a canary. A hardcoded kpsewhich list gives false
       # confidence (it once passed while luatexbase.sty was missing); a real compile
       # with the figures' exact preamble + fonts surfaces ANY missing dependency here
