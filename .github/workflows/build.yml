@@ -94,10 +94,20 @@ jobs:
       # name resolution is complete and consistent before any render.
       - name: Build the LuaTeX font database
         run: |
-          luaotfload-tool --update
+          # Vazirmatn lives in the repo's fonts/ (NOT a TEXMF tree), so luaotfload
+          # does not index it by name. The book's tt font has a Persian fallback
+          # (luaotfload.add_fallback) that needs that name resolution to EMBED; without
+          # it the fallback embeds an empty filename and crashes PDF finalization
+          # ("! error: (file ) (type 2): cannot find file ''"). Point OSFONTDIR at the
+          # repo fonts so --update indexes Vazirmatn by name, and export it so the
+          # render step resolves it too. (Figures embed Vazirmatn by PATH and are
+          # unaffected — only the by-name fallback embed needs this.)
+          export OSFONTDIR="$PWD/fonts"
+          echo "OSFONTDIR=$PWD/fonts" >> "$GITHUB_ENV"
+          luaotfload-tool --update --force
           # Diagnostic: resolve the book's by-name fonts NOW (fast, before the figure
-          # build). If any resolves to "not found"/empty, that is the font that would
-          # embed with an empty filename and crash PDF finalization.
+          # build). Vazirmatn must now resolve; if any is "not found", that is the font
+          # that would embed an empty filename and crash PDF finalization.
           echo "=== by-name font resolution ==="
           for f in "Latin Modern Mono" "Latin Modern Math" "FontAwesome5Free Solid" "Vazirmatn"; do
             printf '  %-26s -> ' "$f"; luaotfload-tool --find="$f" || echo "(resolve FAILED)"
